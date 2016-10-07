@@ -1,0 +1,10 @@
+TP.X = 4400;
+TP.Y = 400;
+TP.Z = 2600;
+TP.neuronDensity = 38335;
+TP.layerBoundaryArr = [2600 2362 1835 1122 832 0];
+TP.numLayers = 5;
+TP.numGroups = 15;
+TP.tissueConductivity = 0.3;
+TP.numStrips = 44;
+TP.maxZOverlap = [0 -25];

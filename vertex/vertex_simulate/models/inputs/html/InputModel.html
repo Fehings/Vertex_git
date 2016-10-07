@@ -1,0 +1,262 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>InputModel</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-07-26"><meta name="DC.source" content="InputModel.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> InputModel &lt; handle
+  <span class="keyword">properties</span> (SetAccess = protected)
+    I_input
+    membraneAreaRatio
+    compartmentsInput
+  <span class="keyword">end</span>
+
+  <span class="keyword">methods</span>
+    <span class="keyword">function</span> IM = InputModel(N, inputID, number, compartmentsInput, subset)
+      <span class="comment">%narginchk(3, 5)</span>
+      <span class="keyword">if</span> nargin == 3 <span class="comment">% if compartmentsInput and subset aren't assigned, assign them here.</span>
+        subset = 1:number;
+        compartmentsInput = 1:N.numCompartments;
+      <span class="keyword">elseif</span> nargin == 4 <span class="comment">% subset isn't assigned, assign it here.</span>
+        subset = 1:number;
+      <span class="keyword">end</span>
+      IM.compartmentsInput = compartmentsInput; <span class="comment">% assign IM.compartmentsInput the value passed when the function was called.</span>
+      s = size(N.Input(inputID).meanInput); <span class="comment">% size of meanInput</span>
+      c1 = s(1) == 1 &amp;&amp; s(2) == 1;
+      c2 = s(1) == 1 &amp;&amp; s(2) &gt;  1;
+      c3 = s(1) &gt;  1 &amp;&amp; s(2) == 1;
+      c4 = s(1) &gt;  1 &amp;&amp; s(2) &gt;  1;
+
+      <span class="keyword">if</span> N.numCompartments &gt; 1
+        mAR = (N.compartmentLengthArr(IM.compartmentsInput) .* <span class="keyword">...</span>
+          N.compartmentDiameterArr(IM.compartmentsInput)) ./ <span class="keyword">...</span>
+          sum(N.compartmentLengthArr(IM.compartmentsInput) .* <span class="keyword">...</span>
+          N.compartmentDiameterArr(IM.compartmentsInput));
+        IM.membraneAreaRatio = zeros(1, N.numCompartments);
+        IM.membraneAreaRatio(IM.compartmentsInput) = mAR;
+      <span class="keyword">else</span>
+        IM.membraneAreaRatio = 1;
+      <span class="keyword">end</span>
+
+      <span class="keyword">if</span> c1
+        <span class="keyword">if</span> N.numCompartments &gt; 1
+          meanInput = N.Input(inputID).meanInput .* IM.membraneAreaRatio;
+        <span class="keyword">else</span>
+          meanInput = N.Input(inputID).meanInput;
+        <span class="keyword">end</span>
+        IM.I_input = repmat(meanInput, length(subset), 1);
+      <span class="keyword">elseif</span> c2
+        <span class="keyword">if</span> N.numCompartments &gt; 1
+          meanInput = N.Input(inputID).meanInput;
+        <span class="keyword">else</span>
+          error(<span class="string">'vertex:InputModel:initInput'</span>, <span class="keyword">...</span>
+           <span class="string">'Multiple input values specified for single compartment model'</span>);
+        <span class="keyword">end</span>
+        IM.I_input = repmat(meanInput, length(subset), 1);
+      <span class="keyword">elseif</span> c3
+        <span class="keyword">if</span> size(N.Input(inputID).meanInput(subset), 1) ~= number
+          error(<span class="string">'vertex:InputModel:initInput'</span>, <span class="keyword">...</span>
+           <span class="string">'Not enough input current means specified for number in group'</span>);
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> N.numCompartments &gt; 1
+          meanInput = bsxfun(@times, <span class="keyword">...</span>
+            N.Input(inputID).meanInput(subset), IM.membraneAreaRatio);
+        <span class="keyword">else</span>
+          meanInput = N.Input(inputID).meanInput(subset);
+        <span class="keyword">end</span>
+        IM.I_input = meanInput;
+      <span class="keyword">elseif</span> c4
+        <span class="keyword">if</span> size(N.Input(inputID).meanInput(subset), 1) ~= number
+          error(<span class="string">'vertex:InputModel:initInput'</span>, <span class="keyword">...</span>
+           <span class="string">'Not enough input current means specified for number in group'</span>);
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> N.numCompartments &gt; 1
+          meanInput = N.Input(inputID).meanInput(subset, :);
+        <span class="keyword">else</span>
+          error(<span class="string">'vertex:InputModel:initInput'</span>, <span class="keyword">...</span>
+           <span class="string">'Multiple input values specified for single compartment model'</span>);
+        <span class="keyword">end</span>
+        IM.I_input = meanInput;
+      <span class="keyword">else</span>
+        error(<span class="string">'vertex:InputModel:initInput'</span>, <span class="keyword">...</span>
+           <span class="string">'Mean input vector has size &lt; 1'</span>);
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> IM = updateCurrent(IM, ~)
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> I_input = get.I_input(IM)
+      I_input = IM.I_input;
+    <span class="keyword">end</span>
+
+  <span class="keyword">end</span> <span class="comment">% methods</span>
+
+  <span class="keyword">methods</span>(Static)
+    <span class="keyword">function</span> params = getRequiredParams()
+      params = {<span class="string">'meanInput'</span>};
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span> <span class="comment">% classdef</span>
+</pre><pre class="codeoutput error">Error using InputModel (line 17)
+Not enough input arguments.
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+classdef InputModel < handle
+  properties (SetAccess = protected)
+    I_input
+    membraneAreaRatio
+    compartmentsInput
+  end
+  
+  methods
+    function IM = InputModel(N, inputID, number, compartmentsInput, subset)
+      %narginchk(3, 5)
+      if nargin == 3 % if compartmentsInput and subset aren't assigned, assign them here.
+        subset = 1:number;
+        compartmentsInput = 1:N.numCompartments;
+      elseif nargin == 4 % subset isn't assigned, assign it here.
+        subset = 1:number;
+      end
+      IM.compartmentsInput = compartmentsInput; % assign IM.compartmentsInput the value passed when the function was called.
+      s = size(N.Input(inputID).meanInput); % size of meanInput
+      c1 = s(1) == 1 && s(2) == 1;
+      c2 = s(1) == 1 && s(2) >  1;
+      c3 = s(1) >  1 && s(2) == 1;
+      c4 = s(1) >  1 && s(2) >  1;
+      
+      if N.numCompartments > 1
+        mAR = (N.compartmentLengthArr(IM.compartmentsInput) .* ...
+          N.compartmentDiameterArr(IM.compartmentsInput)) ./ ...
+          sum(N.compartmentLengthArr(IM.compartmentsInput) .* ...
+          N.compartmentDiameterArr(IM.compartmentsInput));
+        IM.membraneAreaRatio = zeros(1, N.numCompartments);
+        IM.membraneAreaRatio(IM.compartmentsInput) = mAR;
+      else
+        IM.membraneAreaRatio = 1;
+      end
+      
+      if c1
+        if N.numCompartments > 1
+          meanInput = N.Input(inputID).meanInput .* IM.membraneAreaRatio;
+        else
+          meanInput = N.Input(inputID).meanInput;
+        end
+        IM.I_input = repmat(meanInput, length(subset), 1);
+      elseif c2
+        if N.numCompartments > 1
+          meanInput = N.Input(inputID).meanInput;
+        else
+          error('vertex:InputModel:initInput', ...
+           'Multiple input values specified for single compartment model');
+        end
+        IM.I_input = repmat(meanInput, length(subset), 1);
+      elseif c3
+        if size(N.Input(inputID).meanInput(subset), 1) ~= number
+          error('vertex:InputModel:initInput', ...
+           'Not enough input current means specified for number in group');
+        end
+        if N.numCompartments > 1
+          meanInput = bsxfun(@times, ...
+            N.Input(inputID).meanInput(subset), IM.membraneAreaRatio);
+        else
+          meanInput = N.Input(inputID).meanInput(subset);
+        end
+        IM.I_input = meanInput;
+      elseif c4
+        if size(N.Input(inputID).meanInput(subset), 1) ~= number
+          error('vertex:InputModel:initInput', ...
+           'Not enough input current means specified for number in group');
+        end
+        if N.numCompartments > 1
+          meanInput = N.Input(inputID).meanInput(subset, :);
+        else
+          error('vertex:InputModel:initInput', ...
+           'Multiple input values specified for single compartment model');
+        end
+        IM.I_input = meanInput;
+      else
+        error('vertex:InputModel:initInput', ...
+           'Mean input vector has size < 1');
+      end
+    end
+    
+    function IM = updateCurrent(IM, ~)
+    end
+    
+    function I_input = get.I_input(IM)
+      I_input = IM.I_input;
+    end
+    
+  end % methods
+  
+  methods(Static)
+    function params = getRequiredParams()
+      params = {'meanInput'};
+    end
+  end
+end % classdef
+##### SOURCE END #####
+--></body></html>
