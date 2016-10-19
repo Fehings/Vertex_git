@@ -5,16 +5,12 @@ function [ activation ] = getExtracellularInput(TP, StimParams, t)
 
 if isa(TP.StimulationField, 'pde.StationaryResults')
     F = TP.StimulationField;
-    1
 elseif isa(TP.StimulationField, 'pde.TimeDependentResults')
     F = TP.StimulationField;
-    2
 else
     F = pdeInterpolant(TP.StimulationField{1},TP.StimulationField{2},TP.StimulationField{3});
-    3
 end
 
-F
 
 activation = cell(TP.numGroups,1);
 

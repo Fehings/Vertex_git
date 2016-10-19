@@ -78,7 +78,7 @@ if SS.ef_stimulation
     end
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
-    StimParams.activation = getExtracellularInput(TP, StimParams);
+    StimParams.activation = getExtracellularInput(TP, StimParams,0);
 end
 
 %if we are applying an focussed ultrasound
@@ -104,8 +104,7 @@ end
 for simStep = 1:simulationSteps % for each simulation step
     
   for iGroup = 1:TP.numGroups % for each group
-    
-    
+     
     [NeuronModel, SynModel, InModel] = ...
       groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup,StimParams,simStep);
         % This is the main part of the code, where in a per group manner the

@@ -11,7 +11,7 @@ function [ sigma ] = activationfunction( point1,point2, stimfieldtri,t )
         EPpoint2 = interpolateSolution(stimfieldtri, point2);
         EPpoint1d = interpolateSolution(stimfieldtri, point1d);
         EPpoint2d = interpolateSolution(stimfieldtri, point2d);
-    elseif isa(stimfieldtri,'pde.StationaryResults')
+    elseif isa(stimfieldtri,'pde.TimeDependentResults')
           EPpoint1 = interpolateSolution(stimfieldtri, point1,t);
         EPpoint2 = interpolateSolution(stimfieldtri, point2,t);
         EPpoint1d = interpolateSolution(stimfieldtri, point1d,t);
