@@ -23,7 +23,7 @@ end
 disp(model.IsTimeDependent)
 
 
-specifyCoefficients(model,'m',0, 'd',0, 'c',1, 'a',0, 'f',0);
+specifyCoefficients(model,'m',0, 'd',0, 'c',0.2, 'a',0, 'f',0);
 
 
 disp(model.IsTimeDependent)
