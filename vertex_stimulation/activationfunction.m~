@@ -26,9 +26,9 @@ function [ sigma ] = activationfunction( point1,point2, stimfieldtri,t )
     % Multiplying the EPpoints by 1000 to convert the units from V to mV to
     % match the units Vertex uses, as the pde toolbox generated field should be in SI units:
     
-    delta_u_point1 = (EPpoint1*1000 - EPpoint1d*1000)./delta;
+    delta_u_point1 = (EPpoint1*1000 - EPpoint1d*1)./delta;
 
-    delta_u_point2 = (EPpoint2*1000 - EPpoint2d*1000)./delta;
+    delta_u_point2 = (EPpoint2 - EPpoint2d)./delta;
 
     sigma = (delta_u_point1 - delta_u_point2);
 

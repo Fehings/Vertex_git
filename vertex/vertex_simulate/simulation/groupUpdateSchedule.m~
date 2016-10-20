@@ -48,7 +48,7 @@ if ~isempty(InModel)
                 %Capacitance_mean1=mean(NP(iGroup).C_m)
                 %Now upate the input, which is the dCmVm value calculates in updateCapacitance 
                 updateInput(InModel{iGroup, iIn});%,StimParams.FusParams(iGroup).fusparams);
-               
+                max_Vm=max(max((NeuronModel{iGroup}.v)));
             else
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup});    
             end
