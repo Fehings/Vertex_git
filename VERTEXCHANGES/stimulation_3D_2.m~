@@ -19,7 +19,7 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are
-TissueParams.StimulationField = invitroSliceStim('chrismodelmod9.stl',flag); % slicecutoutsmallnew
+TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl'); % chrismodelmod9
 %%
 % However, we need to set the number of layers to 3 and make sure we set
 % the layer boundaries to create a 200 micron thick layer 3, a 300 micron
@@ -213,13 +213,43 @@ NeuronParams(6) = NeuronParams(2); % Basket cells in layer 5
 NeuronParams(6).somaLayer = 3; 
 NeuronParams(6).modelProportion = 0.02;
 
-%%
+%% Stimuli
+
+% providing all neurons with background current input - taken from the
+% VERTEX website tutorials:
+
+NeuronParams(1).Input(1).inputType = 'i_ou';
+NeuronParams(1).Input(1).meanInput = 330;
+NeuronParams(1).Input(1).stdInput = 80;
+NeuronParams(1).Input(1).tau = 2;
+NeuronParams(2).Input(1).inputType = 'i_ou';
+NeuronParams(2).Input(1).meanInput = 200;
+NeuronParams(2).Input(1).stdInput = 20;
+NeuronParams(2).Input(1).tau = 1;
+NeuronParams(3).Input(1).inputType = 'i_ou';
+NeuronParams(3).Input(1).meanInput = 230;
+NeuronParams(3).Input(1).stdInput = 30;
+NeuronParams(3).Input(1).tau = 2;
+NeuronParams(4).Input(1).inputType = 'i_ou';
+NeuronParams(4).Input(1).meanInput = 200;
+NeuronParams(4).Input(1).stdInput = 20;
+NeuronParams(4).Input(1).tau = 1;
+NeuronParams(5).Input(1).inputType = 'i_ou';
+NeuronParams(5).Input(1).meanInput = 830;
+NeuronParams(5).Input(1).stdInput = 160;
+NeuronParams(5).Input(1).tau = 2;
+NeuronParams(6).Input(1).inputType = 'i_ou';
+NeuronParams(6).Input(1).meanInput = 200;
+NeuronParams(6).Input(1).stdInput = 20;
+NeuronParams(6).Input(1).tau = 1;
+
+
 % The neurons to be affected by the field need to be given an i_efield input type:
 
 for i = 1:length(NeuronParams)
-    NeuronParams(i).Input(1).inputType = 'i_efield';
-    NeuronParams(i).Input(1).timeOn = 1;
-    NeuronParams(i).Input(1).timeOff = 100;
+    NeuronParams(i).Input(2).inputType = 'i_efield';
+    NeuronParams(i).Input(2).timeOn = 1;
+    NeuronParams(i).Input(2).timeOff = 100;
 % NeuronParams(1).Input(1).inputType = 'i_ou';
 % NeuronParams(1).Input(1).meanInput = 330;
 % NeuronParams(1).Input(1).stdInput = 90;
@@ -435,7 +465,7 @@ plotvmscatter_stimtutorial
 % 100 ms to 500 ms, so that spikes in the initial model population spike are not
 % counted.
 
-firingRates = groupRates(Results, 100, 500);
+firingRates = groupRates(Results, 10, 50);
 %%
 % If you have experienced any problems when trying to run this tutorial,
 % or if you have any suggestions for improvements, please email Richard
