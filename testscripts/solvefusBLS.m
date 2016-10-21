@@ -9,8 +9,8 @@ t=tstep:tstep:tend;
 % set up the solution vector
 y=zeros(length(y0),length(t));
 y(:,1)=y0;
-figure
-hold on
+% figure
+% hold on
 for i=t
 
     dy=fusBLS_hh(i,tstep,y(:,count)); % dy represents dy/dt
@@ -32,6 +32,6 @@ for i=t
     count=count+1;
     
 end
-hold off
+% hold off
 
 end

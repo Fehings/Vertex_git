@@ -21,16 +21,15 @@ tstep=1e-8;
 
 % set the number of timesteps:
 %tspan=0:tstep:10;
-tend=6e-4;%6e-6;%0.04
+tend=1e-5;
 
  % radius of the leaflet's boundary
-z=0.1e-9; % m
-Cm0=0.01;  % cell membrane capacity at rest in F/m^2 , (1 microF/cm^2)
+z=0.05e-9; % m
+Cm0=0.01;  % cell membrane capacity at rest
 delta = 1.26e-9; % m
 a = 32e-9; % radius of the leaflet's boundary 32nm, converted to metres.
 
-Cm =((Cm0*delta)/a^2).*(z+(((a^2)-(z.^2)-(z*delta))./(2*z)).*log((2*z+delta)./delta));
-
+Cm =(Cm0*delta/a^2.*(z+(((a^2)-(z.^2)-(z*delta))./(2*z)).*log((2*z+delta)./delta)));
 
 
 %y=cell(5,time);
@@ -45,10 +44,7 @@ y(6)=0; %hh.n;
 y(7)=0; %hh.m;
 y(8)=1; %hh.h;
 y(9)=0; %hh.p;
-y(10)=500000000; %Pa; 100kPa
-
-
-
+y(10)=1000000; %Pa; 100kPa
 %y=y';
 %size(y)
 
@@ -75,11 +71,6 @@ legend('v')
 figure
 plot(t,y(3,1:length(t)),'m')
 legend('z')
-figure
-w=2*pi*0.5e6;
-plot(t,y(10).*sin(w*t),'g')
-legend('Ultrasound pressure')
-
 % figure
 % plot(t,y(4,1:length(t)),'c')
 % legend('n_a')
