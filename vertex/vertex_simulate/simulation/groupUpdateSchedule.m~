@@ -29,15 +29,14 @@ if ~isempty(InModel)
                 % here, which will increase up to the length of the time
                 % dimension, then reset to 1. 
                 
-%                 if simStep==1 
-%                 % initialise count variable on the first
-%                 %iteration of the loop.
-%                   NeuronModel{iGroup}.count=0;
-%                 end
-%                 NeuronModel{iGroup}.count=NeuronModel{iGroup}.count+1;
-%                 if NeuronModel{iGroup}.count==length(StimParams.activation{iGroup},2)+1 % check this dimension... needs to refer to the time dimension
-%                   NeuronModel{iGroup}.count=1;
-%                 end
+                %if simStep==1  % initialise count variable on the first
+                %%iteration of the loop.
+                %   count=1
+                %end
+                %count=count+1
+                %if count==length(StimParams.activation{iGroup},2)+1
+                %   count=1
+                %end
                 
                 
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup}, StimParams.activation{iGroup});

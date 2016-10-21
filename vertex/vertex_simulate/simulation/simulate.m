@@ -78,8 +78,7 @@ if SS.ef_stimulation
     end
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
-    StimParams.activation = getExtracellularInput(TP, StimParams,0)
-    size(StimParams.activation)
+    StimParams.activation = getExtracellularInput(TP, StimParams,0);
 end
 
 %if we are applying an focussed ultrasound
