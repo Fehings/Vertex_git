@@ -1,0 +1,176 @@
+%% VERTEX TUTORIAL 8
+% In this tutorial we will use VERTEX's neuronDynamics() function to
+% investigate the dynamics of individual neuron models prior to network
+% simulation. This function simulates the dynamics of a single neuron in
+% response to input from one of VERTEX's input current/conductance types so
+% that you can check the neuron model's response to this input.
+
+%% Neuron parameters
+% As in previous tutorials, we will use the adaptive exponential (AdEx)
+% model (Brette & Gerstner 2005), this time with one dendritic compartment.
+
+NeuronParams(1).neuronModel = 'hh2';
+NeuronParams(1).v_cutoff = -10;
+NeuronParams(1).g_l = 3;
+NeuronParams(1).somaLayer = 1;
+
+NeuronParams(1).ca_channels = {'Channel_Ca_HVA'};
+%NeuronParams(1).channels = {'Channel_Na' 'Channel_NaTa_t' 'Channel_Nap_Et2' 'Channel_K_Pst' 'Channel_K_Tst' 'Channel_SKv3_1'};
+NeuronParams(1).numCompartments =8;
+NeuronParams(1).compartmentParentArr = [0, 1, 2, 2, 4, 1, 6, 6];
+NeuronParams(1).compartmentLengthArr = [13 48 124 145 137 40 143 143];
+NeuronParams(1).compartmentDiameterArr = ...
+  [29.8, 3.75, 1.91, 2.81, 2.69, 2.62, 1.69, 1.69];
+NeuronParams(1).compartmentXPositionMat = ...
+[   0,    0;
+    0,    0;
+    0,  124;
+    0,    0;
+    0,    0;
+    0,    0;
+    0, -139;
+    0,  139];
+NeuronParams(1).compartmentYPositionMat = ...
+[   0,    0;
+    0,    0;
+    0,    0;
+    0,    0;
+    0,    0;
+    0,    0;
+    0,    0;
+    0,    0];
+NeuronParams(1).compartmentZPositionMat = ...
+[ -13,    0;
+    0,   48;
+   48,   48;
+   48,  193;
+  193,  330;
+  -13,  -53;
+  -53, -139;
+  -53, -139];
+NeuronParams(1).axisAligned = 'z';
+NeuronParams(1).C = 3;
+NeuronParams(1).R_M = 20000/2.96;
+NeuronParams(1).R_A = 500;
+NeuronParams(1).E_leak = -70;
+NeuronParams(1).E_Na = 110-70;
+NeuronParams(1).E_K = -12-70;
+NeuronParams(1).somaID = 1;
+NeuronParams(1).basalID = [6, 7, 8];
+NeuronParams(1).apicalID = [2 3 4 5];
+NeuronParams(1).ref = 20;
+
+
+
+% NeuronParams(1).modelProportion = 0.184;
+% NeuronParams(1).somaLayer = 1;
+% NeuronParams(1).axisAligned = '';
+% NeuronParams(1).neuronModel = 'adex';
+% NeuronParams(1).V_t = -55;
+% NeuronParams(1).delta_t = 2.2;
+% NeuronParams(1).a = 0.04;
+% NeuronParams(1).tau_w = 75;
+% NeuronParams(1).b = 300;
+% NeuronParams(1).v_reset = -62;
+% NeuronParams(1).v_cutoff = -53;
+% NeuronParams(1).numCompartments = 7;
+% NeuronParams(1).compartmentParentArr = [0 1 2 2 1 5 5];
+% NeuronParams(1).compartmentLengthArr = [10 56 151 151 56 151 151];
+% NeuronParams(1).compartmentDiameterArr = ...
+%   [24 1.93 1.15 1.95 1.93 1.95 1.95];
+% NeuronParams(1).compartmentXPositionMat = ...
+% [   0,    0
+%     0,    0;
+%     0,  107;
+%     0, -107;
+%     0,    0;
+%     0, -107;
+%     0,  107];
+% NeuronParams(1).compartmentYPositionMat = ...
+% [   0,    0;
+%     0,    0;
+%     0,    0;
+%     0,    0;
+%     0,    0;
+%     0,    0;
+%     0,    0];
+% NeuronParams(1).compartmentZPositionMat = ...
+% [ -10,    0;
+%     0,   56;
+%    56,  163;
+%    56,  163;
+%   -10,  -66;
+%   -66, -173;
+%   -66, -173];
+% NeuronParams(1).C = 1.0*2.93;
+% NeuronParams(1).R_M = 15000/2.93;
+% NeuronParams(1).R_A = 150;
+% NeuronParams(1).E_leak = -70;
+% NeuronParams(1).dendritesID = [2 3 4 5 6 7];
+
+%%
+% We will use a step current input to test out the dynamics of this neuron
+% model. The parameters of the step current are amplitude in picoAmps,
+% timeOn - the time the current is switched on in ms, and timeOff - the
+% time the current is switched off in ms. Here we use an array for the
+% amplitude parameter. neuronDynamics simulates one neuron per input value
+% so that multiple input values can be tested simultaneously.
+
+NeuronParams(1).Input(1).inputType = 'i_step';
+NeuronParams(1).Input(1).amplitude = [7000];
+NeuronParams(1).Input(1).timeOn = 2;
+NeuronParams(1).Input(1).timeOff = 50;
+NeuronParams(1).Input(1).compartmentsInput = [1];
+
+%% Extra parameters
+% We need to create another parameter struct to tell neuronDynamics the
+% simulation time step to use and how long to run the simulation for:
+
+SimulationParams.timeStep = 0.005;
+SimulationParams.simulationTime = 50;
+
+%% Run the simulation
+% We are now ready to run the simulation...
+[v_m, I_input,NM,InMod,Nparams,spikes, cai] = neuronDynamicsconductancebased(NeuronParams(1), SimulationParams);
+
+
+%% Plot the results;
+% ... and plot the results. Note that v_m and I_input are 3-dimensional
+% matrices. The first dimension holds the individual neurons, the second
+% dimension the neuron compartments, and the third dimension the
+% samplesbover time. So to plot the soma membrane potentials of all the
+% neurons, we can do:
+
+step = SimulationParams.timeStep;
+time = step:step:SimulationParams.simulationTime;
+figure();
+plot(time, squeeze(v_m(:,1,:))', 'linewidth', 2);
+set(gca, 'FontSize', 16);
+title('Tutorial 8: neuronDynamics()', 'FontSize', 16)
+ylabel('Membrane potential (mV)', 'FontSize', 16)
+xlabel('Time (ms)', 'FontSize', 16)
+%axis([0 SimulationParams.simulationTime -1000 -40]);
+set(gcf, 'color', 'w');
+%%
+% To plot the dendrite (2nd) compartment membrane potentials of neurons 1:3
+% along with the soma input currents, we can do:
+% figure(2);
+% subplot(211);
+% plot(time, squeeze(v_m(1:2,2,:))', 'linewidth', 2);
+% set(gca, 'FontSize', 16);
+% title('Tutorial 8: neuronDynamics()', 'FontSize', 16)
+% ylabel('Membrane potential (mV)', 'FontSize', 16)
+% xlabel('Time (ms)', 'FontSize', 16)
+% axis([0 SimulationParams.simulationTime -85 -40]);
+% 
+% subplot(212);
+% plot(time, squeeze(I_input(1:2,1,:))', 'linewidth', 2);
+% set(gca, 'FontSize', 16);
+% ylabel('Input current (pA)', 'FontSize', 16)
+% axis([0 SimulationParams.simulationTime -10 380]);
+% set(gcf, 'color', 'w');
+
+%%
+% If you have experienced any problems when trying to run this tutorial,
+% or if you have any suggestions for improvements, please email Richard
+% Tomsett: r _at_ autap _dot_ se
