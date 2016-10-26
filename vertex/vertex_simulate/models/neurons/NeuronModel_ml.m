@@ -59,6 +59,7 @@ classdef NeuronModel_ml < NeuronModel
       NM.w(unstable(:,1)) = NM.W_inf(N.E_leak, N);
       
       NM.spikes = NM.v(:,1) > N.v_cutoff & NM.canfire;
+      
       %if the neuron had gone into inactive depolarised state
       % and its membrane potential has dropped below threshold, 
       % then it becomes active again.

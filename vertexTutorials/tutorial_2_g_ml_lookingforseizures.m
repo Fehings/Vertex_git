@@ -126,8 +126,8 @@ NeuronParams(1).apicalID = [2 3 4 5];
 % reversal potential).
 
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 100;
-NeuronParams(1).Input(1).stdInput = 30;
+NeuronParams(1).Input(1).meanInput = 50;
+NeuronParams(1).Input(1).stdInput =50;
 NeuronParams(1).Input(1).tau = 2;
 
 %%
@@ -143,11 +143,11 @@ NeuronParams(2).axisAligned = '';
 NeuronParams(2).neuronModel = 'ML';
 
 NeuronParams(2).v_cutoff = 0;
-NeuronParams(2).V1 = -1;
+NeuronParams(2).V1 = -1.2;
 NeuronParams(2).V2 = 18;
-NeuronParams(2).V3 = 18;
-NeuronParams(2).V4 = 17.4;
-NeuronParams(2).phi = 0.5;
+NeuronParams(2).V3 = 2;
+NeuronParams(2).V4 = 30;
+NeuronParams(2).phi = 0.23;
 NeuronParams(2).T0 = 0.08;
 NeuronParams(2).g_l = 0.8;
 NeuronParams(2).g_Ca = 4.4;
@@ -189,9 +189,9 @@ NeuronParams(2).R_A = 150;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 0;
+NeuronParams(2).Input(1).meanInput = 20;
 NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 3;
+NeuronParams(2).Input(1).stdInput = 10;
 
 
 %% Connectivity parameters
@@ -223,7 +223,7 @@ ConnectionParams(1).tau{1} = 1;
 %being no depression and small values being strong depression.
 %Depressing
 ConnectionParams(1).facilitation{1} = 0;
-ConnectionParams(1).depression{1} = 0.8;
+ConnectionParams(1).depression{1} = 1;
 ConnectionParams(1).tD{1} = 670;
 ConnectionParams(1).tF{1} = 17;
 %%
@@ -233,7 +233,7 @@ ConnectionParams(1).tF{1} = 17;
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
 ConnectionParams(1).synapseType{2} = 'g_stp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(1).weights{2} = 0.5;
+ConnectionParams(1).weights{2} = 0.9;
 ConnectionParams(1).tau{2} = 1;
 %Depressing
 ConnectionParams(1).facilitation{2} = 0;
@@ -262,7 +262,7 @@ ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
 ConnectionParams(2).weights{1} = 0.4;
 ConnectionParams(2).tau{1} = 6;
 %Facilitating
-ConnectionParams(2).facilitation{1} = 1;
+ConnectionParams(2).facilitation{1} = 0;
 ConnectionParams(2).depression{1} = 1;
 ConnectionParams(2).tD{1} = 710;
 ConnectionParams(2).tF{1} = 23;
@@ -310,7 +310,7 @@ RecordingSettings.v_m = 250:25:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 500;
+SimulationSettings.simulationTime = 1000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
