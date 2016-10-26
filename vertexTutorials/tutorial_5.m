@@ -10,7 +10,7 @@
 TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 650;
-TissueParams.neuronDensity = 25000;
+TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
@@ -390,7 +390,7 @@ RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 50;
+SimulationSettings.simulationTime = 100;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 

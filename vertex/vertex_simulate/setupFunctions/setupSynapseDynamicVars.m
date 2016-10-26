@@ -1,4 +1,4 @@
-function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS)
+function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS,connections)
 
 paramsMapCell = cell(TP.numGroups,1);
 synMapCell = cell(TP.numGroups,1);
@@ -74,7 +74,7 @@ else
         preID = paramsMapCell{iPost}(iSynType);
         constructor = constructorCell{iPost, iSynType};
         SynapseModelArr{iPost, iSynType} = ...  
-          constructor(NP(iPost),CP(preID),SS,iPost,numInGroup(iPost));
+          constructor(NP(iPost),CP(preID),SS,iPost,numInGroup(iPost),numInGroup(preID));
       else
         SynapseModelArr{iPost, iSynType} = [];
       end

@@ -15,7 +15,7 @@ classdef SynapseModel_g_exp < SynapseModel
   
   methods
     function SM = SynapseModel_g_exp(Neuron, CP, SimulationSettings, ...
-                                     postID, number)
+                                     postID, number,~)
       SM = SM@SynapseModel(Neuron, number);
       SM.E_reversal = CP.E_reversal{postID};
       SM.tau = CP.tau{postID};
@@ -44,6 +44,7 @@ classdef SynapseModel_g_exp < SynapseModel
     end
     
     function SM = updateSynapses(SM, NM, dt)
+        
       % update synaptic currents
       SM.I_syn = SM.g_exp .* (NM.v() - SM.E_reversal);
       
@@ -54,9 +55,11 @@ classdef SynapseModel_g_exp < SynapseModel
       SM.g_exp = SM.g_exp + dt .* kg;
     end
     
+    
     function SM = bufferIncomingSpikes(SM, synIndeces, weightsToAdd)
       SM.g_expEventBuffer(synIndeces) = ...
                             SM.g_expEventBuffer(synIndeces) + weightsToAdd;
+      
     end
     
     function SM = randomInit(SM, g_mean, g_std)

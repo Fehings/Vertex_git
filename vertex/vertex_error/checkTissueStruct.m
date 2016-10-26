@@ -93,3 +93,8 @@ elseif ~isequal(size(TP.maxZOverlap(:)), [2, 1])
             'two values (for above and below model space)'];
   error('vertex:checkTissueStruct:maxZOverlapDimensions', errMsg);
 end
+%% Stimulation field
+if ~isfield(TP, 'StimulationField')
+    disp('No stimulation field specified, setting to null');
+    TP.StimulationField = {};
+end
