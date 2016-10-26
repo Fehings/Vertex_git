@@ -21,6 +21,7 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
+TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl');
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
@@ -41,13 +42,12 @@ NeuronParams(1).somaLayer = 1;
 % control the model dynamics:
 
 NeuronParams(1).neuronModel = 'ML';
-
-    NeuronParams(1).v_cutoff = 30;
+NeuronParams(1).v_cutoff = 10;
     NeuronParams(1).V1 = 1.2;
     NeuronParams(1).V2 = 18;
-    NeuronParams(1).V3 = 12;
+    NeuronParams(1).V3 = 2;
     NeuronParams(1).V4 = 17.4;
-    NeuronParams(1).phi = 0.5;
+    NeuronParams(1).phi = 0.05;
     NeuronParams(1).T0 = 0.08;
     NeuronParams(1).g_l = 2;
     NeuronParams(1).g_Ca = 20;
@@ -126,8 +126,8 @@ NeuronParams(1).apicalID = [2 3 4 5];
 % reversal potential).
 
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 50;
-NeuronParams(1).Input(1).stdInput =50;
+NeuronParams(1).Input(1).meanInput = 350;
+NeuronParams(1).Input(1).stdInput =200;
 NeuronParams(1).Input(1).tau = 2;
 
 %%
@@ -143,17 +143,17 @@ NeuronParams(2).axisAligned = '';
 NeuronParams(2).neuronModel = 'ML';
 
 NeuronParams(2).v_cutoff = 0;
-NeuronParams(2).V1 = -1.2;
-NeuronParams(2).V2 = 18;
-NeuronParams(2).V3 = 2;
-NeuronParams(2).V4 = 30;
-NeuronParams(2).phi = 0.23;
-NeuronParams(2).T0 = 0.08;
-NeuronParams(2).g_l = 0.8;
-NeuronParams(2).g_Ca = 4.4;
-NeuronParams(2).g_K = 20;
-NeuronParams(2).Ca_leak = 60;
-NeuronParams(2).K_leak = -84;
+    NeuronParams(2).V1 = 1.2;
+    NeuronParams(2).V2 = 18;
+    NeuronParams(2).V3 = 12;
+    NeuronParams(2).V4 = 17.4;
+    NeuronParams(2).phi = 0.2;
+    NeuronParams(2).T0 = 0.08;
+    NeuronParams(2).g_l = 2;
+    NeuronParams(2).g_Ca = 20;
+    NeuronParams(2).g_K = 18;
+    NeuronParams(2).Ca_leak = 60;
+    NeuronParams(2).K_leak = -84;
 NeuronParams(2).numCompartments = 7;
 NeuronParams(2).compartmentParentArr = [0 1 2 2 1 5 5];
 NeuronParams(2).compartmentLengthArr = [10 56 151 151 56 151 151];
@@ -184,15 +184,20 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173;
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
-NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 150;
+NeuronParams(2).R_M = 20000/2.93;
+NeuronParams(2).R_A = 500;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 20;
+NeuronParams(2).Input(1).meanInput = 120;
 NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 10;
+NeuronParams(2).Input(1).stdInput = 50;
 
+for i = 1:length(NeuronParams)
+    NeuronParams(i).Input(2).inputType = 'i_efield';
+    NeuronParams(i).Input(2).timeOn = 100;
+    NeuronParams(i).Input(2).timeOff = 110;
+end
 
 %% Connectivity parameters
 % We set the connectivity parameters in the same way as in tutorial 1, but
@@ -310,9 +315,11 @@ RecordingSettings.v_m = 250:25:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 1000;
+SimulationSettings.simulationTime = 5000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
+SimulationSettings.ef_stimulation = true;
+SimulationSettings.fu_stimulation = false;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by

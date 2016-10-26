@@ -1,11 +1,13 @@
 %% VERTEX TUTORIAL 2
-% In the previous tutorial we looked at a network of 5000 layer 2/3
-% pyramidal cells, connected to each other and firing randomly. In this
-% tutorial, we will create a more interesting model containing excitatory
+% In this
+% tutorial, we will create a  model containing excitatory
 % and inhibitory neurons with intrinsic spiking dynamics. We will stimulate
 % the neurons using random input currents, resulting in the generation of a
-% network oscillation.
-% 
+% network oscillation. We will then demonstrate the use of synapse with a
+% form of short term plasticity, as implemented in Brody et al 2013. Both
+% facilitation and depression can be incorporated with different time
+% constants for each. 
+
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
@@ -193,29 +195,54 @@ NeuronParams(2).Input(1).stdInput = 200;
 % two groups. First we set the parameters for connections from group 1 (the
 % pyramidal cells) to itself:
 
-PYScaler = 0.1;
-INScaler = 1;
+
 % 
-% 
+%Connections from the pyramidal (excitatory) cells to pyramidal cells
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'g_stp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
- ConnectionParams(1).weights{1} = 1*PYScaler;
+%Base synaptic weight                                         
+ConnectionParams(1).weights{1} = 0.1;
 ConnectionParams(1).tau{1} = 1;
-ConnectionParams(1).facilitation{1} = 0.05;
-ConnectionParams(1).depression{1} = 0.1;
+
+%Here we specify the parameters for the plasticity,
+%facilitation is a unitless parameter with no direct biological correlate that
+%indicates the rate at which facilitation occurs. It should be a value
+%between 0 and 1, at 0 there will be no facilitation at 1 strong
+%facilitation. The depression value should also be between 1 and greater than 0 with 1
+%being no depression and small values being strong depression. 
+%The synaptic plasticity implemented here is based on the paper:
+%Brody, M., & Korngreen, A. (2013).
+%Simulating the effects of short-term synaptic plasticity on postsynaptic dynamics in the globus pallidus.
+%Frontiers in Systems Neuroscience, 7(August), 40. http://doi.org/10.3389/fnsys.2013.00040
+
+%We initially set the values for facilitation and depression to be 0 and 1,
+%indicating no synaptic plasticity. Try increasing the value of
+%facilitation to values between 0 and 1 to investigate its effect. 
+%Try doing the same with the depression. 
+ConnectionParams(1).facilitation{1} = 0;
+ConnectionParams(1).depression{1} = 1;
+
+%These are the time constants for the plasticity variables of these
+%synapses.
+%These are biologically measureable values, taken from the dataset at: https://bbp.epfl.ch/nmc-portal/welcome
+%They are representative of the synapses between pyramidal cells and large
+%basket cells of the rat somatosensory cortex. 
 ConnectionParams(1).tD{1} = 670;
 ConnectionParams(1).tF{1} = 17;
 % 
 % 
+%Connections between pyramidal cells (excitatory) and interneurons 
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 600;
 ConnectionParams(1).synapseType{2} = 'g_stp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(1).weights{2} = 1.5*PYScaler;
+ConnectionParams(1).weights{2} = 0.15;
 ConnectionParams(1).tau{2} = 1;
-ConnectionParams(1).facilitation{2} = 0.2;
-ConnectionParams(1).depression{2} = 0.01;
+
+%Plasticity for connections between 
+ConnectionParams(1).facilitation{2} = 0;
+ConnectionParams(1).depression{2} = 1;
 ConnectionParams(1).tD{2} = 670;
 ConnectionParams(1).tF{2} = 17;
 % 
@@ -230,23 +257,25 @@ ConnectionParams(1).E_reversal{2} = -0;
 % 
 % 
 % %GABA_B synapses
+% Connections between interneurons (inhibitory) and pyramidal cells
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'g_stp';
 ConnectionParams(2).targetCompartments{1} = [NeuronParams(1).somaID];
-ConnectionParams(2).weights{1} = 1*INScaler;
+ConnectionParams(2).weights{1} = 1;
 ConnectionParams(2).tau{1} = 3;
-ConnectionParams(2).facilitation{1} = 0.01;
-ConnectionParams(2).depression{1} = 0.001;
+ConnectionParams(2).facilitation{1} = 0;
+ConnectionParams(2).depression{1} = 1;
 ConnectionParams(2).tD{1} = 510;
 ConnectionParams(2).tF{1} = 180;
 
+% Connections between interneurons (inhibitory) and interneurons cells
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
 ConnectionParams(2).synapseType{2} = 'g_stp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(2).weights{2} = 1.5*INScaler;
+ConnectionParams(2).weights{2} = 1.5;
 ConnectionParams(2).tau{2} = 6;
-ConnectionParams(2).facilitation{2} = 0.01;
-ConnectionParams(2).depression{2} = 0.01;
+ConnectionParams(2).facilitation{2} = 0;
+ConnectionParams(2).depression{2} = 1;
 ConnectionParams(2).tD{2} = 510;
 ConnectionParams(2).tF{2} = 180;
 % 
@@ -285,8 +314,11 @@ RecordingSettings.v_m = 1:5:5000;
 RecordingSettings.maxRecTime = 600;
 RecordingSettings.sampleRate = 5000;
 
+%These flags say whether electrical or focussed ultrasound stimulation are
+%to be used.
 SimulationSettings.ef_stimulation = false;
 SimulationSettings.fu_stimulation = false;
+
 SimulationSettings.maxDelaySteps = 80;
 SimulationSettings.simulationTime = 300;
 SimulationSettings.timeStep = 0.025125;
@@ -324,7 +356,7 @@ close all;
 %%
 % Using these parameters, we obtain the following figure:
 
-    rasterFigure = plotSpikeRasterPosition(Results, rasterParams);
+rasterFigure = plotSpikeRaster(Results, rasterParams);
 
 %%
 % We can add some further fields to the parameter structure for enhanced
@@ -335,12 +367,12 @@ close all;
 % a new figure window will be opened.
 
 rasterParams.groupBoundaryLines = [0.7, 0.7, 0.7];
-rasterParams.title = 'Tutorial 2 Spike Raster';
+rasterParams.title = 'Short term plasticity tutorial Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
 rasterParams.figureID = 2;
 
-rasterFigureImproved = plotSpikeRasterPosition(Results, rasterParams);
+rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 %%
 % The spike raster shows a gamma oscillation occurring in the population

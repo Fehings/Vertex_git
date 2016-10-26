@@ -222,7 +222,7 @@ ConnectionParams(1).tau{1} = 1;
 %being no depression and small values being strong depression.
 %Depressing
 ConnectionParams(1).facilitation{1} = 0;
-ConnectionParams(1).depression{1} = 0.8;
+ConnectionParams(1).depression{1} = 1;
 ConnectionParams(1).tD{1} = 670;
 ConnectionParams(1).tF{1} = 17;
 %%
@@ -236,7 +236,7 @@ ConnectionParams(1).weights{2} = 0.3;
 ConnectionParams(1).tau{2} = 1;
 %Depressing
 ConnectionParams(1).facilitation{2} = 0;
-ConnectionParams(1).depression{2} = 0.2;
+ConnectionParams(1).depression{2} = 1;
 
 
 ConnectionParams(1).tD{2} =510;
@@ -261,7 +261,7 @@ ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
 ConnectionParams(2).weights{1} = 0.4;
 ConnectionParams(2).tau{1} = 6;
 %Facilitating
-ConnectionParams(2).facilitation{1} = 1;
+ConnectionParams(2).facilitation{1} = 0;
 ConnectionParams(2).depression{1} = 1;
 ConnectionParams(2).tD{1} = 710;
 ConnectionParams(2).tF{1} = 23;
