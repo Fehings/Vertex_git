@@ -47,23 +47,25 @@ classdef InputModel_i_efield < InputModel
         IM.meanInput = IM.meanInput(subset, :);
       end
       IM.count = 1; % initialise count
-      if N.Input(inputID).timeOn <= 0
-          IM.stepOn = 1;
-      else
-          IM.stepOn = round(N.Input(InputID).timeOn/timeStep);
+%       if N.Input(inputID).timeOn <= 0
+%           IM.stepOn = 1;
+%       else
+%           IM.stepOn = round(N.Input(InputID).timeOn/timeStep);
+%       end
+%       IM.stepOff = round(N.Inupt(inputID).timeOff / timeStep);  
+%       IM.I_input = IM.I_input .* 0;
       end
-      IM.stepOff = round(N.Inupt(inputID).timeOff / timeStep);  
-      IM.I_input = IM.I_input .* 0;
-    end
     
     
     function IM = updateInput(IM,~,activation)
         
         
-        if isequal(IM.timeDependence,'rand')
+        if isa(IM.timeDependence,'rand')
             %multiply activation by a random number
-            activation = activation.*randn(1);
-        elseif isequal(IM.timeDependence,'oscil')
+            activation = activation.*rwgn(1,1,0); 
+            2
+            % multiply by a random number generated via matlab's random white gaussian noise function.
+        elseif isa(IM.timeDependence,'oscil')
             %in this case the activation matrix should have an extra time
             %dimension that will need to be stepped through, need to figure
             %this out.

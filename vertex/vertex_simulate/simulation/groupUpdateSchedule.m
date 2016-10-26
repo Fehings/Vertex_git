@@ -23,6 +23,7 @@ if ~isempty(InModel)
             %effect at each compartment
             if isa(InModel{iGroup, iIn}, 'InputModel_i_efield')
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup}, StimParams.activation{iGroup});
+                
             %if it is an electric input pass it the effect/field strength at
             %each compartment. 
             elseif isa(InModel{iGroup, iIn}, 'InputModel_i_focusedultrasound')
