@@ -17,11 +17,7 @@ classdef InputModel_i_efield < InputModel
   %   The current is weighted by compartment membrane area.
   
   properties (SetAccess = private)
-    count
     meanInput
-    timeDependence
-    stepOn
-    stepOff
   end
   
   methods

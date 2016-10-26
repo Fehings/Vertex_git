@@ -24,14 +24,11 @@ if ~isempty(InModel)
             if isa(InModel{iGroup, iIn}, 'InputModel_i_efield')
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup}, StimParams.activation{iGroup});
             %if it is an electric input pass it the effect/field strength at
-            %each compartment. If during this function fusBLS is called
-            %then I also need to pass in the capacitance, membrane
-            %potentials and the parameters which need to be initialised
-            %outside of this loop.
+            %each compartment. 
             elseif isa(InModel{iGroup, iIn}, 'InputModel_i_focusedultrasound')
                 %find parameters for ultrasound and calculate capacitance
                 updateCapacitance(InModel{iGroup, iIn},NeuronModel{iGroup}.v, StimParams.ultrasound{iGroup},simStep);
-                
+            
                 %Capacitance_print=unique(NP(iGroup).C)
                 
                 
