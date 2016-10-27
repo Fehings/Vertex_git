@@ -1,4 +1,4 @@
-classdef InputModel_i_step < InputModel % inherits from InputModel class
+classdef InputModel_i_step < InputModel
   %InputModel_i_step Step input current
   %   Parameters to set in NeuronParams.Input:
   %   - amplitude, the step current amplitude (in pA). This can either be a
@@ -26,24 +26,22 @@ classdef InputModel_i_step < InputModel % inherits from InputModel class
   methods
     function IM = InputModel_i_step(N, inputID, number, timeStep, compartmentsInput, subset)
       %narginchk(4, 6)
-      if nargin == 4 % if compartmentsInput is not specified, define it here.
-          % N is presumably neuron pop. info and number the number of
-          % neurons in the population?
+      if nargin == 4
         compartmentsInput = 1:N.numCompartments;
         subset = 1:number;
-      elseif nargin == 5 % if subset not specified define here
+      elseif nargin == 5
         subset = 1:number;
       end
-      N.Input(inputID).meanInput = N.Input(inputID).amplitude; % set the mean input to equal the amplitude passed to the object? 
+      N.Input(inputID).meanInput = N.Input(inputID).amplitude;
       IM = IM@InputModel(N, inputID, number, compartmentsInput, subset);
       IM = setupStepCurrent(IM, N, inputID, timeStep, subset);
-    end % IM is the output of this method, it calls setupStepCurrent, defined next.
+    end
     
     function IM = setupStepCurrent(IM, N, inputID, timeStep, subset)
-      mi = N.Input(inputID).amplitude(:);% mi is assigned the amplitude input values
-      IM.meanInput = bsxfun(@times, mi, IM.membraneAreaRatio);% elementwise multiplication of mi by IM.membraneAreaRatio
+      mi = N.Input(inputID).amplitude(:);
+      IM.meanInput = bsxfun(@times, mi, IM.membraneAreaRatio);
       if size(IM.meanInput, 1) > 1
-        IM.meanInput = IM.meanInput(subset, :); 
+        IM.meanInput = IM.meanInput(subset, :);
       end
       IM.count = 1;
       if N.Input.timeOn <= 0
@@ -53,11 +51,11 @@ classdef InputModel_i_step < InputModel % inherits from InputModel class
       end
       IM.stepOff = round(N.Input.timeOff / timeStep);
       IM.I_input = IM.I_input .* 0;
-    end % IM is the output of this method, and seems to be a 
+    end
     
     function IM = updateInput(IM, ~)
       if IM.count == IM.stepOn
-        IM.I_input = bsxfun(@plus, IM.I_input, IM.meanInput);% add the meanInput values to the current input current values, if stim is on (stepon is true) 
+        IM.I_input = bsxfun(@plus, IM.I_input, IM.meanInput);
       elseif IM.count == IM.stepOff
         IM.I_input = IM.I_input .* 0;
       end
@@ -73,7 +71,7 @@ classdef InputModel_i_step < InputModel % inherits from InputModel class
   methods(Static)
     function params = getRequiredParams()
       params = {'amplitude', 'timeOn', 'timeOff'};
-    end % parameters to be attached to this object 
+    end
   end
   
 end % classdef

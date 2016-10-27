@@ -166,6 +166,7 @@ for iSaves = 1:numSaves
     
     loadedData = load(fName);
     ff = fields(loadedData);
+    
     RecordingVars = loadedData.(ff{1});
     
     % Load

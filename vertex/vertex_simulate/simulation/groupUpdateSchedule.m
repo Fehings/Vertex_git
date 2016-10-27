@@ -1,6 +1,5 @@
 function [NeuronModel, SynModel, InModel] = ...
-  groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup, StimParams,simStep)
-
+  groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup, StimParams)
 
 % update synaptic conductances/currents according to buffers
 for iSyn = 1:size(SynModel, 2)
@@ -22,58 +21,11 @@ if ~isempty(InModel)
             %if it is an electric field input pass it the electric field
             %effect at each compartment
             if isa(InModel{iGroup, iIn}, 'InputModel_i_efield')
-                
-                % for periodic stimulation, where activation will
-                % potentially have a time dimension the length of one cycle
-                % of the periodic stimulation, include some kind of count
-                % here, which will increase up to the length of the time
-                % dimension, then reset to 1. 
-                
-%                 if simStep==1 
-%                 % initialise count variable on the first
-%                 %iteration of the loop.
-%                   NeuronModel{iGroup}.count=0;
-%                 end
-%                 NeuronModel{iGroup}.count=NeuronModel{iGroup}.count+1;
-%                 if NeuronModel{iGroup}.count==length(StimParams.activation{iGroup},2)+1 % check this dimension... needs to refer to the time dimension
-%                   NeuronModel{iGroup}.count=1;
-%                 end
-                
-                
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup}, StimParams.activation{iGroup});
-            %if it is an electric input pass it the effect/field strength at
-            %each compartment. If during this function fusBLS is called
-            %then I also need to pass in the capacitance, membrane
-            %potentials and the parameters which need to be initialised
-            %outside of this loop.
+            %if it is an focused ultrasound input pass it the effect/field strength at
+            %each compartment
             elseif isa(InModel{iGroup, iIn}, 'InputModel_i_focusedultrasound')
-                
-                % for periodic stimulation, where activation will
-                % potentially have a time dimension the length of one cycle
-                % of the periodic stimulation, include some kind of count
-                % here:
-                
-                
-                %find parameters for ultrasound and calculate capacitance
-                updateCapacitance(InModel{iGroup, iIn},NeuronModel{iGroup}.v, StimParams.ultrasound{iGroup},simStep);
-                
-                %Capacitance_print=unique(NP(iGroup).C)
-                
-                
-                %update the main capacitance values
-                NP(iGroup).C=InModel{iGroup,iIn}.C;
-                l = NP(iGroup).compartmentLengthArr .* 10^-4;
-                d = NP(iGroup).compartmentDiameterArr .* 10^-4;
-                
-                for compNo=1:size(NP(iGroup).C,2)
-                NP(iGroup).C_m = ...
-                 NP(iGroup).C(:,compNo) .* pi .* l(compNo) .* d(compNo) .* 10^6; % taken from the 
-                %calculatePassiveProperties script for converting capacitance into the appropriate units.
-                end
-                %Capacitance_mean1=mean(NP(iGroup).C_m)
-                %Now upate the input, which is the dCmVm value calculates in updateCapacitance 
-                updateInput(InModel{iGroup, iIn});%,StimParams.FusParams(iGroup).fusparams);
-               
+                updateInput(InModel{iGroup, iIn},NeuronModel{iGroup}, StimParams.ultrasound{iGroup});
             else
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup});    
             end

@@ -40,7 +40,7 @@ else
   ns = nsaves;
 end
 % set field inputs
-stimulation =  isfield(TP,'StimulationField');
+stimulation =  SS.ef_stimulation || SS.fu_stimulation;
 disp(['Stimulation field: ' num2str(stimulation)]);
 
 compartments = TP.compartmentlocations;
