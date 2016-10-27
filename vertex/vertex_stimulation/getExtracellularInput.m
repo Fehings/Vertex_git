@@ -11,6 +11,7 @@ else
     F = pdeInterpolant(TP.StimulationField{1},TP.StimulationField{2},TP.StimulationField{3});
 end
 
+
 activation = cell(TP.numGroups,1);
 
 
