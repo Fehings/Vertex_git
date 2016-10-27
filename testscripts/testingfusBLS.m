@@ -21,7 +21,9 @@ tstep=1e-8;
 
 % set the number of timesteps:
 %tspan=0:tstep:10;
-tend=6e-4;%6e-6;%0.04
+tend=1e-3;%6e-6;%0.04
+
+
 
  % radius of the leaflet's boundary
 z=0.1e-9; % m
@@ -38,14 +40,13 @@ Cm =((Cm0*delta)/a^2).*(z+(((a^2)-(z.^2)-(z*delta))./(2*z)).*log((2*z+delta)./de
 y(1)=Cm;%2.96; % Capacitance
 y(2)=0; % params.v;
 y(3)=z; % params.z;
-%y(4)=10^5; % params.P_in;
 y(4)= 1.5769e-22; %params.n_a (P0*pi*a^2*delta)/(Rg*Tem) in metres.
 y(5)=Vm; % volts
 y(6)=0; %hh.n;
 y(7)=0; %hh.m;
 y(8)=1; %hh.h;
 y(9)=0; %hh.p;
-y(10)=500000000; %Pa; 100kPa
+y(10)=0; %1000000; %Pa; 100kPa
 
 
 

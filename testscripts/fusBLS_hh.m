@@ -123,7 +123,7 @@ if z>zmin % should this be zero, or just above?
 elseif z<-zmin
     
     P=-P_in-P_M-P_ec+P0-Pa*sin(w*time)-P_s;
-    dv=((1e-9./(rho.*(R))).*(P-((4./R).*abs(v).*((3*mus*d0./R)+mu))))-(3./(2.*R)).*abs(v).^2;
+    dv=((1./(rho.*(R))).*(P-((4./R).*abs(v).*((3*mus*d0./R)+mu))))-(3./(2.*R)).*abs(v).^2;
     dz=v;
     
 elseif abs(z)<=zmin

@@ -9,15 +9,8 @@ tIntSize = 'uint16';
 groupComparts = [NP.numCompartments];
 
 numInGroup = diff(TP.groupBoundaryIDArr);
-% diff calculates differences between adjacent elements of
-% TP.groupBoundaryIDArr, which I think contains the first and last neuron
-% IDs for each layer (or is it neuron type?).
 neuronInGroup = ...
   createGroupsFromBoundaries(TP.groupBoundaryIDArr);
-% the above function call created NeuronInGroup which is an array the
-% length of the number of neurons, and for each neuron gives a number
-% representing the group (layer) they are in, so 1 for the first layer, 2
-% for the second, etc.
 bufferLength = SS.maxDelaySteps;
 comCount = SS.minDelaySteps;
 % vars to keep track of where we are in recording buffers:
@@ -28,24 +21,15 @@ spikeRecCounter = 1;
 % vars to keep track of spikes
 S.spikes = zeros(TP.N * SS.minDelaySteps, 1, nIntSize);
 S.spikeStep = zeros(TP.N * SS.minDelaySteps, 1, tIntSize);
-% TP.N is the numberof neurons, so the above two arrays are the min number
-% of delay steps per neuron in size.
 S.spikeCount = zeros(1, 1, nIntSize);
 
 numSaves = 1;
 if nargin == 13
   nsaves = 0;
 end
-% in the runSimulation script (as per the official DL) there are 13
-% arguments for simulate and nsaves is missed, so this if statement is
-% true.
-
+disp(SynModel)
 simulationSteps = round(SS.simulationTime / SS.timeStep);
-% the SS values are both floats, so this will create one integer
-% representing the number of time steps.
 
-% this next bit checks whether there are preset spikes to be loaded, and if
-% there are it loads them and creates a filename from the input directory.
 if isfield(SS,'spikeLoad')
   S.spikeLoad = SS.spikeLoad;
 else
@@ -64,22 +48,31 @@ end
 
 recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
-stimulation =  isfield(TP,'StimulationField'); % added in update, check if TP has StimulationField set as part of it's structure
-disp(['Stimulation field: ' num2str(stimulation)]); % print out whether there is a StimulationField with binary response (1=True)
+recordFac_syn = RecVar.recordFac_syn;
+stimulation =  isfield(TP,'StimulationField');
+if ~stimulation
+    SS.ef_stimulation = false;
+    SS.fu_stimulation = false;
+end
+%disp(['Stimulation field: ' num2str(stimulation)]);
 
-%StimParams = {}; % initialise StimParams (new in update)
+StimParams = {};
 %if we are applying an electric field stimulus
 if SS.ef_stimulation
     % get compartments locations in suitable vectorised form
-    for iGroup = 1:TP.numGroups % step through for each neuron group
+    for iGroup = 1:TP.numGroups
         [StimParams.compartmentlocations{iGroup,1}, StimParams.compartmentlocations{iGroup,2}] = ...
             convertcompartmentlocations({TP.compartmentlocations{neuronInGroup==iGroup,1}},...
-            {TP.compartmentlocations{neuronInGroup==iGroup,2}},{TP.compartmentlocations{neuronInGroup==iGroup,3}}); 
+            {TP.compartmentlocations{neuronInGroup==iGroup,2}},{TP.compartmentlocations{neuronInGroup==iGroup,3}});
     end
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
-    StimParams.activation = getExtracellularInput(TP, StimParams,0)
-    size(StimParams.activation)
+    disp('Getting extraceluu');
+    StimParams.activation = getExtracellularInput(TP, StimParams,0);
+    disp('Got extraceluu');
+    max(max(StimParams.activation{1}))
+   
+   
 end
 
 %if we are applying an focussed ultrasound
@@ -89,28 +82,26 @@ if SS.fu_stimulation
         [StimParams.compartmentlocations{iGroup,1}, StimParams.compartmentlocations{iGroup,2}] = ...
             convertcompartmentlocations({TP.compartmentlocations{neuronInGroup==iGroup,1}},...
             {TP.compartmentlocations{neuronInGroup==iGroup,2}},{TP.compartmentlocations{neuronInGroup==iGroup,3}});
-        % additionally while in this loop create a matrix of membrane
-        % capacitance values for each group, with a value for each
-        % compartment of each neuron: 
-        NP(iGroup).C=[NP(iGroup).C].*ones(numInGroup(iGroup),[NP(iGroup).numCompartments]);
-        initialiseFusParams(InModel{iGroup},NP(iGroup).C,SS.timeStep);
-   end
+    end
     %Calculate the ultrasound value function for each compartment
     %Can be called on each iteration if the input field is time varying
-    StimParams.ultrasound = getUltraSoundAtCompartments(TP,StimParams);
-
+    StimParams.ultrasound{iGroup} = getUltraSoundAtCompartments(TP);
 end
 
 % simulation loop
-for simStep = 1:simulationSteps % for each simulation step
+%disp(['max: ' num2str(max(StimParams.activation))]);
+
+for simStep = 1:simulationSteps
+  if isa(TP.StimulationField, 'pde.TimeDependentResults')
+    StimParams.activation = getExtracellularInput(TP, StimParams,simStep);
+  end
+
+  for iGroup = 1:TP.numGroups
     
-  for iGroup = 1:TP.numGroups % for each group
-     
+    
     [NeuronModel, SynModel, InModel] = ...
-      groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup,StimParams,simStep);
-        % This is the main part of the code, where in a per group manner the
-    % currents are calculated, see the groupUpdateSchedule function for
-    % more info. Now includes passing StimParams.
+      groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup,StimParams);
+    
     S = addGroupSpikesToSpikeList(NeuronModel,IDMap,S,iGroup,comCount);
     
     % store group-collected recorded variables for membrane potential:
@@ -130,6 +121,10 @@ for simStep = 1:simulationSteps % for each simulation step
       if RS.LFP && NP(iGroup).numCompartments ~= 1
         RecVar = ...
           updateLFPRecording(RS,NeuronModel,RecVar,lineSourceModCell,iGroup,recTimeCounter);
+      end
+      
+      if recordFac_syn
+          RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,recTimeCounter);
       end
       
     end
@@ -205,24 +200,29 @@ for simStep = 1:simulationSteps % for each simulation step
               uint32(1)) .* ...
               uint32(groupComparts(iPostGroup)) .* ...
               uint32(numInGroup(iPostGroup));
-            
-            bufferIncomingSpikes( ...
+            if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stp') 
+                bufferIncomingSpikes( ...
               SynModel{iPostGroup, iSpkSynGroup}, ...
-              ind, wArr{allSpike(iSpk)}(inGroup));
+              ind, wArr{allSpike(iSpk)}(inGroup),allSpike(iSpk), TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+            else
+                bufferIncomingSpikes( ...
+                  SynModel{iPostGroup, iSpkSynGroup}, ...
+                  ind, wArr{allSpike(iSpk)}(inGroup));
+            end
           end
         end
       end
     end
     
-    S.spikeCount = 0; % reset the spike count
-    comCount = SS.minDelaySteps; % so comCount tics down from the delay steps until it reaches 1, and that's when spikes are counted?
+    S.spikeCount = 0;
+    comCount = SS.minDelaySteps;
   else
-    comCount = comCount - 1;% if comCount was not equal to 1, reduce it by 1
+    comCount = comCount - 1;
   end
 
   % write recorded variables to disk
   if mod(simStep * SS.timeStep, 5) == 0
-   disp(num2str(simStep * SS.timeStep)); % this bit prints a count out in steps of 5
+   disp(num2str(simStep * SS.timeStep));
   end
   if simStep == RS.dataWriteSteps(numSaves)
     if spikeRecCounter-1 ~= length(RecVar.spikeRecording)
@@ -252,6 +252,5 @@ end % end of simulation time loop
 if isfield(RS,'LFPoffline') && RS.LFPoffline
   save(outputDirectory, 'LineSourceConsts.mat', lineSourceModCell);
 end
-
 %numSaves = numSaves - 1; % - no longer need this as numSaves is not
 %updated beyond the final scheduled save point

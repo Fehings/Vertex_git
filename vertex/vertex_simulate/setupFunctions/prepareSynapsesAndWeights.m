@@ -14,6 +14,7 @@ end
 
 function [synapseArrMod,weightArr] = prep(CP, SS, synapseArr, neuronInGroup)
 weightArr = cell(size(synapseArr, 1), 1);
+
 synapseArrMod = synapseArr;
 for iN = 1:size(synapseArrMod, 1)
   if ~isempty(synapseArrMod{iN, 1})
@@ -44,3 +45,4 @@ for iN = 1:size(synapseArrMod, 1)
     weightArr{iN, 1}(toDelete) = [];
   end
 end
+
