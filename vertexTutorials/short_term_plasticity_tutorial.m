@@ -1,4 +1,4 @@
-%% VERTEX TUTORIAL 2
+%% VERTEX Short term plasticity tutorial 2
 % In this
 % tutorial, we will create a  model containing excitatory
 % and inhibitory neurons with intrinsic spiking dynamics. We will stimulate

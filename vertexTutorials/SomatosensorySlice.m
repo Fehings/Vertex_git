@@ -1,3 +1,16 @@
+%%
+%Runs a simulation of rat somatosensory cortex constructed using neuron density
+% andconnectivity data from the Neocortical collaborative portal
+%(https://bbp.epfl.ch/nmc-portal/welcome), stored in the connections.mat
+%file.
+%With appropriate input parameters (random input current modelled by the
+%Ornstein–Uhlenbeck process) the slice will produce oscillatory activity. 
+%Neurons are modelled as apaptive exponential integrate and fire neurons,
+%with a parameter set for regular spiking pyramidal cells and fast spiking
+%interneurons.
+%%
+%Tissue parameters describe a slice 2000 x 400 x 1217 microns in size.
+
 TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 1217;
@@ -8,6 +21,8 @@ TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr = [1217, 715, 525, 0];
 %%
+%Calculating neuron proportions. 
+
 totalneurons = 18294;
 % 18294 neurons in 3 layers in volume of 0.29mm^2 
 
@@ -40,9 +55,14 @@ modpropL23LBC = ((L23_LBC) / L23_num_neurons_measured)*L23_neuron_proportion;
 % proportion of BC : 0.2585 of layer 23 : 0.1063 of total
 % 
 
+
+%%
+%Setting Neuron parameters and shapes.
+
 disp(['modelpropL23PC: ' num2str(modpropL23PC)]);
 
-NeuronParams(1).somaLayer = 1; % Pyramidal cells in layer 23
+% Pyramidal cells in layer 23
+NeuronParams(1).somaLayer = 1; 
 NeuronParams(1).modelProportion = modpropL23PC;
 NeuronParams(1).neuronModel = 'adex';
 NeuronParams(1).V_t = -50;
@@ -95,6 +115,7 @@ NeuronParams(1).apicalID = [2 3 4 5];
 
 
 disp(['modelpropL23NBC: ' num2str(modpropL23NBC)]);
+
 %Layer 23
 %Nest Basket Cell
 
@@ -258,7 +279,7 @@ NeuronParams(12).somaLayer = 2;     % but in layer 4
 NeuronParams(12).modelProportion = modpropL4MC;
 
 %Layer 5
-
+%Layer 5 neuron proportion calculations. 
 L5_num_neurons =  6114;
 L5_neuron_proportion = L5_num_neurons/totalneurons;
 L5_TTPC1 = 2403;
@@ -434,6 +455,9 @@ volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/
 volumemultiplier = 1;
 
 %%
+%Connectivity parameters loaded from connections.mat and assinged with the 
+%connectivity parameters. Weights and number of connections loaded from
+%file.
 connections = load('connections.mat');
 ConnectivityNamesnounderscore = {'L23PC','L23NBC','L23LBC','L23SBC','L23MC','L4SS','L4SP','L4PC','L4NBC','L4SBC','L4LBC','L4MC','L5TTPC2','L5TTPC1','L5UTPC','L5STPC','L5LBC','L5SBC','L5NBC','L5MC'};
 
@@ -452,7 +476,7 @@ for i = 1:20
             ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
-        catch 
+        catch %if there is no description in the file then set zero connections
             disp(['No connections between: ' ConnectivityNames{i} '_' ConnectivityNames{j}]); 
             ConnectionParams(i).numConnectionsToAllFromOne{j} = [0,0,0];
             ConnectionParams(i).synapseType{j} = 'g_exp';
@@ -466,7 +490,7 @@ end
 
 %%
 
-%Properties consistent for all groups or setable through already assigned
+%Setting remaining connectivity parameters
 
 
 %Proporties of synapses from layer 23
@@ -572,6 +596,14 @@ for j = 1:20
     ConnectionParams(20).E_reversal{j} = -70;
 end
 
+%%
+%Recording settings
+%These describe which variables to record, we are interested in membrane
+%potentials and local field potentials. 
+%We save the results of the simulation in this folder, they can be loaded
+%at any time after the simulation has finished by loading into memory the
+%Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
+%this.
 RecordingSettings.saveDir = '~/VERTEX_somatosensory_slice_Oscillations/';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1000, 300, 0:100:1200);
@@ -584,15 +616,27 @@ RecordingSettings.maxRecTime = 1500;
 RecordingSettings.sampleRate = 2000;
 %RecordingSettings.I_syn = 1:2:5000;
 
-SimulationSettings.maxDelaySteps = 1000;
-
-SimulationSettings.simulationTime = 500;
+%%
+%Simulation settings:
+%Keep max delay steps at 80, 
+%Simulation time can be varied, it is in milliseconds, currently running
+%for 500 ms.
+%We want to run this simulation in parallel, this means that all cpu cores
+%will be utilised in the simulations, with the neurons being distributed
+%across them, as this simulation is large this is necessary to minimize the
+%run time of the simulation. 
+SimulationSettings.maxDelaySteps = 80;
+SimulationSettings.simulationTime = 5000;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
+%These are flags used for simulating electric field or focussed ultrasound
+%stimulation of the slice, these are currently in development and not used
+%for this project. 
 SimulationSettings.ef_stimulation = false;
 SimulationSettings.fu_stimulation = false;
 
+%This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
               RecordingSettings, SimulationSettings);
@@ -602,12 +646,15 @@ SimulationSettings.fu_stimulation = false;
 runSimulation(params, connections, electrodes);
 
 %%
+%The results of the simulation can be loaded from file.
 RecordingSettings.saveDir = '~/VERTEX_somatosensory_slice_Oscillations/';
 
 Results = loadResults(RecordingSettings.saveDir);
 
+%make sure no figures are open to keep things tidy
 close all;
 %%
+%plot the slice anatomy
 figure
 rasterParams.colors = {'k','m','b','g','r','y','c','k','m','b','g','r','k','k','k','c','m','b','g','r'};
 
@@ -618,6 +665,8 @@ pars.toPlot = 1:5:N;
 plotSomaPositions(Results.params.TissueParams,pars);
 
 %%
+%plot the slice simulation spike raster, each dot represents the time(on the x axis) at
+%which the neuron of a particular id (on the y axis) fired. 
 figure
 rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Spike Raster';
