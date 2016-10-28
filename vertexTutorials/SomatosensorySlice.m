@@ -443,10 +443,10 @@ end
 
 % %For layer 5 Inhibitory cells
 for i = 17:20
-    NeuronParams(6).Input(1).inputType = 'i_ou';
-    NeuronParams(6).Input(1).meanInput = 200;
-    NeuronParams(6).Input(1).stdInput = 20;
-    NeuronParams(6).Input(1).tau = 1;
+    NeuronParams(i).Input(1).inputType = 'i_ou';
+    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).stdInput = 20;
+    NeuronParams(i).Input(1).tau = 1;
 end
 
 
