@@ -21,8 +21,7 @@ if ~isempty(InModel)
             %if it is an electric field input pass it the electric field
             %effect at each compartment
             if isa(InModel{iGroup, iIn}, 'InputModel_i_efield')
-                updateInput(InModel{iGroup, iIn},NeuronModel{iGroup}, StimParams.activation{iGroup});
-<<<<<<< HEAD
+                updateInput(InModel{iGroup, iIn},NP(iGroup).Input(iIn), StimParams.activation{iGroup});
                 
             %if it is an electric input pass it the effect/field strength at
             %each compartment. 
@@ -47,12 +46,10 @@ if ~isempty(InModel)
                 %Now upate the input, which is the dCmVm value calculates in updateCapacitance 
                 updateInput(InModel{iGroup, iIn});%,StimParams.FusParams(iGroup).fusparams);
                
-=======
             %if it is an focused ultrasound input pass it the effect/field strength at
             %each compartment
             elseif isa(InModel{iGroup, iIn}, 'InputModel_i_focusedultrasound')
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup}, StimParams.ultrasound{iGroup});
->>>>>>> master
             else
                 updateInput(InModel{iGroup, iIn},NeuronModel{iGroup});    
             end

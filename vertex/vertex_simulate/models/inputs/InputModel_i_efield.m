@@ -57,20 +57,34 @@ classdef InputModel_i_efield < InputModel
     end
     
     
-    function IM = updateInput(IM,a,activation)
-      IM.meanInput = bsxfun(@times, activation', IM.membraneAreaRatio);
-      
-      if IM.count == IM.stepOn
-        IM.I_input = IM.meanInput;
-        if IM.I_input > 0
-            IM.I_input;
-        end
+    function IM = updateInput(IM,NI,activation)
         
-      elseif IM.count == IM.stepOff
-        IM.I_input = IM.I_input .* 0;
-      end
-      IM.count = IM.count + 1;
+     if isa(NI.timeDependence,'rand')
+            %multiply activation by a random number
+            activation = activation.*rwgn(1,1,0); 
+            2
+            % multiply by a random number generated via matlab's random white gaussian noise function.
         
+     elseif isa(NI.timeDependence,'oscil')
+            %in this case the activation matrix should have an extra time
+            %dimension that will need to be stepped through, need to figure
+            %this out.
+            %activation = activation;
+    
+     else
+            %activation = activation;
+     end
+        
+        
+        IM.meanInput = bsxfun(@times, activation', IM.membraneAreaRatio);
+        
+     if IM.count >= IM.stepOn && IM.count <= IM.stepOff
+            IM.I_input = IM.meanInput;
+     else 
+            IM.I_input = 0;
+     end
+        IM.count = IM.count + 1;
+    
     end
     
     function I = getRecordingVar(IM)
