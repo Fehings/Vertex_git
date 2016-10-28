@@ -44,12 +44,12 @@ classdef InputModel_i_step < InputModel
         IM.meanInput = IM.meanInput(subset, :);
       end
       IM.count = 1;
-      if N.Input.timeOn <= 0
+      if N.Input(inputID).timeOn <= 0
         IM.stepOn  = 1;
       else
-        IM.stepOn  = round(N.Input.timeOn  / timeStep);
+        IM.stepOn  = round(N.Input(inputID).timeOn  / timeStep);
       end
-      IM.stepOff = round(N.Input.timeOff / timeStep);
+      IM.stepOff = round(N.Input(inputID).timeOff / timeStep);
       IM.I_input = IM.I_input .* 0;
     end
     
