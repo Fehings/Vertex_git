@@ -248,7 +248,7 @@ NeuronParams(6).Input(1).tau = 1;
 
 for i = 1:length(NeuronParams)
     NeuronParams(i).Input(2).inputType = 'i_efield';
-    NeuronParams(i).Input(2).timeOn = 1;
+    NeuronParams(i).Input(2).timeOn = 0;
     NeuronParams(i).Input(2).timeOff = 20;
     NeuronParams(i).Input(2).timeDependence = 'rand'; % have 'oscil' as the alternative flag
 % NeuronParams(1).Input(1).inputType = 'i_ou';

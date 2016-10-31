@@ -61,7 +61,6 @@ classdef InputModel_i_efield < InputModel
     
     function IM = updateInput(IM,NI,activation)
         
-        
      if strcmp(NI.timeDependence,'rand')
             %multiply activation by a random number
             activation = activation.*wgn(1,1,0); 
@@ -72,13 +71,11 @@ classdef InputModel_i_efield < InputModel
             %in this case the activation matrix should have an extra time
             %dimension that will need to be stepped through, need to figure
             %this out.
-            max_oscount=size(activation,3); % maximum should be the max number of time dimensions present
-            activation=activation(:,:,IM.oscount);
+            
+            index=1:size(activation,3); % index goes from 1 to the number of time dimensions?
+            activation=activation(:,:,index(IM.count));
             %activation = activation;
-            IM.oscount=IM.oscount + 1;
-            if IM.oscount > max_oscount
-                IM.oscount = 1; % reset oscount when it gets above the max number of time dimensions. 
-            end
+            
     
      else
             %activation = activation;

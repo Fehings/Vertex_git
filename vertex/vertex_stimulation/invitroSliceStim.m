@@ -13,8 +13,8 @@ disp(model.IsTimeDependent)
 %Electrode-tissue boundary
 
 if isequal(geometryloc,'chrismodelmod9.stl') 
-    applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',0.6);
-    applyBoundaryCondition(model,'face',[7,10:13],'h',1.0,'r',-0.6);
+    applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',6000);
+    applyBoundaryCondition(model,'face',[7,10:13],'h',1.0,'r',-6000);
 else % boundaries for the default point stimulation geometry
     applyBoundaryCondition(model,'face',[8,9],'h',1.0,'r',5000.0);
     applyBoundaryCondition(model,'face',[10,11],'h',1.0,'r',-5000.0);
