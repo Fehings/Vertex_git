@@ -8,8 +8,8 @@ for iGroup=1:TP.numGroups
   for iIn = 1:length(NP(iGroup).Input)
     modelName = lower(NP(iGroup).Input(iIn).inputType);
     constructor = str2func(['InputModel_' modelName]);
-    if isfield(NP(iGroup).Input, 'compartments')
-      comparts = NP(iGroup).Input.compartments;
+    if isfield(NP(iGroup).Input(iIn), 'compartments')
+      comparts = NP(iGroup).Input(iIn).compartments;
     else
       comparts = 1:NP(iGroup).numCompartments;
     end
