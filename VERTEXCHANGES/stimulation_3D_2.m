@@ -440,9 +440,10 @@ rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
 rasterParams.figureID = 1;
 %
-%rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
+rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 %%
+figure
 plotvmscatter_stimtutorial
 
 %%
