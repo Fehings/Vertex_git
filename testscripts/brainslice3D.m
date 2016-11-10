@@ -9,8 +9,8 @@ applyBoundaryCondition(model,'face',[1:6,8],'g',0.0,'q',0.0); % the outer model 
 %disp(model.IsTimeDependent)
 
 %Electrode-tissue boundary
-applyBoundaryCondition(model,'face',[7,15:18],'h',1.0,'r',5.0); %the 'r' 5.0 sets up a 5(mv?) voltage here
-applyBoundaryCondition(model,'face',[10:14],'h',1.0,'r',-5.0); %the 'r' -5.0 sets up a -5 (mv?) voltage at this electrode. 
+applyBoundaryCondition(model,'face',[7,8,15:19],'h',1.0,'r',5.0); %the 'r' 5.0 sets up a 5(mv?) voltage here
+applyBoundaryCondition(model,'face',[1,9:14],'h',1.0,'r',-5.0); %the 'r' -5.0 sets up a -5 (mv?) voltage at this electrode. 
 % the two opposing currents set up the electric field. If this can be time
 % varying then this would be potentially how to make tACS and tRNS. From
 % looking throught the documentation, it seems that the way to specify a
