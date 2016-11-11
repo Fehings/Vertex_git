@@ -31,6 +31,7 @@ generateMesh(model);
 disp(model.IsTimeDependent)
 result = solvepde(model);
  u = result.NodalSolution;
+ figure(3)
  pdeplot3D(model,'ColorMapData', u);
 
 end

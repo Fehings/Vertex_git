@@ -61,14 +61,14 @@ classdef InputModel_i_efield < InputModel
     
     function IM = updateInput(IM,NI,activation)
         
-        
-     if strcmp(NI.timeDependence,'rand')
+        if isfield(NI,'timeDependence')
+            
+            if strcmp(NI.timeDependence,'rand')
             %multiply activation by a random number
             activation = activation.*wgn(1,1,0); 
             
             % multiply by a random number generated via matlab's random white gaussian noise function.
-        
-     elseif strcmp(NI.timeDependence,'oscil')
+            elseif strcmp(NI.timeDependence,'oscil')
             %in this case the activation matrix should have an extra time
             %dimension that will need to be stepped through, need to figure
             %this out.
@@ -76,13 +76,14 @@ classdef InputModel_i_efield < InputModel
             activation=activation(:,:,IM.oscount);
             %activation = activation;
             IM.oscount=IM.oscount + 1;
-            if IM.oscount > max_oscount
-                IM.oscount = 1; % reset oscount when it gets above the max number of time dimensions. 
-            end
+                if IM.oscount > max_oscount
+                     IM.oscount = 1; % reset oscount when it gets above the max number of time dimensions. 
+                end
     
-     else
-            %activation = activation;
-     end
+            else
+            activation = activation;
+            end
+        end
         
         
         IM.meanInput = bsxfun(@times, activation', IM.membraneAreaRatio);
