@@ -88,10 +88,14 @@ simulationSteps = round(pars.simulationTime / pars.timeStep);
 v_m = zeros(number, NParams.numCompartments, simulationSteps);
 I = zeros(number, NParams.numCompartments, simulationSteps);
 spikes_rec = zeros(number, simulationSteps);
+
+
+
 for simStep = 1:simulationSteps
   if NParams.numCompartments > 1
     updateI_ax(NeuronModel{1}, NParams);
   end
+  
   updateInput(InputModel{1}, NeuronModel{1});
   updateNeurons(NeuronModel{1}, InputModel, NParams, [], pars.timeStep);
   

@@ -211,8 +211,8 @@ ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
  ConnectionParams(1).weights{1} = 1*PYScaler;
 ConnectionParams(1).tau{1} = 1;
-ConnectionParams(1).facilitation{1} = 0.05;
-ConnectionParams(1).depression{1} = 0.1;
+ConnectionParams(1).facilitation{1} = 0;
+ConnectionParams(1).depression{1} = 1;
 ConnectionParams(1).tD{1} = 670;
 ConnectionParams(1).tF{1} = 17;
 % 
@@ -222,8 +222,8 @@ ConnectionParams(1).synapseType{2} = 'g_stp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(1).weights{2} = 1.5*PYScaler;
 ConnectionParams(1).tau{2} = 1;
-ConnectionParams(1).facilitation{2} = 0.2;
-ConnectionParams(1).depression{2} = 0.01;
+ConnectionParams(1).facilitation{2} = 0;
+ConnectionParams(1).depression{2} = 1;
 ConnectionParams(1).tD{2} = 670;
 ConnectionParams(1).tF{2} = 17;
 % 
@@ -243,8 +243,8 @@ ConnectionParams(2).synapseType{1} = 'g_stp';
 ConnectionParams(2).targetCompartments{1} = [NeuronParams(1).somaID];
 ConnectionParams(2).weights{1} = 1*INScaler;
 ConnectionParams(2).tau{1} = 3;
-ConnectionParams(2).facilitation{1} = 0.1;
-ConnectionParams(2).depression{1} = 0.01;
+ConnectionParams(2).facilitation{1} = 0;
+ConnectionParams(2).depression{1} = 0.5;
 ConnectionParams(2).tD{1} = 510;
 ConnectionParams(2).tF{1} = 180;
 
@@ -253,8 +253,8 @@ ConnectionParams(2).synapseType{2} = 'g_stp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(2).weights{2} = 1*INScaler;
 ConnectionParams(2).tau{2} = 6;
-ConnectionParams(2).facilitation{2} = 0.01;
-ConnectionParams(2).depression{2} = 0.01;
+ConnectionParams(2).facilitation{2} = 0;
+ConnectionParams(2).depression{2} = 1;
 ConnectionParams(2).tD{2} = 510;
 ConnectionParams(2).tF{2} = 180;
 % 
@@ -332,7 +332,7 @@ close all;
 %%
 % Using these parameters, we obtain the following figure:
 
-    rasterFigure = plotSpikeRasterPosition(Results, rasterParams);
+    rasterFigure = plotSpikeRaster(Results, rasterParams);
 
 %%
 % We can add some further fields to the parameter structure for enhanced

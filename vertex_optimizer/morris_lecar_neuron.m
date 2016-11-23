@@ -9,9 +9,9 @@ function [ result ] = morris_lecar_neuron( g_Ca,g_K,g_l, I)
     NeuronParams.V4 = 17.4;
     NeuronParams.phi = 0.5;
     NeuronParams.T0 = 0.08;
-    NeuronParams.g_l = 2;
-    NeuronParams.g_Ca = 6.45;
-    NeuronParams.g_K = 9.23;
+    NeuronParams.g_l = g_l;
+    NeuronParams.g_Ca = g_Ca;
+    NeuronParams.g_K = g_K;
     NeuronParams.Ca_leak = 60;
     NeuronParams.K_leak = -84;
     NeuronParams.v_cutoff = 30;
@@ -67,18 +67,17 @@ NeuronParams.K_leak = -84;
 
     NeuronParams.Input.inputType = 'i_step';
 %     
-%     if I < 0.9
-%         NeuronParams.Input.amplitude = [50];
-%     elseif I < 1.9
-%         NeuronParams.Input.amplitude = [250];
-%     elseif I < 2.9
-%         NeuronParams.Input.amplitude = [2500];
-%     elseif I < 3.9
-%         NeuronParams.Input.amplitude = [4500];
-%     end
-%     
+    if I < 0.9
+        NeuronParams.Input.amplitude = [50];
+    elseif I < 1.9
+        NeuronParams.Input.amplitude = [250];
+    elseif I < 2.9
+        NeuronParams.Input.amplitude = [2500];
+    elseif I < 3.9
+        NeuronParams.Input.amplitude = [4500];
+    end
+    
 
-    NeuronParams.Input.amplitude = [750];
     disp(['Stim amplitude: ' num2str(NeuronParams.Input.amplitude) ' pA']);
     
     NeuronParams.Input.timeOn = 10;

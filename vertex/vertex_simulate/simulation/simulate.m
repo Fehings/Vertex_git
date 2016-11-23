@@ -68,7 +68,7 @@ if SS.ef_stimulation
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
     disp('Getting extraceluu');
-    StimParams.activation = getExtracellularInput(TP, StimParams,0);
+    StimParams.activation = getExtracellularInput(TP, StimParams,0,NeuronModel);
     disp('Got extraceluu');
     max(max(StimParams.activation{1}))
    
@@ -185,12 +185,20 @@ for simStep = 1:simulationSteps
         iSpkSynGroup = synMap{iPostGroup}(neuronInGroup(allSpike(iSpk)));
         if ~isempty(SynModel{iPostGroup, iSpkSynGroup})
           % Adjust time indeces according to circular buffer index
+          % and according the the delay speicifc to the synapse type,
+          % specified by: synArr{allSpike(iSpk), 3}
           tBufferLoc = synArr{allSpike(iSpk), 3} + ...
             SynModel{iPostGroup, iSpkSynGroup}.bufferCount - allSpikeTimes(iSpk);
           tBufferLoc(tBufferLoc > bufferLength) = ...
             tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
           inGroup = postInGroup == iPostGroup;
           if sum(inGroup ~= 0)
+              %creates the index (reduced from 3 dimensions to single
+              %dimension) for the eventbuffer array which holds a position
+              %for each compartment at each time in the buffer for each
+              %post synaptic neuron. The time specified by tBufferLoc
+              %determines the time at which the spike should arrive
+              %(acoording to the synaptic delay and when it was generated).
             ind = ...
               uint32(IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)') + ...
               (uint32(synArr{allSpike(iSpk), 2}(inGroup)) - ...
@@ -201,6 +209,11 @@ for simStep = 1:simulationSteps
               uint32(groupComparts(iPostGroup)) .* ...
               uint32(numInGroup(iPostGroup));
             if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stp') 
+                %synapse model function updates the stp variables and adds
+                %spikes to the buffers.
+                %we pass the id of the presynaptic neuron: allSpike(iSpk)
+                %Synapse model stores stp vars for each pre to post
+                %connection. iSpkSynGroup is the presynaptic group.
                 bufferIncomingSpikes( ...
               SynModel{iPostGroup, iSpkSynGroup}, ...
               ind, wArr{allSpike(iSpk)}(inGroup),allSpike(iSpk), TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));

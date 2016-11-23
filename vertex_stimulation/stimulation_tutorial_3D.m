@@ -19,7 +19,7 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are
-TissueParams.StimulationField = invitroSliceStim('chrismodelmod9.stl'); % slicecutoutsmallnew
+TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl'); % slicecutoutsmallnew
 %%
 % However, we need to set the number of layers to 3 and make sure we set
 % the layer boundaries to create a 200 micron thick layer 3, a 300 micron

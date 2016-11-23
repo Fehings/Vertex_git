@@ -24,7 +24,7 @@ classdef NeuronModel_adex < NeuronModel
     function [NM] = updateNeurons(NM, IM, N, SM, dt)
       I_syn = NeuronModel.sumSynapticCurrents(SM);
       I_input = NeuronModel.sumInputCurrents(IM);
-
+       
       kv = bsxfun(@rdivide, (-bsxfun(@times, N.g_l, (NM.v - N.E_leak)) -...
         I_syn - NM.I_ax + I_input), N.C_m);
       kv(:, 1) = kv(:, 1) + ...

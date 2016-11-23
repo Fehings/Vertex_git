@@ -37,11 +37,6 @@ NeuronParams.E_leak = -70;
 % amplitude parameter. neuronDynamics simulates one neuron per input value
 % so that multiple input values can be tested simultaneously.
 
-NeuronParams.Input.inputType = 'i_step';
-NeuronParams.Input.amplitude = [150; 200; 250; 300; 350];
-NeuronParams.Input.timeOn = 50;
-NeuronParams.Input.timeOff = 350;
-NeuronParams.Input.compartmentsInput = 1;
 
 %% Extra parameters
 % We need to create another parameter struct to tell neuronDynamics the

@@ -2,7 +2,7 @@ function [ result, model ] = invitroSliceStim(geometryloc)
 %invitroSliceStim Loads the gemortry and calculates the 
 model = createpde;
 importGeometry(model,geometryloc);
-
+pdegplot(model,'FaceLabels', 'on')
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
 applyBoundaryCondition(model,'face',1:8,'g',0.0,'q',0.0); % for the

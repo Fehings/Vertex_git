@@ -154,6 +154,6 @@ end
 % during analysis (used by loadResults, as well as useful for tracking
 % simulations). You may want to copy these lines to store each parameter
 % set after every time you call simulate()/simulateParallel().
-parameterCell = {TP, NP, CP, RS, SS};
+parameterCell = {TP, NP, CP, RS, SS,SynapseModelArr};
 fname = [outputDirectory 'parameters.mat'];
 save(fname, 'parameterCell');

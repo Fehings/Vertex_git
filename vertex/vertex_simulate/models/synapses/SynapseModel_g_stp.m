@@ -36,6 +36,7 @@ classdef SynapseModel_g_stp < SynapseModel
 
       SM.F = ones(number_in_pre, 1);
       SM.D = ones(number_in_pre, 1);
+      
       SM.g_expEventBuffer = zeros(number_in_post, numComparts, maxDelaySteps);
       SM.bufferMax = maxDelaySteps;
 
@@ -47,6 +48,7 @@ classdef SynapseModel_g_stp < SynapseModel
 
     
     function SM = updateBuffer(SM)
+         %Extract spike acumulator value at current buffer location
       SM.g_exp = SM.g_exp + SM.g_expEventBuffer(:, :, SM.bufferCount);
           
       SM.g_expEventBuffer(:, :, SM.bufferCount) = 0;
@@ -73,9 +75,17 @@ classdef SynapseModel_g_stp < SynapseModel
 
     function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd, pregroup)
         preInd = preInd-pregroup;
-        
+        %In stp the changes to facilitation and depression depend only on
+        %the presynaptic activity. When this function is called we know
+        %that a spike has been generated in the neurons identified by
+        %preInd which we also know are connected to the 
+        %update the facilitation variable by adding the facilitation rate
         SM.F(preInd) = SM.facilitation + SM.F(preInd);
         SM.D(preInd) = SM.depression * SM.D(preInd);
+        
+        %Add the weights multiplied by the plasticity variables to the
+        %spike accumulator at the postsynaptic neuron (and compartment and
+        %time) determined by synIndeces.
       SM.g_expEventBuffer(synIndeces) = ...
                             SM.g_expEventBuffer(synIndeces) + ((weightsToAdd) .*(SM.F(preInd) * SM.D(preInd)));
       
