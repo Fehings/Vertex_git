@@ -13,6 +13,7 @@ TissueParams.X = 2500;
 TissueParams.Y = 400;
 TissueParams.Z = 200;
 TissueParams.neuronDensity = 25000;
+
 TissueParams.numLayers = 1;
 TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
