@@ -8,19 +8,7 @@ function [ result, model ] = invitroSliceStimAC(geometryloc,dt,stimstrength,B)
 %solution is given at each point in time the overall Vertex model is
 %solving for. stimstrength and B are optional parameters for varying the AC
 %field. 
-%NB: for geometries not already given default locations in the boundaries
-%section below, you will need to identify where the boundary conditions
-%need to be applied first, and then add them to the section below. This can
-%be done by decommenting and running the below section of code for a given geometry.
-
-%% For testing geometries, run this with the 'run section' command, or by pasting to command line.
-
-% model = createpde(); % initialise blank pde model
-% importGeometry(model,'yourgeomhere.stl'); % importing stl geometry from within current path, or give .stl file a full path name. Pass this to 'model'
-% h = pdegplot(model,'FaceLabels','on','FaceAlpha',0.5); % set up plotting parameters and plots geometry to check face labels
-
-
-%%
+%NB: for geometries not already given default locations 
 
 if nargin < 3
       stimstrength = 1; %give a default if stimstrength isn't given as an argument
@@ -39,7 +27,6 @@ applyBoundaryCondition(model,'face',2:5,'g',0.0,'q',0.0); % for the
 %initial point stimulation stl
 
 %Electrode-tissue boundary
-%%
 
 if isequal(geometryloc,'chrismodelmod9.stl') 
     applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',@myrfun); % r value is the input in mv. This is what to vary to change field strenght
