@@ -19,6 +19,8 @@ h = pdegplot(model,'FaceLabels','on','FaceAlpha',0.5); % set up plotting paramet
 % applyBoundaryCondition(model,'face',6,'h',1.0,'r',@myrfun); %Dirichlet boundary condition, the 'r' 5.0 sets up a 5(mv?) voltage here
 % applyBoundaryCondition(model,'face',1,'h',1.0,'r',@myrfun2); %the 'r' -5.0 sets up a -5 (mv?) voltage at this electrode. 
 
+B=1; % B is the value which changes the oscillation period. Setting it as 1 for default so the period will be 2*pi.
+tlist=0:0.2:(2*pi)/abs(B); % extract solutions for one period of the sine wave. 
 
 
     applyBoundaryCondition(model,'face',[3:6],'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond?
@@ -38,7 +40,10 @@ h = pdegplot(model,'FaceLabels','on','FaceAlpha',0.5); % set up plotting paramet
 % the coefficients modify the equation being solved. I think m and d being
 % zero makes this time independent. 
 specifyCoefficients(model,'m',0, 'd',1, 'c',0.2, 'a',0, 'f',0);
-generateMesh(model);tlist=0:0.2:10;
+generateMesh(model);
+
+
+
 %% Set initial conditions
 % % this is necessary for a time dependent model
  if model.IsTimeDependent
@@ -138,14 +143,15 @@ end
 % 
 % 
 
-function bcMatrix = myrfun(~,state)
 
-bcMatrix = sin(state.time);
+function bcMatrix = myrfun(~,state) 
+
+bcMatrix = sin(1*state.time); %multiply state.time by the value set to B
 
 end
 
 function bcMatrix = myrfun2(~,state)
 
-bcMatrix = -sin(state.time);
+bcMatrix = -sin(1*state.time); %multiply state.time by the value set to B
 
 end
