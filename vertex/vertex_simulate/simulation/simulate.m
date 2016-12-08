@@ -68,11 +68,14 @@ if SS.ef_stimulation
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
     disp('Getting extraceluu');
-    %t=1:size(TP.StimulationField.NodalSolution,2);
-    t=1;
-    StimParams.activation = getExtracellularInput(TP, StimParams,t);
+    t=1:size(TP.StimulationField.NodalSolution,2);
+    StimParams.activation = getExtracellularInput(TP, StimParams,t); 
+    if isa(TP.StimulationField, 'pde.TimeDependentResults')
+        StimParams.activationAll = StimParams.activation; % calling this activationAll as it contains time dimension. This means StimParams.activation can be overwritten further down without losing the full results.
+        count=1; %initialise a counter variable.
+    end
     disp('Got extraceluu');
-    max(max(StimParams.activation{1}));
+   % max(max(StimParams.activation{1}));
    
    
 end
@@ -96,7 +99,15 @@ end
 for simStep = 1:simulationSteps
     
   if isa(TP.StimulationField, 'pde.TimeDependentResults')
-    StimParams.activation = getExtracellularInput(TP, StimParams,simStep);
+      for i=1:TP.numGroups
+           StimParams.activation{i} = StimParams.activationAll{i}(:,count);
+      end
+    count = count+1;
+    if count > length(t)
+        count = 1; % reset if getting to the end of the time steps.
+        %NB: this will work so long as the pde was solved for the right
+        %ntimesteps... so may well need some fixing as it is now!
+    end
   elseif isfield(NP.Input,'timeDependence')
        StimParams.trns = wgn(1,1,0); % set a value for multipling the stimulation field by at each timestep for tRNS.
        % could also set a count here for the tACS.
