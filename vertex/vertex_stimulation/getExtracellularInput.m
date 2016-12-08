@@ -21,11 +21,18 @@ for iGroup = 1:TP.numGroups
 
     
     numcompartments = length(point1.x(:,1));
-
-    for iComp = 1:numcompartments
-        activation{iGroup}(iComp,:) = activationfunction([point1.x(iComp,:);point1.z(iComp,:);point1.y(iComp,:)] ,...
-            [point2.x(iComp,:); point2.z(iComp,:);point2.y(iComp,:)],...
-           F,t);
+    if isa(TP.StimulationField, 'pde.TimeDependentResults')
+        for iComp = 1:numcompartments
+            activation{iGroup}(iComp,:,:) = activationfunction([point1.x(iComp,:);point1.z(iComp,:);point1.y(iComp,:)] ,...
+                [point2.x(iComp,:); point2.z(iComp,:);point2.y(iComp,:)],...
+            F,t);
+        end
+    else
+         for iComp = 1:numcompartments
+            activation{iGroup}(iComp,:) = activationfunction([point1.x(iComp,:);point1.z(iComp,:);point1.y(iComp,:)] ,...
+                [point2.x(iComp,:); point2.z(iComp,:);point2.y(iComp,:)],...
+            F,t);
+         end
     end
 end
 
