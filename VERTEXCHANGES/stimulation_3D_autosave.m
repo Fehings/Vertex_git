@@ -24,7 +24,8 @@ TissueParams.maxZOverlap = [-1 , -1];
 
 modstl = 'sidesidestim2.stl';
 
-[TissueParams.StimulationField,model] = invitroSliceStimAC('sidesidestim2.stl');%,stimstrength); % slicecutoutsmallnew chrismodelmod9
+[TissueParams.StimulationField,model] = invitroSliceStimAC('sidesidestim2.stl');%,stimstrength); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
+
 %%
 % However, we need to set the number of layers to 3 and make sure we set
 % the layer boundaries to create a 200 micron thick layer 3, a 300 micron
@@ -449,7 +450,11 @@ Results = loadResults(RecordingSettings.saveDir);
 
 plotvmscatter_stimtutorial_alt_PY
 hold on
-pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
+if isa(TP.StimulationField, 'pde.TimeDependentResults')
+    pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
+else
+    pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
+end
 
 %%
 hold off

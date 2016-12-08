@@ -1,10 +1,10 @@
 model = createpde(); % initialise blank pde model
-importGeometry(model,'topbottomstim4.stl'); % importing stl geometry from within current path, or give .stl file a full path name. Pass this to 'model'
+importGeometry(model,'sidesidestim2.stl'); % importing stl geometry from within current path, or give .stl file a full path name. Pass this to 'model'
 h = pdegplot(model,'FaceLabels','on','FaceAlpha',0.5); % set up plotting parameters and plots geometry to check face labels
 
 %% Apply boundary conditions
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',2:5,'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond? 
+% applyBoundaryCondition(model,'face',2:5,'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond? 
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
 %disp(model.IsTimeDependent)
 
@@ -16,8 +16,16 @@ applyBoundaryCondition(model,'face',2:5,'g',0.0,'q',0.0); % the outer model boun
 %Electrode-tissue boundary
 %applyBoundaryCondition(model,'face',[7,8,15:19],'h',1.0,'r',@myrfun); %Dirichlet boundary condition, the 'r' 5.0 sets up a 5(mv?) voltage here
 %applyBoundaryCondition(model,'face',[1,9:14],'h',1.0,'r',@myrfun2); %the 'r' -5.0 sets up a -5 (mv?) voltage at this electrode. 
-applyBoundaryCondition(model,'face',6,'h',1.0,'r',@myrfun); %Dirichlet boundary condition, the 'r' 5.0 sets up a 5(mv?) voltage here
-applyBoundaryCondition(model,'face',1,'h',1.0,'r',@myrfun2); %the 'r' -5.0 sets up a -5 (mv?) voltage at this electrode. 
+% applyBoundaryCondition(model,'face',6,'h',1.0,'r',@myrfun); %Dirichlet boundary condition, the 'r' 5.0 sets up a 5(mv?) voltage here
+% applyBoundaryCondition(model,'face',1,'h',1.0,'r',@myrfun2); %the 'r' -5.0 sets up a -5 (mv?) voltage at this electrode. 
+
+
+
+    applyBoundaryCondition(model,'face',[3:6],'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond?
+    applyBoundaryCondition(model,'face',[7,8,15:19],'h',1.0,'r',@myrfun); %the 'r' 5.0 sets up a 5(mv?) voltage here
+    applyBoundaryCondition(model,'face',[1,2,9:14],'h',1.0,'r',@myrfun2);
+
+
 
 % the two opposing currents set up the electric field. If this can be time
 % varying then this would be potentially how to make tACS and tRNS. From
@@ -71,20 +79,21 @@ end
  if model.IsTimeDependent
      V = interpolateSolution(result,X,Y,Z,1:length(tlist));
      Vr = reshape(V,[size(X),length(tlist)]);
-     for i = 1:length(tlist)
-         figure %(i+length(tlist))
-         colormap jet
-         contourslice(X,Y,Z,squeeze(Vr(:,:,:,i)),[],[],0:10:500)
-         xlabel('x')
-         ylabel('y')
-         zlabel('z')
-         caxis([-0.06,0.06])
-         colorbar
-         axis equal
-         view(0,90)
-         %view(-50,22)
-         Fv(i)=getframe(gcf);
-     end
+       contourslice(X,Y,Z,squeeze(Vr(:,:,:,length(tlist))),[],[],0:10:500)
+%      for i = 1:length(tlist)
+%          figure %(i+length(tlist))
+%          colormap jet
+%          contourslice(X,Y,Z,squeeze(Vr(:,:,:,i)),[],[],0:10:500)
+%          xlabel('x')
+%          ylabel('y')
+%          zlabel('z')
+%          caxis([-0.06,0.06])
+%          colorbar
+%          axis equal
+%          view(0,90)
+%          %view(-50,22)
+%          Fv(i)=getframe(gcf);
+%      end
  else
      V = interpolateSolution(result,X,Y,Z);
      Vr = reshape(V,size(X));
