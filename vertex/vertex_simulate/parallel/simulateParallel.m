@@ -67,7 +67,7 @@ spmd
    
         %Calculate the activation function for each compartment
         %Can be called on each iteration if the input field is time varying
-        StimParams.activation = getExtracellularInput(TP, StimParams);
+        StimParams.activation = getExtracellularInput(TP, StimParams,0);
         
     end
 
@@ -82,7 +82,7 @@ spmd
         end
         %Calculate the ultrasound value function for each compartment
         %Can be called on each iteration if the input field is time varying
-        StimParams.ultrasound = getUltraSoundAtCompartments(TP, StimParams);
+        StimParams.ultrasound = getUltraSoundAtCompartments(TP, StimParams,0);
     end
        
    

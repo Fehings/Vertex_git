@@ -68,11 +68,9 @@ if SS.ef_stimulation
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
     disp('Getting extraceluu');
-    %t=1:size(TP.StimulationField.NodalSolution,2);
-    t=1;
-    StimParams.activation = getExtracellularInput(TP, StimParams,t);
+    StimParams.activation = getExtracellularInput(TP, StimParams,51);
     disp('Got extraceluu');
-    max(max(StimParams.activation{1}));
+    max(max(StimParams.activation{1}))
    
    
 end
