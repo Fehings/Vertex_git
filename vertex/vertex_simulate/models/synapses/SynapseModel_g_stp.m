@@ -32,11 +32,19 @@ classdef SynapseModel_g_stp < SynapseModel
       SM.bufferCount = 1;
       maxDelaySteps = SimulationSettings.maxDelaySteps;
       numComparts = Neuron.numCompartments;
+      %for each connection a conductance value for each neuron is stored. 
+      %the weight of this is summed from all synapses onto the particular
+      %compartment of the neuron for a particular group.
       SM.g_exp = zeros(number_in_post, numComparts);
-
+      
+      %STP is only dependent only on the firing of the presynaptic neuron
+      %so we to store the facilitation and depression modifiers for only
+      %the presynaptic neurons in each object.
       SM.F = ones(number_in_pre, 1);
       SM.D = ones(number_in_pre, 1);
       
+      %for each connection group an event buffer stores the spike accumulation at
+      %each compartment for each time step of each post synaptic neuron. 
       SM.g_expEventBuffer = zeros(number_in_post, numComparts, maxDelaySteps);
       SM.bufferMax = maxDelaySteps;
 
@@ -48,7 +56,7 @@ classdef SynapseModel_g_stp < SynapseModel
 
     
     function SM = updateBuffer(SM)
-         %Extract spike acumulator value at current buffer location
+        %Extract spike acumulator value at current buffer location
       SM.g_exp = SM.g_exp + SM.g_expEventBuffer(:, :, SM.bufferCount);
           
       SM.g_expEventBuffer(:, :, SM.bufferCount) = 0;
@@ -75,10 +83,12 @@ classdef SynapseModel_g_stp < SynapseModel
 
     function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd, pregroup)
         preInd = preInd-pregroup;
+        
         %In stp the changes to facilitation and depression depend only on
         %the presynaptic activity. When this function is called we know
         %that a spike has been generated in the neurons identified by
-        %preInd which we also know are connected to the 
+        %preInd, an index then made relative to each synapse group by
+        %subtracting the presynaptic group boundary.
         %update the facilitation variable by adding the facilitation rate
         SM.F(preInd) = SM.facilitation + SM.F(preInd);
         SM.D(preInd) = SM.depression * SM.D(preInd);

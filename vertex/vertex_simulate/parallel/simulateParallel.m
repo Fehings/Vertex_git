@@ -67,7 +67,7 @@ spmd
    
         %Calculate the activation function for each compartment
         %Can be called on each iteration if the input field is time varying
-        StimParams.activation = getExtracellularInput(TP, StimParams);
+        StimParams.activation = getExtracellularInput(TP, StimParams,1,NeuronModel,NP);
         
     end
 
@@ -119,8 +119,8 @@ spmd
 
   for simStep = 1:simulationSteps
     for iGroup = 1:TP.numGroups
-        if stimulation
-            
+        if SS.ef_stimulation  
+          
           ingroupinlab = subsetInLab(neuronInGroup(subsetInLab)==iGroup);
 
           [NeuronModel, SynModel, InModel] = ...
@@ -214,32 +214,42 @@ spmd
       % Go through spikes and insert events into relevant buffers
       % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
       for iSpk = 1:length(allSpike)
-        % Get which groups the targets are in
-        postInGroup = neuronInGroup(synArr{allSpike(iSpk), 1});
-        for iPostGroup = 1:TP.numGroups
-          iSpkSynGroup = synMap{iPostGroup}(neuronInGroup(allSpike(iSpk)));
-          if ~isempty(SynModel{iPostGroup, iSpkSynGroup})
-            tBufferLoc = synArr{allSpike(iSpk), 3} + ...
-              SynModel{iPostGroup, iSpkSynGroup}.bufferCount - allSpikeTimes(iSpk);
-            tBufferLoc(tBufferLoc > bufferLength) = ...
-              tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
-            inGroup = postInGroup == iPostGroup;
-            if sum(inGroup ~= 0)
-              ind = ...
-                uint32(IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)') + ...
-                (uint32(synArr{allSpike(iSpk), 2}(inGroup)) - ...
-                uint32(1)) .* ...
-                uint32(numInGroup(iPostGroup, labindex())) + ...
-                (uint32(tBufferLoc(inGroup)) - ...
-                uint32(1)) .* ...
-                uint32(groupComparts(iPostGroup)) .* ...
-                uint32(numInGroup(iPostGroup, labindex()));
-              
-              bufferIncomingSpikes(SynModel{iPostGroup, iSpkSynGroup}, ind, ...
-                wArr{allSpike(iSpk)}(inGroup));
-            end
+          % Get which groups the targets are in
+          postInGroup = neuronInGroup(synArr{allSpike(iSpk), 1});
+          for iPostGroup = 1:TP.numGroups
+              iSpkSynGroup = synMap{iPostGroup}(neuronInGroup(allSpike(iSpk)));
+              if ~isempty(SynModel{iPostGroup, iSpkSynGroup})
+                  tBufferLoc = synArr{allSpike(iSpk), 3} + ...
+                      SynModel{iPostGroup, iSpkSynGroup}.bufferCount - allSpikeTimes(iSpk);
+                  tBufferLoc(tBufferLoc > bufferLength) = ...
+                      tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
+                  inGroup = postInGroup == iPostGroup;
+                  if sum(inGroup ~= 0)
+                      ind = ...
+                          uint32(IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)') + ...
+                          (uint32(synArr{allSpike(iSpk), 2}(inGroup)) - ...
+                          uint32(1)) .* ...
+                          uint32(numInGroup(iPostGroup, labindex())) + ...
+                          (uint32(tBufferLoc(inGroup)) - ...
+                          uint32(1)) .* ...
+                          uint32(groupComparts(iPostGroup)) .* ...
+                          uint32(numInGroup(iPostGroup, labindex()));
+                      if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stp')
+                          %synapse model function updates the stp variables and adds
+                          %spikes to the buffers.
+                          %we pass the id of the presynaptic neuron: allSpike(iSpk)
+                          %Synapse model stores stp vars for each pre to post
+                          %connection. iSpkSynGroup is the presynaptic group.
+                          bufferIncomingSpikes( ...
+                              SynModel{iPostGroup, iSpkSynGroup}, ...
+                              ind, wArr{allSpike(iSpk)}(inGroup),allSpike(iSpk), TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+                      else
+                          bufferIncomingSpikes(SynModel{iPostGroup, iSpkSynGroup}, ind, ...
+                              wArr{allSpike(iSpk)}(inGroup));
+                      end
+                  end
+              end
           end
-        end
       end
       
       S.spikeCount = 0;

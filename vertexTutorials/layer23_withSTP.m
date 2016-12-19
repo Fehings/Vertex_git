@@ -9,7 +9,7 @@
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
-TissueParams.X = 2500;
+TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 200;
 TissueParams.neuronDensity = 25000;
@@ -18,6 +18,7 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
+TissueParams.StimulationField = invitroSliceStim('sliceandelectrodelow.stl'); % slicecutoutsmallnew
 %TissueParams.StimulationField = {p,t,u};
 
 %% Neuron parameters
@@ -109,8 +110,8 @@ NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
 
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 200;
-NeuronParams(1).Input(1).stdInput =400;
+NeuronParams(1).Input(1).meanInput = 100;
+NeuronParams(1).Input(1).stdInput =50;
 NeuronParams(1).Input(1).tau = 2;
 
 %%
@@ -189,10 +190,15 @@ NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 
 NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 100;
+NeuronParams(2).Input(1).meanInput = 50;
 NeuronParams(2).Input(1).tau = 1;
-NeuronParams(2).Input(1).stdInput = 200;
+NeuronParams(2).Input(1).stdInput = 25;
 
+for i = 1:length(NeuronParams)
+    NeuronParams(i).Input(2).inputType = 'i_efield';
+    NeuronParams(i).Input(2).timeOn = 300;
+    NeuronParams(i).Input(2).timeOff = 310;
+end
 
 
 %% Connectivity parameters
@@ -209,7 +215,7 @@ ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'g_stp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
- ConnectionParams(1).weights{1} = 1*PYScaler;
+ ConnectionParams(1).weights{1} = 0.01;
 ConnectionParams(1).tau{1} = 1;
 ConnectionParams(1).facilitation{1} = 0;
 ConnectionParams(1).depression{1} = 1;
@@ -220,7 +226,7 @@ ConnectionParams(1).tF{1} = 17;
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 600;
 ConnectionParams(1).synapseType{2} = 'g_stp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(1).weights{2} = 1.5*PYScaler;
+ConnectionParams(1).weights{2} = 0.05;
 ConnectionParams(1).tau{2} = 1;
 ConnectionParams(1).facilitation{2} = 0;
 ConnectionParams(1).depression{2} = 1;
@@ -241,7 +247,7 @@ ConnectionParams(1).E_reversal{2} = -0;
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'g_stp';
 ConnectionParams(2).targetCompartments{1} = [NeuronParams(1).somaID];
-ConnectionParams(2).weights{1} = 1*INScaler;
+ConnectionParams(2).weights{1} = 0.2;
 ConnectionParams(2).tau{1} = 3;
 ConnectionParams(2).facilitation{1} = 0;
 ConnectionParams(2).depression{1} = 0.5;
@@ -251,7 +257,7 @@ ConnectionParams(2).tF{1} = 180;
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
 ConnectionParams(2).synapseType{2} = 'g_stp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(2).weights{2} = 1*INScaler;
+ConnectionParams(2).weights{2} = 0.15;
 ConnectionParams(2).tau{2} = 6;
 ConnectionParams(2).facilitation{2} = 0;
 ConnectionParams(2).depression{2} = 1;
@@ -288,17 +294,17 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:5:5000;
+RecordingSettings.v_m = 1:1:4000;
 %RecordingSettings.I_syn = 1:2:5000;
 RecordingSettings.maxRecTime = 600;
 RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.ef_stimulation = false;
+SimulationSettings.ef_stimulation = true;
 SimulationSettings.fu_stimulation = false;
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 300;
+SimulationSettings.simulationTime = 600;
 SimulationSettings.timeStep = 0.025125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim =false;
 
 
 %% Generate the network

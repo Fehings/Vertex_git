@@ -58,7 +58,7 @@ if SS.parallelSim
           constructor = constructorCell{iPost, iSynType};
           SynapseModelArr{iPost, iSynType} = ...
             constructor(NP(iPost),CP(preID), ...
-            SS,iPost, TP.numInGroupInLab(iPost, labindex()));
+            SS,iPost, TP.numInGroupInLab(iPost, labindex()), TP.numInGroupInLab(preID, labindex()));
         else
           SynapseModelArr{iPost, iSynType} = [];
         end

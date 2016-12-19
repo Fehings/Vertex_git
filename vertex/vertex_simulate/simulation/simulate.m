@@ -1,4 +1,4 @@
-function [NeuronModel, SynModel, InModel, numSaves] = simulate(TP, NP, SS, RS, IDMap, ...
+function [NeuronModel, SynModel, InModel, numSaves, StimParams] = simulate(TP, NP, SS, RS, IDMap, ...
                        NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves)
 
 outputDirectory = RS.saveDir;
@@ -18,7 +18,7 @@ recTimeCounter = 1;
 sampleStepCounter = 1;
 spikeRecCounter = 1;
 
-% vars to keep track of spikes
+% va rs to keep track of spikes
 S.spikes = zeros(TP.N * SS.minDelaySteps, 1, nIntSize);
 S.spikeStep = zeros(TP.N * SS.minDelaySteps, 1, tIntSize);
 S.spikeCount = zeros(1, 1, nIntSize);
@@ -49,6 +49,7 @@ end
 recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
 recordFac_syn = RecVar.recordFac_syn;
+record_apre_syn = RecVar.recordapre_syn;
 stimulation =  isfield(TP,'StimulationField');
 if ~stimulation
     SS.ef_stimulation = false;
@@ -68,7 +69,7 @@ if SS.ef_stimulation
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
     disp('Getting extraceluu');
-    StimParams.activation = getExtracellularInput(TP, StimParams,0,NeuronModel);
+    StimParams.activation = getExtracellularInput(TP, StimParams,0,NeuronModel,NP);
     disp('Got extraceluu');
     max(max(StimParams.activation{1}))
    
@@ -90,7 +91,10 @@ end
 
 % simulation loop
 %disp(['max: ' num2str(max(StimParams.activation))]);
-
+stdp = false;
+if stdp
+    posttoprearr = getPosttoPreSynArr(synArr);
+end
 for simStep = 1:simulationSteps
   if isa(TP.StimulationField, 'pde.TimeDependentResults')
     StimParams.activation = getExtracellularInput(TP, StimParams,simStep);
@@ -125,6 +129,10 @@ for simStep = 1:simulationSteps
       
       if recordFac_syn
           RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,recTimeCounter);
+      end
+      
+      if record_apre_syn
+          RecVar = updateApre_synRecording(SynModel, RecVar, iGroup, recTimeCounter);
       end
       
     end
@@ -215,22 +223,76 @@ for simStep = 1:simulationSteps
                 %Synapse model stores stp vars for each pre to post
                 %connection. iSpkSynGroup is the presynaptic group.
                 bufferIncomingSpikes( ...
-              SynModel{iPostGroup, iSpkSynGroup}, ...
-              ind, wArr{allSpike(iSpk)}(inGroup),allSpike(iSpk), TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+                    SynModel{iPostGroup, iSpkSynGroup}, ...
+                    ind, wArr{allSpike(iSpk)}(inGroup),allSpike(iSpk), TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
             else
                 bufferIncomingSpikes( ...
-                  SynModel{iPostGroup, iSpkSynGroup}, ...
-                  ind, wArr{allSpike(iSpk)}(inGroup));
+                    SynModel{iPostGroup, iSpkSynGroup}, ...
+                    ind, wArr{allSpike(iSpk)}(inGroup));
+            end
+            if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
+                %process spike as presynaptic spike, updating weights for
+                %post synaptic neurons in this synapse group. 
+                %passing weights and group relative ids of post synaptic neurons.
+                processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+                postneurons = synArr{allSpike(iSpk),1}(inGroup);
+                
+                wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),postneurons -...
+                    TP.groupBoundaryIDArr(neuronInGroup(postneurons(1))) );
             end
           end
         end
+
       end
+      if stdp
+          %get all neurons presynaptic to the spiking neuron
+          presynaptic = posttoprearr{allSpike(iSpk)};
+          preInGroup = neuronInGroup(presynaptic);
+          
+          for iPreGroup = 1:TP.numGroups
+              inGroup = preInGroup == iPreGroup;
+              if sum(inGroup ~= 0)
+                  
+                  if isa(SynModel{iSpkSynGroup,iPreGroup}, 'SynapseModel_g_stdp')
+                      
+                      relativeind = allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
+                      processAsPostSynSpike(SynModel{iSpkSynGroup, iPreGroup},relativeind);
+                      %if the synapses from the preSynaptic group to the
+                      %spiking group have stdp on them
+                      presyningroup = presynaptic(inGroup);
+                      for synInd = 1:length(presyningroup)
+                           wArr{presyningroup(synInd)}(synArr{presyningroup(synInd)}==allSpike(iSpk)) = updateweightsaspostsynspike(SynModel{iSpkSynGroup,iPreGroup}, wArr{presyningroup(synInd)}(synArr{presyningroup(synInd)}==allSpike(iSpk)), presyningroup(synInd)...
+                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                      end
+                  end
+              end
+          end
+      end
+      
+      
     end
+    
+%     if stdp 
+%         for iPreGroup = 1:TP.numGroups
+%             preinGroup = neuronInGroup(allSpike) == iPreGroup;
+%             for iPostGroup = 1:TP.numGroups
+%                 
+%                 neuronsfiringinpregroup = preinGroup(neuronInGroup(synArr{preinGroup, 1}) == iPostGroup);
+%                 processAsPreSynSpike(SynModel{iPostGroup, iPreGroup}, neuronsinSynGroup -TP.groupBoundaryIDArr(neuronInGroup(inGroup(1))));
+% 
+%                 postinGroup = neuronInGroup(allSpike) == iPostGroup;
+%                 neuronsfiringinpostgroup = postinGroup(neuronInGroup(synArr{postinGroup, 1})== iPreGroup);
+%                 processAsPostSynSpike(SynModel{iPostGroup, iPreGroup}, allSpike(preinGroup) -TP.groupBoundaryIDArr(neuronInGroup(inGroup(1))));
+%             end
+%         end
+%     end
+
+    
     
     S.spikeCount = 0;
     comCount = SS.minDelaySteps;
   else
-    comCount = comCount - 1;
+      comCount = comCount - 1;
   end
 
   % write recorded variables to disk

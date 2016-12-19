@@ -408,7 +408,7 @@ NeuronParams(20).modelProportion = modpropL5MC;
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
 NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 80;
+NeuronParams(1).Input(1).stdInput = 50;
 NeuronParams(1).Input(1).tau = 2;
 
 %For layer 2/3 Inhibitory cells
@@ -422,7 +422,7 @@ end
 %For layer 4 Excitatory cells
 for i = 6:8
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 230;
+    NeuronParams(i).Input(1).meanInput =330;
     NeuronParams(i).Input(1).stdInput = 30;
     NeuronParams(i).Input(1).tau = 2;
 end
@@ -434,10 +434,16 @@ for i = 9:12
     NeuronParams(i).Input(1).tau = 1;
 end
 % %For layer 5 Excitatory cells
-for i = 13:16
+for i = 13:14
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 830;
-    NeuronParams(i).Input(1).stdInput = 160;
+    NeuronParams(i).Input(1).stdInput = 150;
+    NeuronParams(i).Input(1).tau = 2;
+end
+for i = 15:16
+    NeuronParams(i).Input(1).inputType = 'i_ou';
+    NeuronParams(i).Input(1).meanInput = 230;
+    NeuronParams(i).Input(1).stdInput = 30;
     NeuronParams(i).Input(1).tau = 2;
 end
 
@@ -451,8 +457,8 @@ end
 
 
 
-volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.29;
-volumemultiplier = 1;
+volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.8;
+%volumemultiplier = 1.5;
 
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 
@@ -612,8 +618,8 @@ RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 1:100:19472;
-RecordingSettings.maxRecTime = 1500;
-RecordingSettings.sampleRate = 2000;
+RecordingSettings.maxRecTime = 5000;
+RecordingSettings.sampleRate = 5000;
 %RecordingSettings.I_syn = 1:2:5000;
 
 %%
@@ -626,7 +632,7 @@ RecordingSettings.sampleRate = 2000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2000;
+SimulationSettings.simulationTime = 5000;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
@@ -655,7 +661,6 @@ Results = loadResults(RecordingSettings.saveDir);
 close all;
 %%
 %plot the slice anatomy
-figure
 rasterParams.colors = {'k','m','b','g','r','y','c','k','m','b','g','r','k','k','k','c','m','b','g','r'};
 
 pars.colors = rasterParams.colors;
@@ -667,13 +672,10 @@ plotSomaPositions(Results.params.TissueParams,pars);
 %%
 %plot the slice simulation spike raster, each dot represents the time(on the x axis) at
 %which the neuron of a particular id (on the y axis) fired. 
-figure
 rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
-rasterParams.figureID = 2;
-figure(2)
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 

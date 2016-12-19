@@ -64,6 +64,8 @@ NP = params.(pFields{1}){2};
 CP = params.(pFields{1}){3};
 RS = params.(pFields{1}){4};
 SS = params.(pFields{1}){5};
+%Sarr = params.(pFields{1}){6};
+%StP = params.(pFields{1}){7};
 
 % Calculate relevant numbers for loading recordings
 SS.simulationTime = SS.simulationTime * numRuns;
@@ -91,6 +93,12 @@ if isfield(RS, 'I_syn')
   I_syn = RS.I_syn;
 else
   I_syn = false;
+end
+
+if isfield(RS, 'apre_syn')
+    apre_syn = RS.apre_syn;
+else
+    apre_syn = false;
 end
 
 % Are we to calculate the LFP offline?
@@ -152,6 +160,20 @@ else
   I_syn_recording = [];
 end
 
+if apre_syn
+  apre_syn_recording = cell(TP.numGroups, 1);
+  for iGroup=1:TP.numGroups
+    apre_syn_recording{iGroup} = zeros(length(RS.apre_syn), simulationSamples);
+  end
+  if SS.parallelSim
+    apre_synCount = 0;
+    apre_synIDmap = zeros(length(apre_syn), 1);
+  end
+else
+  apre_syn_recording = [];
+end
+
+
 sampleCount = 0;
 
 % Load each save file in turn and store in the relevant matrices
@@ -203,6 +225,27 @@ for iSaves = 1:numSaves
         for iGroup = 1:TP.numGroups
           I_syn_recording{iGroup}(:, sampleCount+1:sampleCount+size(i_Syn, 3)) = ...
             squeeze(i_Syn(:,iGroup,:));
+        end
+      end
+    end
+    if apre_syn
+      if SS.parallelSim
+        if isfield(RecordingVars, 'apre_synRecording')
+          apre_Syn = RecordingVars.apre_synRecording;
+          for iGroup = 1:TP.numGroups
+            apre_syn_recording{iGroup}(apre_synCount+1:I_synCount+size(apre_Syn,1), ...
+              sampleCount+1:sampleCount+size(apre_Syn, 3)) = ...
+              squeeze(apre_Syn(:,iGroup,:));
+          end
+          apre_synID = find(SS.neuronInLab(apre_syn) == iLab);
+          apre_synIDmap(apre_synCount+1:apre_synCount+size(apre_synID)) = apre_synID;
+          apre_synCount = apre_synCount+size(apre_Syn,1);
+        end
+      else
+        apre_Syn = RecordingVars.apre_synRecording;
+        for iGroup = 1:TP.numGroups
+          apre_syn_recording{iGroup}(:, sampleCount+1:sampleCount+size(apre_Syn, 3)) = ...
+            squeeze(apre_Syn(:,iGroup,:));
         end
       end
     end
@@ -274,8 +317,11 @@ Results.spikes = spikes;
 Results.LFP = LFP; 
 Results.v_m = v_m_recording;
 Results.I_syn = I_syn_recording;
+Results.apre_syn = apre_syn_recording;
 Results.params.TissueParams = TP;
 Results.params.NeuronParams = NP;
 Results.params.ConnectionParams = CP;
 Results.params.RecordingSettings = RS;
 Results.params.SimulationSettings = SS;
+% Results.params.SynArr= Sarr;
+% Results.params.StimParams = StP;

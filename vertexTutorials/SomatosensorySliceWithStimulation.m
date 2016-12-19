@@ -20,6 +20,7 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr = [1217, 715, 525, 0];
+TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl'); % slicecutoutsmallnew
 %%
 %Calculating neuron proportions. 
 
@@ -453,7 +454,14 @@ end
 
 volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.29;
 volumemultiplier = 1;
+for i = 1:20
+    NeuronParams(i).Input(2).inputType = 'i_efield';
 
+    NeuronParams(i).Input(2).amplitude = 0;
+
+     NeuronParams(i).Input(2).timeOn = 1000;
+     NeuronParams(i).Input(2).timeOff = 1005;
+end
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 
 %connectivity parameters. Weights and number of connections loaded from
@@ -626,14 +634,14 @@ RecordingSettings.sampleRate = 2000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 3000;
+SimulationSettings.simulationTime = 2000;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
 %These are flags used for simulating electric field or focussed ultrasound
 %stimulation of the slice, these are currently in development and not used
 %for this project. 
-SimulationSettings.ef_stimulation = false;
+SimulationSettings.ef_stimulation = true;
 SimulationSettings.fu_stimulation = false;
 
 %This initialises the network and sets up other variables. 

@@ -20,6 +20,7 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr = [1217, 715, 525, 0];
+
 %%
 %Calculating neuron proportions. 
 
@@ -456,6 +457,7 @@ for i = 1:20
     NeuronParams(i).Input(2).timeOff= 1005;
 
 end
+
 
 
 volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.29;

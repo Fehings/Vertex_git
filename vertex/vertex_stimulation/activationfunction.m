@@ -5,7 +5,7 @@ function [ sigma ] = activationfunction( point1,point2, stimfieldtri,t )
     grad = point1 - point2;
     point1d = point1 + delta*grad; % deviation, point 1 (start of compartment) shifted up the compartment towards the middle
     point2d = point2 - delta*grad; % deviation, point 2 (end of compartment) shifted down the compartment towards the middle
-    point1
+    
     if isa(stimfieldtri,'pde.StationaryResults')
         EPpoint1 = interpolateSolution(stimfieldtri, point1); % at start compartment location
         EPpoint2 = interpolateSolution(stimfieldtri, point2); % at end of compartment location

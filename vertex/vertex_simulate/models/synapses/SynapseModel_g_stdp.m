@@ -5,12 +5,15 @@ classdef SynapseModel_g_stdp < SynapseModel
   %   - tau, the synaptic decay time constant (in ms)
 
   properties (SetAccess = protected)
-    facilitation
-    F
-    tF
-    depression
-    D
-    tD
+
+    tPre
+    preRate
+    postRate
+    tPost
+    wmin
+    wmax
+    Apre
+    Apost
     E_reversal
     tau
     g_exp
@@ -21,15 +24,20 @@ classdef SynapseModel_g_stdp < SynapseModel
   
   methods
       % Synapse model will be a cell array containing a struct for each
-      % connection type indexed by the post
+      % connection type indexed by the post synaptic group then the
+      % presynaptic group. The struct contains variables for all
+      % neurons in the presynatpic group and all neurons in the post
+      % synaptic group.
     function SM = SynapseModel_g_stdp(Neuron, CP, SimulationSettings, ...
                                      postID, number_in_post,number_in_pre)
       SM = SM@SynapseModel(Neuron, number_in_post);
       SM.E_reversal = CP.E_reversal{postID};
       SM.tPre = CP.tPre{postID};
       SM.tPost = CP.tPost{postID};
-      SM.facilitation = CP.facilitation{postID};
-      SM.depression = CP.depression{postID};
+      SM.preRate = CP.rate{postID};
+      SM.postRate = -CP.rate{postID};
+      SM.wmin = CP.wmin{postID};
+      SM.wmax = CP.wmax{postID};
       SM.tau = CP.tau{postID};
       SM.bufferCount = 1;
       maxDelaySteps = SimulationSettings.maxDelaySteps;
@@ -38,8 +46,11 @@ classdef SynapseModel_g_stdp < SynapseModel
 
       %trace variable for presynaptic neurons, contains an entry for each
       %neuron in the presynaptic group of the connection.
-      SM.Apre = ones(number_in_pre, 1);
-      SM.Apost = ones(number_in_pre, 1);
+      SM.Apre = zeros(1,number_in_pre);
+      %trace variable for postsynaptic neurons, contains an entry for each
+      %neuron in the post synaptic group of the connection.
+      SM.Apost = zeros(1,number_in_post);
+      
       SM.g_expEventBuffer = zeros(number_in_post, numComparts, maxDelaySteps);
       SM.bufferMax = maxDelaySteps;
 
@@ -72,28 +83,65 @@ classdef SynapseModel_g_stdp < SynapseModel
       k2g_in = SM.g_exp + 0.5 .* dt .* kg;
       kg = - k2g_in ./ SM.tau;
       SM.g_exp = SM.g_exp + dt .* kg;
-      SM.F = SM.F + ((1 - SM.F)./SM.tF).*dt;
-      SM.D = SM.D + ((1 - SM.D)./SM.tD).*dt;
+      SM.Apre = SM.Apre + (( - SM.Apre)./SM.tPre).*dt;
+      SM.Apost = SM.Apost + ((- SM.Apost)./SM.tPost).*dt;
     end
+    
+    %This is called when spikes are generated in a neuron of the presynatpic group of this SynapseModel object.
+    %WeightsArr contains weights for connections from the spiking neuron
+    % to the postsynaptic neurons that it connects to. postInd is refers to
+    % the neurons (of this connection group) that the spiking neuron
+    % synapses on to.
+    function weightsArr = updateweightsaspresynspike(SM, weightsArr, postInd)
+        %update the weight array for all connections from spiking neuron to
+        %all post synaptic neurons.
+        
+        weightsArr = weightsArr + SM.Apost(postInd);
+        weightsArr(weightsArr<SM.wmin) = SM.wmin;
+        weightsArr(weightsArr>SM.wmax) = SM.wmax;
+    end
+    
+    
+    function weightsArr = updateweightsaspostsynspike(SM, weightsArr, preInd)
+        %update the weight array for all connections from spiking neuron to
+        %all pre synaptic neurons.
 
-    %The is called when spikes are generated in neurons specified by preInd
-    function [SM,warr] = bufferIncomingSpikes(SM, synIndeces, weightsArr, preInd, pregroup)
-        preInd = preInd-pregroup;
+        weightsArr = weightsArr +SM.Apre(preInd)' ;
+        weightsArr(weightsArr<SM.wmin) = SM.wmin;
+        weightsArr(weightsArr>SM.wmax) = SM.wmax;
+    end
+    
+    %spikeInd are the indices of presynaptic neurons fromt this group
+    %that have spiked during this cycle
+    function SM = processAsPreSynSpike(SM, spikeInd)
         %update presynaptic trace variable Apre, should be same for all
         %presynaptic connections because the synapse parameters should be
         %the same for all group to group defined connections. 
-        Apre = 
-        %update the weight array for all connections to presynaptic
-        %neurons. 
-        %update postsynaptic trace variable Apost, again should be the same
-        %for all as is only dependent on the post synaptic activity. 
-        %update weights for postsynaptically connected neurons.
-        
-        
+        SM.Apre(spikeInd) = SM.Apre(spikeInd) + SM.preRate;
+    end
     
+    %spikeInd are the indices of postsynaptic neurons from this group that
+    %have spiked in this cycle
+    function SM = processAsPostSynSpike(SM, spikeInd)
+        
+        SM.Apost(spikeInd) = SM.Apost(spikeInd) + SM.postRate;
+    end
+
+
+    %The is called when spikes are generated in neurons specified by preInd
+    %the postsynaptic neuron (as well as its compartment and the time at
+    %which the spike should arrive) are specified by the synIndeces
+    %parameter. This is a reduction of a 3 dimensional index, details of its
+    %calculation are in the simulate function.
+    function SM = bufferIncomingSpikes(SM, synIndeces, weightsToAdd)
+
       SM.g_expEventBuffer(synIndeces) = ...
-                            SM.g_expEventBuffer(synIndeces) + ((weightsToAdd)));
+                            SM.g_expEventBuffer(synIndeces) + ((weightsToAdd));
       
+    end
+    
+    function Apost = get.Apost(SM)
+        Apost=SM.Apost;
     end
     
     
@@ -110,7 +158,7 @@ classdef SynapseModel_g_stdp < SynapseModel
   
   methods(Static)
       function params = getRequiredParams()
-          params = {'tau', 'E_reversal', 'tD','tF','facilitation','depression'};
+          params = {'tau', 'E_reversal', 'tPre','tPost','wmin','wmax', 'rate'};
       end
   end
 

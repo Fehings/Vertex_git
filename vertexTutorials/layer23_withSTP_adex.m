@@ -311,7 +311,7 @@ RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 1:5:5000;
 %RecordingSettings.I_syn = 1:2:5000;
-RecordingSettings.maxRecTime = 600;
+RecordingSettings.maxRecTime = 300;
 RecordingSettings.sampleRate = 5000;
 
 %These flags say whether electrical or focussed ultrasound stimulation are

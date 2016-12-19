@@ -16,6 +16,7 @@ TissueParams.Z = 650;
 TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
+Tissueresistance = 1/0.33 * (0.02*0.004*0.006)/0.00050;
 TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are
@@ -219,7 +220,7 @@ NeuronParams(6).modelProportion = 0.02;
 for i = 1:length(NeuronParams)
     NeuronParams(i).Input(1).inputType = 'i_efield';
     NeuronParams(i).Input(1).timeOn = 1;
-    NeuronParams(i).Input(1).timeOff = 100;
+    NeuronParams(i).Input(1).timeOff = 10;
 % NeuronParams(1).Input(1).inputType = 'i_ou';
 % NeuronParams(1).Input(1).meanInput = 330;
 % NeuronParams(1).Input(1).stdInput = 90;
@@ -397,6 +398,8 @@ SimulationSettings.fu_stimulation = false;
               RecordingSettings, SimulationSettings);
 %%
 runSimulation(params, connections, electrodes);
+%%
+
 Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results

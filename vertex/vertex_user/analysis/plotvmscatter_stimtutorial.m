@@ -1,9 +1,9 @@
-pyramidalgroups = [1 3 5];
-interneuron = [2 3 4 5 6 9 10 11 12 17 18 19 20];
+pyramidalgroups = [1];
+interneuron = [2 ];
 N = Results.params.TissueParams.N;
 neuronInGroup = createGroupsFromBoundaries(Results.params.TissueParams.groupBoundaryIDArr);
 pyramidalids = ismember(neuronInGroup,pyramidalgroups);
-endv_m = Results.v_m(:,40);
+endv_m = Results.v_m(:,end);
 pyramidalv_ms = endv_m(pyramidalids);
 pars.toPlot = pyramidalids;
 plotSomaPositionsMembranePotential(Results.params.TissueParams,pars,pyramidalv_ms);
