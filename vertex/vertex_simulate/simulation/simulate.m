@@ -1,4 +1,4 @@
-function [NeuronModel, SynModel, InModel, numSaves, StimParams] = simulate(TP, NP, SS, RS, IDMap, ...
+function [NeuronModel, SynModel, InModel, numSaves] = simulate(TP, NP, SS, RS, IDMap, ...
                        NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves)
 
 outputDirectory = RS.saveDir;
@@ -18,7 +18,7 @@ recTimeCounter = 1;
 sampleStepCounter = 1;
 spikeRecCounter = 1;
 
-% va rs to keep track of spikes
+% vars to keep track of spikes
 S.spikes = zeros(TP.N * SS.minDelaySteps, 1, nIntSize);
 S.spikeStep = zeros(TP.N * SS.minDelaySteps, 1, tIntSize);
 S.spikeCount = zeros(1, 1, nIntSize);
@@ -69,9 +69,14 @@ if SS.ef_stimulation
     %Calculate the activation function for each compartment
     %Can be called on each iteration if the input field is time varying
     disp('Getting extraceluu');
-    StimParams.activation = getExtracellularInput(TP, StimParams,0,NeuronModel,NP);
+    t=1:size(TP.StimulationField.NodalSolution,2);
+    StimParams.activation = getExtracellularInput(TP, StimParams,t); 
+    if isa(TP.StimulationField, 'pde.TimeDependentResults')
+        StimParams.activationAll = StimParams.activation; % calling this activationAll as it contains time dimension. This means StimParams.activation can be overwritten further down without losing the full results.
+        count=1; %initialise a counter variable.
+    end
     disp('Got extraceluu');
-    max(max(StimParams.activation{1}))
+   % max(max(StimParams.activation{1}));
    
    
 end
@@ -96,13 +101,25 @@ if stdp
     posttoprearr = getPosttoPreSynArr(synArr);
 end
 for simStep = 1:simulationSteps
+    
   if isa(TP.StimulationField, 'pde.TimeDependentResults')
-    StimParams.activation = getExtracellularInput(TP, StimParams,simStep);
+      for i=1:TP.numGroups
+           StimParams.activation{i} = StimParams.activationAll{i}(:,count);
+      end
+    count = count+1;
+    if count > length(t)
+        count = 1; % reset if getting to the end of the time steps.
+        %NB: this will work so long as the pde was solved for the right
+        %ntimesteps... so may well need some fixing as it is now!
+    end
+  elseif isfield(NP.Input,'timeDependence')
+       StimParams.trns = wgn(1,1,0); % set a value for multipling the stimulation field by at each timestep for tRNS.
+       % could also set a count here for the tACS.
   end
+  
 
   for iGroup = 1:TP.numGroups
-    
-    
+      
     [NeuronModel, SynModel, InModel] = ...
       groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup,StimParams);
     

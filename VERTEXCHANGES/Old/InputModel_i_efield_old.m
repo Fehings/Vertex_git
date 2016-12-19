@@ -17,7 +17,11 @@ classdef InputModel_i_efield < InputModel
   %   The current is weighted by compartment membrane area.
   
   properties (SetAccess = private)
+    count
     meanInput
+    timeDependence
+    stepOn
+    stepOff 
   end
   
   methods
@@ -42,12 +46,45 @@ classdef InputModel_i_efield < InputModel
       if size(IM.meanInput, 1) > 1
         IM.meanInput = IM.meanInput(subset, :);
       end
+      IM.count = 1; % initialise count
+      if N.Input(inputID).timeOn <= 0
+          IM.stepOn = 1;
+      else
+          IM.stepOn = round(N.Input(InputID).timeOn/timeStep);
+      end
+      IM.stepOff = round(N.Inupt(inputID).timeOff / timeStep);  
       IM.I_input = IM.I_input .* 0;
-    end
+      end
     
     
-    function IM = updateInput(IM,~,activation)
-        IM.I_input = activation';
+    function IM = updateInput(IM,N,activation)
+        
+        
+        if isa(N.timeDependence,'rand')
+            %multiply activation by a random number
+            activation = activation.*rwgn(1,1,0); 
+            2
+            % multiply by a random number generated via matlab's random white gaussian noise function.
+        elseif isa(N.timeDependence,'oscil')
+            %in this case the activation matrix should have an extra time
+            %dimension that will need to be stepped through, need to figure
+            %this out.
+            %activation = activation;
+    
+        else
+            %activation = activation;
+        end
+        
+        
+        IM.meanInput = bsxfun(@times, activation', IM.membraneAreaRatio);
+        
+        if IM.count >= IM.stepOn && IM.count <= IM.stepOff
+            IM.I_input = IM.meanInput;
+        else 
+            IM.I_input = 0;
+        end
+        IM.count = IM.count + 1;
+    
     end
     
     function I = getRecordingVar(IM)

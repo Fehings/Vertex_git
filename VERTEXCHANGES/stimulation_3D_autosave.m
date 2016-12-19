@@ -7,19 +7,27 @@
 %% BEFORE running this script please run the tissuestimulation.m script to simulate
 %the electric field in the slice. Export the solution: u, as well as the
 %mesh: p,e, and t
+
+%clear vars
 %% Tissue parameters
 % Our tissue parameters are similar to the previous tutorials:
 
-TissueParams.X = 2000;
-TissueParams.Y = 400;
-TissueParams.Z = 650;
+TissueParams.X = 2000; %2000
+TissueParams.Y = 200;  %400
+TissueParams.Z = 650;  %650
 TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are
-TissueParams.StimulationField = invitroSliceStim('chrismodelmod9.stl'); % slicecutoutsmallnew
+
+modstl = 'sidesidestim2.stl';
+
+SimulationSettings.timeStep = 0.03125;
+
+[TissueParams.StimulationField,model] = invitroSliceStimAC('topbottomstim2.stl',SimulationSettings.timeStep);%,stimstrength); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
+
 %%
 % However, we need to set the number of layers to 3 and make sure we set
 % the layer boundaries to create a 200 micron thick layer 3, a 300 micron
@@ -217,39 +225,42 @@ NeuronParams(6).modelProportion = 0.02;
 
 % providing all neurons with background current input - taken from the
 % VERTEX website tutorials:
-
-NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 80;
-NeuronParams(1).Input(1).tau = 2;
-NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 200;
-NeuronParams(2).Input(1).stdInput = 20;
-NeuronParams(2).Input(1).tau = 1;
-NeuronParams(3).Input(1).inputType = 'i_ou';
-NeuronParams(3).Input(1).meanInput = 230;
-NeuronParams(3).Input(1).stdInput = 30;
-NeuronParams(3).Input(1).tau = 2;
-NeuronParams(4).Input(1).inputType = 'i_ou';
-NeuronParams(4).Input(1).meanInput = 200;
-NeuronParams(4).Input(1).stdInput = 20;
-NeuronParams(4).Input(1).tau = 1;
-NeuronParams(5).Input(1).inputType = 'i_ou';
-NeuronParams(5).Input(1).meanInput = 830;
-NeuronParams(5).Input(1).stdInput = 160;
-NeuronParams(5).Input(1).tau = 2;
-NeuronParams(6).Input(1).inputType = 'i_ou';
-NeuronParams(6).Input(1).meanInput = 200;
-NeuronParams(6).Input(1).stdInput = 20;
-NeuronParams(6).Input(1).tau = 1;
+% 
+% NeuronParams(1).Input(1).inputType = 'i_ou';
+% NeuronParams(1).Input(1).meanInput = 330;
+% NeuronParams(1).Input(1).stdInput = 80;
+% NeuronParams(1).Input(1).tau = 2;
+% NeuronParams(2).Input(1).inputType = 'i_ou';
+% NeuronParams(2).Input(1).meanInput = 200;
+% NeuronParams(2).Input(1).stdInput = 20;
+% NeuronParams(2).Input(1).tau = 1;
+% NeuronParams(3).Input(1).inputType = 'i_ou';
+% NeuronParams(3).Input(1).meanInput = 230;
+% NeuronParams(3).Input(1).stdInput = 30;
+% NeuronParams(3).Input(1).tau = 2;
+% NeuronParams(4).Input(1).inputType = 'i_ou';
+% NeuronParams(4).Input(1).meanInput = 200;
+% NeuronParams(4).Input(1).stdInput = 20;
+% NeuronParams(4).Input(1).tau = 1;
+% NeuronParams(5).Input(1).inputType = 'i_ou';
+% NeuronParams(5).Input(1).meanInput = 830;
+% NeuronParams(5).Input(1).stdInput = 160;
+% NeuronParams(5).Input(1).tau = 2;
+% NeuronParams(6).Input(1).inputType = 'i_ou';
+% NeuronParams(6).Input(1).meanInput = 200;
+% NeuronParams(6).Input(1).stdInput = 20;
+% NeuronParams(6).Input(1).tau = 1;
 
 
 % The neurons to be affected by the field need to be given an i_efield input type:
 
+% If using the above random inputs as input 1, need to change the below
+% inputs for efield to 2, e.g. NeuronParams(i).Input(2)...
 for i = 1:length(NeuronParams)
-    NeuronParams(i).Input(2).inputType = 'i_efield';
-    NeuronParams(i).Input(2).timeOn = 1;
-    NeuronParams(i).Input(2).timeOff = 20;
+    NeuronParams(i).Input(1).inputType = 'i_efield';
+    NeuronParams(i).Input(1).timeOn = 0;
+    NeuronParams(i).Input(1).timeOff = 100;
+   NeuronParams(i).Input(1).timeDependence = 'oscil'; % have 'oscil' and 'rand' as flags
 % NeuronParams(1).Input(1).inputType = 'i_ou';
 % NeuronParams(1).Input(1).meanInput = 330;
 % NeuronParams(1).Input(1).stdInput = 90;
@@ -399,14 +410,21 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 % These are set in the same way as previous tutorials. This time we
 % position the electrodes so as to cover the larger z-depth of the model.
 
-RecordingSettings.saveDir = '~/VERTEX_results_tutorial_5/';
-RecordingSettings.LFP = false;
+RecordingSettings.saveDir = '~/VERTEX_results_stimulation_3D_2/';
+RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(0:500:2000, 200, 700:-100:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:1:10400;
+
+if isfield(TissueParams,'R')
+    totNeurons = ceil(pi*((TissueParams.R/1000)^2)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
+else
+    totNeurons = (TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity;
+end
+
+RecordingSettings.v_m = 1:1:totNeurons;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 18000;
 
@@ -432,17 +450,67 @@ Results = loadResults(RecordingSettings.saveDir);
 %% Plot the results
 % Using these parameters, we obtain the following spike raster:
 
-rasterParams.colors = {'k','m','k','m','k','m'};
-rasterParams.groupBoundaryLines = 'c';
-rasterParams.title = 'Tutorial 5 Spike Raster';
-rasterParams.xlabel = 'Time (ms)';
-rasterParams.ylabel = 'Neuron ID';
-rasterParams.figureID = 1;
-%
-%rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
+plotvmscatter_stimtutorial_alt_PY
+hold on
+if isa(TissueParams.StimulationField, 'pde.TimeDependentResults')
+    pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
+else
+    pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
+end
 
 %%
-plotvmscatter_stimtutorial
+hold off
+
+plotvmscatter_stimtutorial_alt_IN
+
+plotvmscatter_stimtutorial_alt_PY
+
+%% Making the directory to save things to
+
+if ~exist('stimstrength','var')
+    stimstrength=round(max(max(TissueParams.StimulationField.NodalSolution)),2);
+end
+
+newdir = strcat('ACStimFigs_',modstl,'_field%d'); % make directory
+newdir = sprintf(newdir,stimstrength); % turns the %d into the value that stimstrength contains
+
+placeholdername = '/Users/a6028564/Documents/MATLAB/figures/'; % file path for where the new directory will go.
+mkdir(placeholdername,newdir) % make the directory in the file path defined above
+dir_name = strcat(placeholdername,newdir); % add new directory name to the file path
+
+
+%%
+
+if ~isempty(Results.spikes)
+    rasterParams.colors = {'k','m','k','m','k','m'};
+    rasterParams.groupBoundaryLines = 'c';
+    rasterParams.title = 'Stimulation Tutorial Spike Raster';   
+    rasterParams.xlabel = 'Time (ms)';
+    rasterParams.ylabel = 'Neuron ID';
+    rasterParams.figureID = 5;
+    plotSpikeRaster(Results, rasterParams);
+    
+    firingRates = groupRates(Results, 10, 50);
+    
+    firingfilename = ['firingRates' num2str(stimstrength)]; 
+    save(fullfile(dir_name,firingfilename),'firingRates');
+end
+
+
+%% Saving and movie making
+
+% save all the figures into a folder
+
+figlist=findobj('type','figure');
+for i=1:numel(figlist)
+    saveas(figlist(i),fullfile(dir_name,['figure' num2str(i) '.fig']));
+end
+
+% make and save movie
+
+% movname ='DCStimMovFigs';
+% plotvmscatter_stimtutorial_alt_mov
+% saveas(F,fullfile(dir_name,movname))
 
 %%
 % And plotting the LFP at the top and bottom (z-axis), central (x-axis)
@@ -465,7 +533,6 @@ plotvmscatter_stimtutorial
 % 100 ms to 500 ms, so that spikes in the initial model population spike are not
 % counted.
 
-firingRates = groupRates(Results, 10, 50);
 %%
 % If you have experienced any problems when trying to run this tutorial,
 % or if you have any suggestions for improvements, please email Richard

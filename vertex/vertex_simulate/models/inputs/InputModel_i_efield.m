@@ -18,6 +18,7 @@ classdef InputModel_i_efield < InputModel
   
   properties (SetAccess = private)
     count
+    oscount
     stepOn
     stepOff
     meanInput
@@ -46,7 +47,8 @@ classdef InputModel_i_efield < InputModel
       if size(IM.meanInput, 1) > 1
         IM.meanInput = IM.meanInput(subset, :);
       end
-      IM.count = 1;
+      IM.count = 1; % initialise count
+      IM.oscount = 1; % in case of oscillatory stim, initialise a second count to tick through time dimensions.
       if N.Input(inputID).timeOn <= 0
         IM.stepOn  = 1;
       else
@@ -67,11 +69,16 @@ classdef InputModel_i_efield < InputModel
             IM.I_input;
         end
         
-      elseif IM.count == IM.stepOff
-        IM.I_input = IM.I_input .* 0;
-      end
-      IM.count = IM.count + 1;
         
+        IM.meanInput = bsxfun(@times, activation', IM.membraneAreaRatio);
+        
+     if IM.count >= IM.stepOn && IM.count <= IM.stepOff
+            IM.I_input = IM.meanInput;
+     else 
+            IM.I_input = 0;
+     end
+        IM.count = IM.count + 1;
+    
     end
     
     function I = getRecordingVar(IM)

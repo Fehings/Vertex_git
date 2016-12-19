@@ -14,7 +14,7 @@ RS.saveDir = '~/VERTEX_bsf_results/';
 % parallel profile, or if you want to run in serial mode (this will take a
 % long time)
 SS.parallelSim = true;
-SS.poolSize = 12;
+SS.poolSize = 2; %was 12 in the original
 SS.profileName = 'local';
 
 % Initialise the network

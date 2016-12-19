@@ -64,12 +64,12 @@ end
 if isfield(pars, 'figureID')
   figureHandle = figure(pars.figureID);
 else
-  figureHandle = figure();
+  %figureHandle = figure();
 end
 hold on;
 
 
-view(3) 
+%view(3) 
 
 
 scatter3(TP.somaPositionMat(pars.toPlot, 1), ...
@@ -78,8 +78,8 @@ scatter3(TP.somaPositionMat(pars.toPlot, 1), ...
     20,...
     v_m, 'filled');
 
-axis equal
-hold off
+%axis equal
+%hold off
 
 set(gcf,'color','w');
 set(gca,'TickDir','out');
@@ -103,6 +103,6 @@ if isfield(pars, 'zlabel')
   zlabel(pars.zlabel, 'FontSize', fsize);
 end
 
-set(gca, 'FontSize', fsize);
+%set(gca, 'FontSize', fsize);
 
-view([0, 0]);
+%view([0, 0]);
