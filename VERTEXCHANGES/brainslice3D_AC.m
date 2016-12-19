@@ -19,8 +19,8 @@ h = pdegplot(model,'FaceLabels','on','FaceAlpha',0.5); % set up plotting paramet
 % applyBoundaryCondition(model,'face',6,'h',1.0,'r',@myrfun); %Dirichlet boundary condition, the 'r' 5.0 sets up a 5(mv?) voltage here
 % applyBoundaryCondition(model,'face',1,'h',1.0,'r',@myrfun2); %the 'r' -5.0 sets up a -5 (mv?) voltage at this electrode. 
 
-B=1; % B is the value which changes the oscillation period. Setting it as 1 for default so the period will be 2*pi.
-tlist=0:0.2:(2*pi)/abs(B); % extract solutions for one period of the sine wave. 
+
+tlist=0:0.03:(2*pi)/abs(0.03); % extract solutions for one period of the sine wave. 
 
 
     applyBoundaryCondition(model,'face',[3:6],'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond?
@@ -146,12 +146,12 @@ end
 
 function bcMatrix = myrfun(~,state) 
 
-bcMatrix = sin(1*state.time); %multiply state.time by the value set to B
+bcMatrix = sin(0.065*state.time); %multiply state.time by the value set to B
 
 end
 
 function bcMatrix = myrfun2(~,state)
 
-bcMatrix = -sin(1*state.time); %multiply state.time by the value set to B
+bcMatrix = -sin(0.065*state.time); %multiply state.time by the value set to B
 
 end

@@ -390,7 +390,7 @@ RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 100;
+SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
@@ -447,7 +447,7 @@ ylabel('LFP (mV)', 'FontSize', 16)
 
 plot(Results.LFP(17,:), 'c', 'LineWidth', 2);
 plot(Results.LFP(24,:), 'm', 'LineWidth', 2);
-axis([100 1100 -0.1 0.1]) % only plot from 100 ms to remove large initial spike
+axis([100 500 -0.1 0.1]) % only plot from 100 ms to remove large initial spike
 set(gcf,'color','w');
 set(gca, 'FontSize', 16);
 title('Tutorial 5: LFP at 4 electrode positions', 'FontSize', 16)
