@@ -13,7 +13,7 @@
 % Our tissue parameters are similar to the previous tutorials:
 
 TissueParams.X = 2000; %2000
-TissueParams.Y = 200;  %400
+TissueParams.Y = 400;  %400
 TissueParams.Z = 650;  %650
 TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
@@ -22,11 +22,14 @@ TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are
 
-modstl = 'sidesidestim2.stl';
-
+stimstrength=50;
+B=40; % the frequency in Hz.
 SimulationSettings.timeStep = 0.03125;
 
-[TissueParams.StimulationField,model] = invitroSliceStimAC('topbottomstim2.stl',SimulationSettings.timeStep);%,stimstrength); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
+%[TissueParams.StimulationField,model] = invitroSliceStim('topbottomstim2.stl',stimstrength);
+%[TissueParams.StimulationField,model] = invitroSliceStimAC('topbottomstim2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
+load('AC_10hz_str100_topbot2.mat') %'ACbasicModResults')
+TissueParams.StimulationField= AC_10hz_str100_topbot2; %ACbasicModResults;
 
 %%
 % However, we need to set the number of layers to 3 and make sure we set
@@ -226,30 +229,30 @@ NeuronParams(6).modelProportion = 0.02;
 % providing all neurons with background current input - taken from the
 % VERTEX website tutorials:
 % 
-% NeuronParams(1).Input(1).inputType = 'i_ou';
-% NeuronParams(1).Input(1).meanInput = 330;
-% NeuronParams(1).Input(1).stdInput = 80;
-% NeuronParams(1).Input(1).tau = 2;
-% NeuronParams(2).Input(1).inputType = 'i_ou';
-% NeuronParams(2).Input(1).meanInput = 200;
-% NeuronParams(2).Input(1).stdInput = 20;
-% NeuronParams(2).Input(1).tau = 1;
-% NeuronParams(3).Input(1).inputType = 'i_ou';
-% NeuronParams(3).Input(1).meanInput = 230;
-% NeuronParams(3).Input(1).stdInput = 30;
-% NeuronParams(3).Input(1).tau = 2;
-% NeuronParams(4).Input(1).inputType = 'i_ou';
-% NeuronParams(4).Input(1).meanInput = 200;
-% NeuronParams(4).Input(1).stdInput = 20;
-% NeuronParams(4).Input(1).tau = 1;
-% NeuronParams(5).Input(1).inputType = 'i_ou';
-% NeuronParams(5).Input(1).meanInput = 830;
-% NeuronParams(5).Input(1).stdInput = 160;
-% NeuronParams(5).Input(1).tau = 2;
-% NeuronParams(6).Input(1).inputType = 'i_ou';
-% NeuronParams(6).Input(1).meanInput = 200;
-% NeuronParams(6).Input(1).stdInput = 20;
-% NeuronParams(6).Input(1).tau = 1;
+NeuronParams(1).Input(1).inputType = 'i_ou';
+NeuronParams(1).Input(1).meanInput = 330;
+NeuronParams(1).Input(1).stdInput = 80;
+NeuronParams(1).Input(1).tau = 2;
+NeuronParams(2).Input(1).inputType = 'i_ou';
+NeuronParams(2).Input(1).meanInput = 200;
+NeuronParams(2).Input(1).stdInput = 20;
+NeuronParams(2).Input(1).tau = 1;
+NeuronParams(3).Input(1).inputType = 'i_ou';
+NeuronParams(3).Input(1).meanInput = 230;
+NeuronParams(3).Input(1).stdInput = 30;
+NeuronParams(3).Input(1).tau = 2;
+NeuronParams(4).Input(1).inputType = 'i_ou';
+NeuronParams(4).Input(1).meanInput = 200;
+NeuronParams(4).Input(1).stdInput = 20;
+NeuronParams(4).Input(1).tau = 1;
+NeuronParams(5).Input(1).inputType = 'i_ou';
+NeuronParams(5).Input(1).meanInput = 830;
+NeuronParams(5).Input(1).stdInput = 160;
+NeuronParams(5).Input(1).tau = 2;
+NeuronParams(6).Input(1).inputType = 'i_ou';
+NeuronParams(6).Input(1).meanInput = 200;
+NeuronParams(6).Input(1).stdInput = 20;
+NeuronParams(6).Input(1).tau = 1;
 
 
 % The neurons to be affected by the field need to be given an i_efield input type:
@@ -257,14 +260,10 @@ NeuronParams(6).modelProportion = 0.02;
 % If using the above random inputs as input 1, need to change the below
 % inputs for efield to 2, e.g. NeuronParams(i).Input(2)...
 for i = 1:length(NeuronParams)
-    NeuronParams(i).Input(1).inputType = 'i_efield';
-    NeuronParams(i).Input(1).timeOn = 0;
-    NeuronParams(i).Input(1).timeOff = 100;
-   NeuronParams(i).Input(1).timeDependence = 'oscil'; % have 'oscil' and 'rand' as flags
-% NeuronParams(1).Input(1).inputType = 'i_ou';
-% NeuronParams(1).Input(1).meanInput = 330;
-% NeuronParams(1).Input(1).stdInput = 90;
-% NeuronParams(1).Input(1).tau = 2;
+    NeuronParams(i).Input(2).inputType = 'i_efield';
+    NeuronParams(i).Input(2).timeOn = 0;
+    NeuronParams(i).Input(2).timeOff = 2000;
+   NeuronParams(i).Input(2).timeDependence = 'oscil'; % have 'oscil' and 'rand' as flags
 end
 
 %% Connectivity
@@ -419,16 +418,16 @@ RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 
 if isfield(TissueParams,'R')
-    totNeurons = ceil(pi*((TissueParams.R/1000)^2)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
+    totNeurons = floor(pi*((TissueParams.R/1000)^2)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
 else
-    totNeurons = (TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity;
+    totNeurons = floor(TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity;
 end
 
 RecordingSettings.v_m = 1:1:totNeurons;
 RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 18000;
+RecordingSettings.sampleRate = 2000;
 
-SimulationSettings.simulationTime = 50;
+SimulationSettings.simulationTime = 1000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
@@ -447,36 +446,38 @@ SimulationSettings.fu_stimulation = false;
 runSimulation(params, connections, electrodes);
 Results = loadResults(RecordingSettings.saveDir);
 
+
+
 %% Plot the results
 % Using these parameters, we obtain the following spike raster:
-
-plotvmscatter_stimtutorial_alt_PY
-hold on
-if isa(TissueParams.StimulationField, 'pde.TimeDependentResults')
-    pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
-else
-    pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
-end
+% 
+% plotvmscatter_stimtutorial_alt_PY
+% hold on
+% if isa(TissueParams.StimulationField, 'pde.TimeDependentResults')
+%     pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
+% else
+%     pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
+% end
 
 %%
-hold off
-
-plotvmscatter_stimtutorial_alt_IN
-
-plotvmscatter_stimtutorial_alt_PY
+% hold off
+% 
+% plotvmscatter_stimtutorial_alt_IN
+% 
+% plotvmscatter_stimtutorial_alt_PY
 
 %% Making the directory to save things to
 
-if ~exist('stimstrength','var')
-    stimstrength=round(max(max(TissueParams.StimulationField.NodalSolution)),2);
-end
-
-newdir = strcat('ACStimFigs_',modstl,'_field%d'); % make directory
-newdir = sprintf(newdir,stimstrength); % turns the %d into the value that stimstrength contains
-
-placeholdername = '/Users/a6028564/Documents/MATLAB/figures/'; % file path for where the new directory will go.
-mkdir(placeholdername,newdir) % make the directory in the file path defined above
-dir_name = strcat(placeholdername,newdir); % add new directory name to the file path
+% if ~exist('stimstrength','var')
+%     stimstrength=round(max(max(TissueParams.StimulationField.NodalSolution)),2);
+% end
+% 
+% newdir = strcat('ACStimFigs_',modstl,'_field%d'); % make directory
+% newdir = sprintf(newdir,stimstrength); % turns the %d into the value that stimstrength contains
+% 
+% placeholdername = '/Users/a6028564/Documents/MATLAB/figures/'; % file path for where the new directory will go.
+% mkdir(placeholdername,newdir) % make the directory in the file path defined above
+% dir_name = strcat(placeholdername,newdir); % add new directory name to the file path
 
 
 %%
@@ -493,18 +494,47 @@ if ~isempty(Results.spikes)
     firingRates = groupRates(Results, 10, 50);
     
     firingfilename = ['firingRates' num2str(stimstrength)]; 
-    save(fullfile(dir_name,firingfilename),'firingRates');
+    %save(fullfile(dir_name,firingfilename),'firingRates');
 end
 
+%t=0:SimulationSettings.timeStep:SimulationSettings.simulationTime;
+figure
+hold on
+for i=1:40
+plot(Results.LFP(i,100:end))
+end
+set(gcf,'color','w');
+set(gca, 'FontSize', 16);
+title('Tutorial ACstim: LFP at all electrode positions', 'FontSize', 16)
+xlabel('Time (ms)', 'FontSize', 16)
+ylabel('LFP (mV)', 'FontSize', 16)
+
+% plot the frequency spectrum
+L=length(t); 
+Y=fft(Results.LFP'); % take the fourier transform of each column, flip the LFP results so that the columns are the time points for each electrode.
+P2 = abs(Y./L); % two sided spectrum
+P1 = P2(1:floor(L/2)+1,:);
+P1(2:end-1,:) = 2*P1(2:end-1,:); % single sided spectrum
+f = RecordingSettings.sampleRate*(0:(L/2))/L;
+figure
+for i=1:40
+plot(f,P1)
+hold on
+end
+set(gcf,'color','w');
+set(gca, 'FontSize', 16);
+title('Single-Sided Amplitude Spectrum of all LFP recordings')
+xlabel('f (Hz)')
+ylabel('|LFP(f)|')
 
 %% Saving and movie making
 
 % save all the figures into a folder
-
-figlist=findobj('type','figure');
-for i=1:numel(figlist)
-    saveas(figlist(i),fullfile(dir_name,['figure' num2str(i) '.fig']));
-end
+% 
+% figlist=findobj('type','figure');
+% for i=1:numel(figlist)
+%     saveas(figlist(i),fullfile(dir_name,['figure' num2str(i) '.fig']));
+% end
 
 % make and save movie
 

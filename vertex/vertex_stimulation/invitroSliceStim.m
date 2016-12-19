@@ -11,7 +11,7 @@ figure(1)
 pdegplot(model,'FaceLabels', 'on')
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',5:13,'g',0.0,'q',0.0); % for the
+applyBoundaryCondition(model,'face',3:9,'g',0.0,'q',0.0); % for the
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
 
@@ -32,8 +32,8 @@ elseif isequal(geometryloc,'sidesidestim2.stl')
     applyBoundaryCondition(model,'face',5,'h',1.0,'r',stimstrength); %the 'r' 5.0 sets up a 5(mv?) voltage here
     applyBoundaryCondition(model,'face',3,'h',1.0,'r',-stimstrength);
 else % boundaries for the default point stimulation geometry
-    applyBoundaryCondition(model,'face',[1,2],'h',1.0,'r',stimstrength);
-    applyBoundaryCondition(model,'face',[3,4],'h',1.0,'r',-stimstrength);
+    applyBoundaryCondition(model,'face',[2,10],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[1,11],'h',1.0,'r',-stimstrength);
 end
 
 disp(model.IsTimeDependent)

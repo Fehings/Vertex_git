@@ -30,6 +30,8 @@ if nargin < 4
      B=1; % B controls the oscillation frequency. Set to 1 as default.
 end
 
+B=B/1000; % because vertex deals with miliseconds, so this needs to be converted to miliseconds to actually give the right value in Hz
+
 model = createpde;
 importGeometry(model,geometryloc);
 
@@ -87,13 +89,13 @@ if model.IsTimeDependent
 
 function bcMatrix = myrfun(~,state)
 
-bcMatrix = stimstrength*sin(B.*state.time);
+bcMatrix = stimstrength*sin((B*2*pi).*state.time);
 
 end
 
 function bcMatrix = myrfun2(~,state)
 
-bcMatrix = -stimstrength*sin(B.*state.time);
+bcMatrix = -stimstrength*sin((B*2*pi).*state.time);
 
 end
 

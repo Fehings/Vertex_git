@@ -24,10 +24,10 @@ if ~isempty(InModel)
             %effect at each compartment
             if isa(InModel{iGroup, iIn}, 'InputModel_i_efield')
                 
-                    if isfield(NP(iGroup).Input,'timeDependence')
+                    if isfield(NP(iGroup).Input(iIn),'timeDependence')
                      if strcmp(NP(iGroup).Input(iIn).timeDependence,'rand')
-                        StimParams.activation=cellfun(@(x) x.*StimParams.trns,StimParams.activation,'UniformOutput',0);
-                        max(max(StimParams.activation{1})); % remove semicolon to check that trns is having an effect, and how varying this is.
+                        StimParams.activation=cellfun(@(x) x.*StimParams.trns,StimParams.activationAll,'UniformOutput',0);
+                         %max(max(StimParams.activation{1})) % uncomment to check that trns is having an effect, and how varying this is.
                      end
                     end
                 updateInput(InModel{iGroup, iIn},NP(iGroup).Input(iIn), StimParams.activation{iGroup});

@@ -53,6 +53,7 @@ if SS.parallelSim
 else
   if ~isempty(RS.v_m)
     recordIntra = true;
+    %RS.v_m=floor(RS.v_m);
     intraRecCellIDArr = IDMap.modelIDToCellIDMap(RS.v_m, :);
     numToRecordIntra = size(intraRecCellIDArr, 1);
 
