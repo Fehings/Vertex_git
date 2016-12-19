@@ -156,4 +156,4 @@ end
 % set after every time you call simulate()/simulateParallel().
 parameterCell = {TP, NP, CP, RS, SS};
 fname = [outputDirectory 'parameters.mat'];
-save(fname, 'parameterCell');
+save(fname, 'parameterCell','-v7.3'); % saving in version 7.3 to avoid errors from large files.

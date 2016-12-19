@@ -421,7 +421,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 if isfield(TissueParams,'R')
     totNeurons = ceil(pi*((TissueParams.R/1000)^2)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
 else
-    totNeurons = (TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity;
+    totNeurons = floor(TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity;
 end
 
 RecordingSettings.v_m = 1:1:totNeurons;
