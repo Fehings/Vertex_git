@@ -450,13 +450,13 @@ for i = 17:20
     NeuronParams(i).Input(1).tau = 1;
 end
 
-for i = 1:20
-    NeuronParams(i).Input(2).inputType = 'i_step';
-    NeuronParams(i).Input(2).amplitude = 500;
-    NeuronParams(i).Input(2).timeOn = 1000;
-    NeuronParams(i).Input(2).timeOff= 1005;
-
-end
+% for i = 1:20
+%     NeuronParams(i).Input(2).inputType = 'i_step';
+%     NeuronParams(i).Input(2).amplitude = 500;
+%     NeuronParams(i).Input(2).timeOn = 1000;
+%     NeuronParams(i).Input(2).timeOff= 1005;
+% 
+% end
 
 
 
