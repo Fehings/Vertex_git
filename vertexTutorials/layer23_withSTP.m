@@ -19,8 +19,7 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
-TissueParams.StimulationField = invitroSliceStim('sliceandelectrodelow.stl'); % slicecutoutsmallnew
-%TissueParams.StimulationField = {p,t,u};
+[TissueParams.StimulationField, model] = invitroSliceStim('farapartlectrodesbig.stl',50000); % slicecutoutsmallnew%TissueParams.StimulationField = {p,t,u};
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will

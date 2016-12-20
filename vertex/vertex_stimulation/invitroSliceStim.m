@@ -11,7 +11,7 @@ figure(1)
 pdegplot(model,'FaceLabels', 'on')
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',3:9,'g',0.0,'q',0.0); % for the
+applyBoundaryCondition(model,'face',5:11,'g',0.0,'q',0.0); % for the
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
 
@@ -32,8 +32,8 @@ elseif isequal(geometryloc,'sidesidestim2.stl')
     applyBoundaryCondition(model,'face',5,'h',1.0,'r',stimstrength); %the 'r' 5.0 sets up a 5(mv?) voltage here
     applyBoundaryCondition(model,'face',3,'h',1.0,'r',-stimstrength);
 else % boundaries for the default point stimulation geometry
-    applyBoundaryCondition(model,'face',[2,10],'h',1.0,'r',stimstrength);
-    applyBoundaryCondition(model,'face',[1,11],'h',1.0,'r',-stimstrength);
+    applyBoundaryCondition(model,'face',[2,11,12,1,16],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[4,14,3,13,15],'h',1.0,'r',-stimstrength);
 end
 
 disp(model.IsTimeDependent)
@@ -49,7 +49,19 @@ disp(model.IsTimeDependent)
 result = solvepde(model);
 %  u = result.NodalSolution;
  figure(2)
- pdeplot3D(model,'ColorMapData', result.NodalSolution);
-
+ pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
+ figure(3)
+[X,Y,Z] = meshgrid(0:100:2600,0:100:1800,0:100:700);
+V = interpolateSolution(result,X,Y,Z);
+V = reshape(V,size(X));
+figure
+colormap jet
+contourslice(X,Y,Z,V,1:100:2600,1:100:00,1:100:700)
+xlabel('x')
+ylabel('y')
+zlabel('z')
+colorbar
+view(-11,14)
+axis equal
 end
 
