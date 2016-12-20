@@ -41,11 +41,14 @@ for iGroup = 1:TP.numGroups
  
         for iC = 1:numcompartments
             a = squeeze(midpoint(:,iC,:));
- 
-            v_ext(:,iC) = interpolateSolution(F,a);
+            if isa(TP.StimulationField, 'pde.TimeDependentResults')
+                v_ext(:,iC) = interpolateSolution(F,a,t);
+            else
+                v_ext(:,iC) = interpolateSolution(F,a);
+            end
             if sum(isnan(v_ext(:,iC)))>0
-                disp('Found nans in neuron.')
-                a(:,isnan(v_ext(:,iC)))
+                disp('Warning: Found nans in the extracellular field. Setting them to zero.')
+                v_ext(isnan(v_ext(:,iC)), iC) = 0; 
             end
         end
         for iN = 1:length(midpoint(1,1,:))
