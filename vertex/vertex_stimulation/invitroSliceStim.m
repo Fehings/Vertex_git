@@ -11,7 +11,7 @@ figure(1)
 pdegplot(model,'FaceLabels', 'on')
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',3:9,'g',0.0,'q',0.0); % for the
+applyBoundaryCondition(model,'face',3:6,'g',0.0,'q',0.0); % for the
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
 
@@ -20,6 +20,9 @@ applyBoundaryCondition(model,'face',3:9,'g',0.0,'q',0.0); % for the
 if isequal(geometryloc,'chrismodelmod9.stl') 
     applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',stimstrength); % r value is the input in mv. This is what to vary to change field strenght
     applyBoundaryCondition(model,'face',[7,10:13],'h',1.0,'r',-stimstrength); % also vary it for this one!
+elseif isequal(geometryloc,'largemod1.stl') || isequal(geometryloc,'largemod2.stl')
+    applyBoundaryCondition(model,'face',[2],'h',1.0,'r',stimstrength); % r value is the input in mv. This is what to vary to change field strenght
+    applyBoundaryCondition(model,'face',[1],'h',1.0,'r',-stimstrength); % also vary it for this one!
 elseif isequal(geometryloc,'topbottomstim4.stl') 
     applyBoundaryCondition(model,'face',[1],'h',1.0,'r',stimstrength); % r value is the input in mv. This is what to vary to change field strenght
     applyBoundaryCondition(model,'face',[6],'h',1.0,'r',-stimstrength); % also vary it for this one!

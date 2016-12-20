@@ -63,7 +63,7 @@ else % boundaries for the default point stimulation geometry
 end
 
 
-specifyCoefficients(model,'m',0, 'd',1, 'c',0.2, 'a',0, 'f',0); % the difference here from DC is that d=1, making this time dependent.
+specifyCoefficients(model,'m',0, 'd',1, 'c',0.3, 'a',0, 'f',0); % the difference here from DC is that d=1, making this time dependent.
 
 %% Set initial conditions
 % % this is necessary for a time dependent model

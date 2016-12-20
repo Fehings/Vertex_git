@@ -1,5 +1,5 @@
 model = createpde(); % initialise blank pde model
-importGeometry(model,'sidesidestim2.stl'); % importing stl geometry from within current path, or give .stl file a full path name. Pass this to 'model'
+importGeometry(model,'largemod2.stl'); % importing stl geometry from within current path, or give .stl file a full path name. Pass this to 'model'
 h = pdegplot(model,'FaceLabels','on','FaceAlpha',0.5); % set up plotting parameters and plots geometry to check face labels
 
 %% Apply boundary conditions
@@ -24,8 +24,8 @@ tlist=0:0.03:(2*pi)/abs(0.03); % extract solutions for one period of the sine wa
 
 
     applyBoundaryCondition(model,'face',[3:6],'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond?
-    applyBoundaryCondition(model,'face',[7,8,15:19],'h',1.0,'r',@myrfun); %the 'r' 5.0 sets up a 5(mv?) voltage here
-    applyBoundaryCondition(model,'face',[1,2,9:14],'h',1.0,'r',@myrfun2);
+    applyBoundaryCondition(model,'face',[2],'h',1.0,'r',@myrfun); %the 'r' 5.0 sets up a 5(mv?) voltage here
+    applyBoundaryCondition(model,'face',[2],'h',1.0,'r',@myrfun2);
 
 
 
@@ -146,12 +146,12 @@ end
 
 function bcMatrix = myrfun(~,state) 
 
-bcMatrix = sin(0.065*state.time); %multiply state.time by the value set to B
+bcMatrix = sin(state.time); %multiply state.time by the value set to B
 
 end
 
 function bcMatrix = myrfun2(~,state)
 
-bcMatrix = -sin(0.065*state.time); %multiply state.time by the value set to B
+bcMatrix = -sin(state.time); %multiply state.time by the value set to B
 
 end

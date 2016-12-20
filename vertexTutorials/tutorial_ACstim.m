@@ -23,13 +23,13 @@ TissueParams.maxZOverlap = [-1 , -1];
 %% Show VERTEX where the electric field solution and mesh are
 
 stimstrength=50;
-B=40; % the frequency in Hz.
+B=20; % the frequency in Hz.
 SimulationSettings.timeStep = 0.03125;
 
 %[TissueParams.StimulationField,model] = invitroSliceStim('topbottomstim2.stl',stimstrength);
-%[TissueParams.StimulationField,model] = invitroSliceStimAC('topbottomstim2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
-load('AC_10hz_str100_topbot2.mat') %'ACbasicModResults')
-TissueParams.StimulationField= AC_10hz_str100_topbot2; %ACbasicModResults;
+[TissueParams.StimulationField,model] = invitroSliceStimAC('topbottomstim2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
+%load('AC_10hz_str100_topbot2.mat') %'ACbasicModResults')
+%TissueParams.StimulationField= AC_10hz_str100_topbot2; %ACbasicModResults;
 
 %%
 % However, we need to set the number of layers to 3 and make sure we set

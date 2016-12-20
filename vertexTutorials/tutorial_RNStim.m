@@ -259,12 +259,12 @@ NeuronParams(6).Input(1).tau = 1;
 
 % If using the above random inputs as input 1, need to change the below
 % inputs for efield to 2, e.g. NeuronParams(i).Input(2)...
-% for i = 1:length(NeuronParams)
-%     NeuronParams(i).Input(2).inputType = 'i_efield';
-%     NeuronParams(i).Input(2).timeOn = 0;
-%     NeuronParams(i).Input(2).timeOff = 1000;
-%    NeuronParams(i).Input(2).timeDependence = 'rand'; % have 'oscil' and 'rand' as flags
-% end
+for i = 1:length(NeuronParams)
+    NeuronParams(i).Input(2).inputType = 'i_efield';
+    NeuronParams(i).Input(2).timeOn = 0;
+    NeuronParams(i).Input(2).timeOff = 1000;
+   NeuronParams(i).Input(2).timeDependence = 'rand'; % have 'oscil' and 'rand' as flags
+end
 
 %% Connectivity
 % Connectivity parameteres are specified as before, except that now we have
@@ -462,9 +462,9 @@ Results = loadResults(RecordingSettings.saveDir);
 %%
 % hold off
 % 
-% plotvmscatter_stimtutorial_alt_IN
+ plotvmscatter_stimtutorial_alt_IN
 % 
-% plotvmscatter_stimtutorial_alt_PY
+plotvmscatter_stimtutorial_alt_PY
 
 %% Making the directory to save things to
 
@@ -497,35 +497,35 @@ if ~isempty(Results.spikes)
     %save(fullfile(dir_name,firingfilename),'firingRates');
 end
 
-t=0:SimulationSettings.timeStep:SimulationSettings.simulationTime;
+%t=0:SimulationSettings.timeStep:SimulationSettings.simulationTime;
 figure
 hold on
 for i=1:40
-plot(t(101:end),Results.LFP(i,100:end))
+plot(Results.LFP(i,100:end))
 end
 set(gcf,'color','w');
 set(gca, 'FontSize', 16);
-title('Tutorial ACstim: LFP at all electrode positions', 'FontSize', 16)
+title('Tutorial RNstim: LFP at all electrode positions', 'FontSize', 16)
 xlabel('Time (ms)', 'FontSize', 16)
 ylabel('LFP (mV)', 'FontSize', 16)
 
 % plot the frequency spectrum
-L=length(t); 
-Y=fft(Results.LFP'); % take the fourier transform of each column, flip the LFP results so that the columns are the time points for each electrode.
-P2 = abs(Y./L); % two sided spectrum
-P1 = P2(1:floor(L/2)+1,:);
-P1(2:end-1,:) = 2*P1(2:end-1,:); % single sided spectrum
-f = RecordingSettings.sampleRate*(0:(L/2))/L;
-figure
-for i=1:40
-plot(f,P1)
-hold on
-end
-set(gcf,'color','w');
-set(gca, 'FontSize', 16);
-title('Single-Sided Amplitude Spectrum of all LFP recordings')
-xlabel('f (Hz)')
-ylabel('|LFP(f)|')
+% L=length(t); 
+% Y=fft(Results.LFP'); % take the fourier transform of each column, flip the LFP results so that the columns are the time points for each electrode.
+% P2 = abs(Y./L); % two sided spectrum
+% P1 = P2(1:floor(L/2)+1,:);
+% P1(2:end-1,:) = 2*P1(2:end-1,:); % single sided spectrum
+% f = RecordingSettings.sampleRate*(0:(L/2))/L;
+% figure
+% for i=1:40
+% plot(f,P1)
+% hold on
+% end
+% set(gcf,'color','w');
+% set(gca, 'FontSize', 16);
+% title('Single-Sided Amplitude Spectrum of all LFP recordings')
+% xlabel('f (Hz)')
+% ylabel('|LFP(f)|')
 
 %% Saving and movie making
 

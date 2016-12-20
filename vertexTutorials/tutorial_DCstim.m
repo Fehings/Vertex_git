@@ -26,7 +26,7 @@ stimstrength=100;
 B=40; % the frequency in Hz.
 SimulationSettings.timeStep = 0.03125;
 
-[TissueParams.StimulationField,model] = invitroSliceStim('topbottomstim2.stl',stimstrength);
+[TissueParams.StimulationField,model] = invitroSliceStim('largemod2.stl',stimstrength);
 %[TissueParams.StimulationField,model] = invitroSliceStimAC('topbottomstim2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
 %load('AC_10hz_str100_topbot2.mat') %'ACbasicModResults')
 %TissueParams.StimulationField= AC_10hz_str100_topbot2; %ACbasicModResults;
@@ -450,21 +450,21 @@ Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results
 % Using these parameters, we obtain the following spike raster:
-% 
-% plotvmscatter_stimtutorial_alt_PY
-% hold on
-% if isa(TissueParams.StimulationField, 'pde.TimeDependentResults')
-%     pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
-% else
-%     pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
-% end
 
-%%
-% hold off
-% 
-% plotvmscatter_stimtutorial_alt_IN
-% 
-% plotvmscatter_stimtutorial_alt_PY
+plotvmscatter_stimtutorial_alt_PY
+hold on
+if isa(TissueParams.StimulationField, 'pde.TimeDependentResults')
+    pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
+else
+    pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
+end
+
+%
+hold off
+
+plotvmscatter_stimtutorial_alt_IN
+
+plotvmscatter_stimtutorial_alt_PY
 
 %% Making the directory to save things to
 
@@ -511,7 +511,7 @@ xlabel('Time (ms)', 'FontSize', 16)
 ylabel('LFP (mV)', 'FontSize', 16)
 
 % plot the frequency spectrum
-L=length(t); 
+L=1:size(Results.LFP,2); 
 Y=fft(Results.LFP'); % take the fourier transform of each column, flip the LFP results so that the columns are the time points for each electrode.
 P2 = abs(Y./L); % two sided spectrum
 P1 = P2(1:floor(L/2)+1,:);
