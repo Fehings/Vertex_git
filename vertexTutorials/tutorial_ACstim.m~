@@ -26,7 +26,8 @@ stimstrength=50;
 B=20; % the frequency in Hz.
 SimulationSettings.timeStep = 0.03125;
 
-[TissueParams.StimulationField,model] = invitroSliceStimAC('largemod2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
+%[TissueParams.StimulationField,model] = invitroSliceStim('topbottomstim2.stl',stimstrength);
+%[TissueParams.StimulationField,model] = invitroSliceStimAC('largemod2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
 %load('AC_10hz_str100_topbot2.mat') %'ACbasicModResults')
 %TissueParams.StimulationField= AC_10hz_str100_topbot2; %ACbasicModResults;
 
@@ -450,13 +451,13 @@ Results = loadResults(RecordingSettings.saveDir);
 %% Plot the results
 % Using these parameters, we obtain the following spike raster:
 % 
-plotvmscatter_stimtutorial_alt_PY
-hold on
-if isa(TissueParams.StimulationField, 'pde.TimeDependentResults')
-    pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
-else
-    pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
-end
+% plotvmscatter_stimtutorial_alt_PY
+% hold on
+% if isa(TissueParams.StimulationField, 'pde.TimeDependentResults')
+%     pdeplot3D(model,'ColorMapData',mean(TissueParams.StimulationField.NodalSolution,2),'FaceAlpha',0.2);
+% else
+%     pdeplot3D(model,'ColorMapData',TissueParams.StimulationField.NodalSolution,'FaceAlpha',0.2);
+% end
 
 %%
 % hold off

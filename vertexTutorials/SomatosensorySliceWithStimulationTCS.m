@@ -19,8 +19,8 @@ TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
-TissueParams.layerBoundaryArr = [% [1217, 715, 525, 0];
-TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl'); % slicecutoutsmallnew
+TissueParams.layerBoundaryArr = [650, 380, 200, 0]; % [1217, 715, 525, 0];
+TissueParams.StimulationField = invitroSliceStim('largemod2.stl'); % slicecutoutsmallnew
 %%
 %Calculating neuron proportions. 
 
@@ -619,7 +619,14 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:100:19472;
+if isfield(TissueParams,'R')
+    totNeurons = floor(pi*((TissueParams.R/1000)^2)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
+else
+    totNeurons = floor(TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity;
+end
+
+RecordingSettings.v_m = 1:1:totNeurons;
+%RecordingSettings.v_m = 1:100:19472;
 RecordingSettings.maxRecTime = 3000;
 RecordingSettings.sampleRate = 2000;
 %RecordingSettings.I_syn = 1:2:5000;

@@ -19,7 +19,7 @@ TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
-TissueParams.layerBoundaryArr = [% [1217, 715, 525, 0];
+TissueParams.layerBoundaryArr = [650, 380, 200, 0]; % [1217, 715, 525, 0];
 TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl'); % slicecutoutsmallnew
 %%
 %Calculating neuron proportions. 

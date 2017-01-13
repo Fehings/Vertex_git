@@ -74,9 +74,8 @@ for iGroup = 1:TP.numGroups
            F,t, NeuronModel, NeuronParams,neighbour1,neighbour2,neighbour3);
         elseif strcmp(func,'mirror')
             if isa(TP.StimulationField, 'pde.TimeDependentResults')
-               for ii = 1:size(v_ext,2) % step through time
-                   v_m{iGroup}(iComp,:,ii) = - v_ext(:,ii,iComp) + neuronmean(ii);
-               end
+               
+                v_m{iGroup}(iComp,:,:) = - v_ext(:,ii,iComp) + neuronmean(:,ii);
             else
                 v_m{iGroup}(iComp,:) = - v_ext(:, iComp) + neuronmean;
             end
