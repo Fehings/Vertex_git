@@ -20,6 +20,10 @@ applyBoundaryCondition(model,'face',3:6,'g',0.0,'q',0.0); % for the
 if isequal(geometryloc,'chrismodelmod9.stl') 
     applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',stimstrength); % r value is the input in mv. This is what to vary to change field strenght
     applyBoundaryCondition(model,'face',[7,10:13],'h',1.0,'r',-stimstrength); % also vary it for this one!
+elseif isequal(geometryloc, 'catvisblend1.stl')
+    applyBoundaryCondition(model,'face',1:6,'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond?
+    applyBoundaryCondition(model,'face',2,'h',1.0,'r',stimstrength); %the 'r' 5.0 sets up a 5(mv?) voltage here
+    applyBoundaryCondition(model,'face',1,'h',1.0,'r',-stimstrength);
 elseif isequal(geometryloc,'largemod1.stl') || isequal(geometryloc,'largemod2.stl')
     applyBoundaryCondition(model,'face',[2],'h',1.0,'r',stimstrength); % r value is the input in mv. This is what to vary to change field strenght
     applyBoundaryCondition(model,'face',[1],'h',1.0,'r',-stimstrength); % also vary it for this one!

@@ -12,9 +12,9 @@
 %% Tissue parameters
 % Our tissue parameters are similar to the previous tutorials:
 
-TissueParams.X = 2000; %2000
+TissueParams.X = 2200; %2000
 TissueParams.Y = 400;  %400
-TissueParams.Z = 650;  %650
+TissueParams.Z = 1240;  %650
 TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
@@ -22,11 +22,11 @@ TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are
 
-stimstrength=100;
+stimstrength=0;
 B=40; % the frequency in Hz.
 SimulationSettings.timeStep = 0.03125;
 
-[TissueParams.StimulationField,model] = invitroSliceStim('largemod2.stl',stimstrength);
+[TissueParams.StimulationField,model] = invitroSliceStim('catvisblend1.stl',stimstrength);
 %[TissueParams.StimulationField,model] = invitroSliceStimAC('topbottomstim2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
 %load('AC_10hz_str100_topbot2.mat') %'ACbasicModResults')
 %TissueParams.StimulationField= AC_10hz_str100_topbot2; %ACbasicModResults;
@@ -37,7 +37,7 @@ SimulationSettings.timeStep = 0.03125;
 % thick layer 4 and a 150 micron thick layer 5:
 
 TissueParams.numLayers = 3;
-TissueParams.layerBoundaryArr = [650, 450, 150, 0];
+TissueParams.layerBoundaryArr = [1240, 950, 650, 0];
 
 %%
 % As the total Z-depth of the model is 650, we specify the top boundary of our
@@ -420,7 +420,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 if isfield(TissueParams,'R')
     totNeurons = floor(pi*((TissueParams.R/1000)^2)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
 else
-    totNeurons = floor(TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity;
+    totNeurons = floor((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
 end
 
 RecordingSettings.v_m = 1:1:totNeurons;

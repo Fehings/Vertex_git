@@ -33,7 +33,7 @@ NP(1).trunkID = 2;
 NP(1).tuftID = 5;
 NP(1).axisAligned = 'z';
 NP(1).Input(1).inputType = 'i_ou';
-NP(1).Input(1).meanInput = 250; % original value at 360 for gamma oscillations
+NP(1).Input(1).meanInput = 220; % original value at 360 for gamma oscillations
 NP(1).Input(1).tau = 2;
 NP(1).Input(1).stdInput = 110;
 
@@ -68,7 +68,7 @@ NP(2).proximalID = [2 5];
 NP(2).distalID = [3 4 6 7];
 NP(2).axisAligned = '';
 NP(2).Input(1).inputType = 'i_ou';
-NP(2).Input(1).meanInput = 200;
+NP(2).Input(1).meanInput = 100; %200
 NP(2).Input(1).tau = .8;
 NP(2).Input(1).stdInput = 60;
 
@@ -82,7 +82,7 @@ NP(3).tau_w = 75;
 NP(3).b = 75;
 NP(3).v_reset = -62;
 NP(3).Input(1).inputType = 'i_ou';
-NP(3).Input(1).meanInput = 160;
+NP(3).Input(1).meanInput = 120;
 NP(3).Input(1).tau = .8;
 NP(3).Input(1).stdInput = 40;
 
@@ -97,7 +97,7 @@ NP(4).b = 40;
 NP(4).v_reset = -70;
 NP(4).somaLayer = 3;
 NP(4).Input(1).inputType = 'i_ou';
-NP(4).Input(1).meanInput = 205;
+NP(4).Input(1).meanInput = 185;
 NP(4).Input(1).tau = 2;
 NP(4).Input(1).stdInput = 50;
 
@@ -107,7 +107,7 @@ NP(6) = NP(1);
 NP(6).modelProportion = 0.0967;
 NP(6).somaLayer = 3;
 NP(6).Input(1).inputType = 'i_ou';
-NP(6).Input(1).meanInput = 250;
+NP(6).Input(1).meanInput = 200;
 NP(6).Input(1).tau = 2;
 NP(6).Input(1).stdInput = 70;
 
@@ -154,7 +154,7 @@ NP(9).trunkID = 2;
 NP(9).tuftID = 6;
 NP(9).axisAligned = 'z';
 NP(9).Input(1).inputType = 'i_ou';
-NP(9).Input(1).meanInput = 1000; % original value at 860 for gamma oscillations
+NP(9).Input(1).meanInput = 590; % original value at 860 for gamma oscillations
 NP(9).Input(1).tau = 2;
 NP(9).Input(1).stdInput = 260;
 
@@ -180,7 +180,7 @@ NP(13).b = 60;
 NP(13).v_reset = -65;
 NP(13).somaLayer = 5;
 NP(13).Input(1).inputType = 'i_ou';
-NP(13).Input(1).meanInput = 660;
+NP(13).Input(1).meanInput = 540;
 NP(13).Input(1).tau = 2;
 NP(13).Input(1).stdInput = 170;
 

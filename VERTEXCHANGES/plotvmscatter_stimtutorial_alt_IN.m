@@ -19,6 +19,8 @@ end
 
 endv_m = Results.v_m(:,timestop-1);
 diffv_m = endv_m - Results.v_m(:,1);
+size(diffv_m)
+size(interneuronids)
 pyramidalv_ms = diffv_m(interneuronids);
 pars.toPlot = interneuronids;
 pars.figureID = 3;
