@@ -100,6 +100,16 @@ if isfield(RS, 'apre_syn')
 else
     apre_syn = false;
 end
+if isfield(RS, 'apost_syn')
+    apost_syn = RS.apost_syn;
+else
+    apost_syn = false;
+end
+if isfield(RS, 'weightsRecording')
+    weights = RS.weightsRecording;
+else
+    weights = false;
+end
 
 % Are we to calculate the LFP offline?
 if isfield(RS, 'LFPoffline') && RS.LFPoffline
@@ -159,7 +169,15 @@ if I_syn
 else
   I_syn_recording = [];
 end
-
+if weights
+  weights_recording = zeros(length(RS.v_m), simulationSamples);
+  if SS.parallelSim
+    intraCount = 0;
+    intraIDmap = zeros(length(v_m), 1);
+  end
+else
+  v_m_recording = [];
+end
 if apre_syn
   apre_syn_recording = cell(TP.numGroups, 1);
   for iGroup=1:TP.numGroups
@@ -172,7 +190,18 @@ if apre_syn
 else
   apre_syn_recording = [];
 end
-
+if apost_syn
+  apost_syn_recording = cell(TP.numGroups, 1);
+  for iGroup=1:TP.numGroups
+    apost_syn_recording{iGroup} = zeros(length(RS.apost_syn), simulationSamples);
+  end
+  if SS.parallelSim
+    apost_synCount = 0;
+    apost_synIDmap = zeros(length(apost_syn), 1);
+  end
+else
+  apre_post_recording = [];
+end
 
 sampleCount = 0;
 
@@ -190,7 +219,6 @@ for iSaves = 1:numSaves
     ff = fields(loadedData);
     
     RecordingVars = loadedData.(ff{1});
-    
     % Load
     if v_m
       if SS.parallelSim

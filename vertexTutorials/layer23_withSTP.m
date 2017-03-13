@@ -110,8 +110,8 @@ NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
 
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 100;
-NeuronParams(1).Input(1).stdInput =50;
+NeuronParams(1).Input(1).meanInput = 60;
+NeuronParams(1).Input(1).stdInput =20;
 NeuronParams(1).Input(1).tau = 2;
 
 %%
@@ -190,14 +190,14 @@ NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 
 NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 50;
+NeuronParams(2).Input(1).meanInput = 30;
 NeuronParams(2).Input(1).tau = 1;
-NeuronParams(2).Input(1).stdInput = 25;
+NeuronParams(2).Input(1).stdInput = 15;
 
 for i = 1:length(NeuronParams)
     NeuronParams(i).Input(2).inputType = 'i_efield';
     NeuronParams(i).Input(2).timeOn = 300;
-    NeuronParams(i).Input(2).timeOff = 310;
+    NeuronParams(i).Input(2).timeOff = 305;
 end
 
 
@@ -207,15 +207,13 @@ end
 % two groups. First we set the parameters for connections from group 1 (the
 % pyramidal cells) to itself:
 
-PYScaler = 0.1;
-INScaler = 0.8;
 % 
 % 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'g_stp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
- ConnectionParams(1).weights{1} = 0.01;
+ ConnectionParams(1).weights{1} = 0.05;
 ConnectionParams(1).tau{1} = 1;
 ConnectionParams(1).facilitation{1} = 0;
 ConnectionParams(1).depression{1} = 1;
@@ -226,7 +224,7 @@ ConnectionParams(1).tF{1} = 17;
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 600;
 ConnectionParams(1).synapseType{2} = 'g_stp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(1).weights{2} = 0.05;
+ConnectionParams(1).weights{2} = 0.1;
 ConnectionParams(1).tau{2} = 1;
 ConnectionParams(1).facilitation{2} = 0;
 ConnectionParams(1).depression{2} = 1;
@@ -338,7 +336,7 @@ close all;
 %%
 % Using these parameters, we obtain the following figure:
 
-    rasterFigure = plotSpikeRaster(Results, rasterParams);
+    %rasterFigure = plotSpikeRaster(Results, rasterParams);
 
 %%
 % We can add some further fields to the parameter structure for enhanced

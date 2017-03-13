@@ -29,7 +29,46 @@ end
 if ~isfield(RS,'apre_syn')
     RS.apre_syn = [];
 end
+if ~isfield(RS,'apost_syn')
+    RS.apost_syn = [];
+end
 
+if ~isfield(RS, 'weights_preN_IDs')
+    RS.weights_preN_IDs = [];
+end
+
+% weights recording
+if SS.parallelSim
+  weightsRecLab = SS.neuronInLab(RS.weights_preN_IDs);
+  spmd
+    if ismember(labindex(), unique(weightsRecLab))
+      recordWeights = true;
+      p_weightsRecModelIDArr = RS.v_m(weightsRecLab == labindex());
+
+      p_numToRecordWeights = size(p_weightsRecModelIDArr, 1);
+      p_weightsRecording = cell(p_numToRecordWeights, RS.maxRecSamples);
+      RecordingVars.weightsRecCellIDArr = p_weightsRecModelIDArr;
+      RecordingVars.weightsRecording = p_weightsRecording;
+    else
+      recordWeights = false;
+    end
+    RecordingVars.recordWeights = recordWeights;
+  end
+else
+  if ~isempty(RS.weights_preN_IDs)
+    recordWeights = true;
+    %RS.v_m=floor(RS.v_m);
+    numToRecordWeights = size(RS.weights_preN_IDs, 1);
+    
+    weightsRecording = cell(numToRecordWeights, round(RS.maxRecSamples));
+    
+    RecordingVars.weightsRecCellIDArr = RS.weights_preN_IDs;
+    RecordingVars.weightsRecording = weightsRecording;
+  else
+    recordWeights = false;
+  end
+  RecordingVars.recordWeights = recordWeights;
+end
 
 % Intracellular recording:
 if SS.parallelSim
@@ -56,8 +95,7 @@ else
     %RS.v_m=floor(RS.v_m);
     intraRecCellIDArr = IDMap.modelIDToCellIDMap(RS.v_m, :);
     numToRecordIntra = size(intraRecCellIDArr, 1);
-
-    intraRecording = zeros(numToRecordIntra, RS.maxRecSamples);
+    intraRecording = zeros(numToRecordIntra, round(RS.maxRecSamples));
     
     RecordingVars.intraRecCellIDArr = intraRecCellIDArr;
     RecordingVars.intraRecording = intraRecording;
@@ -133,6 +171,40 @@ else
   end
   RecordingVars.recordapre_syn = recordapre_syn;
 end
+
+if SS.parallelSim
+apost_SynRecLab = SS.neuronInLab(RS.apost_syn);
+  spmd
+    if ismember(labindex(), unique(apost_SynRecLab))
+      recordapost_syn = true;
+      p_apost_synRecModelIDArr = RS.apre_syn(apost_SynRecLab == labindex());
+      p_apost_synRecCellIDArr = ...
+        IDMap.modelIDToCellIDMap(p_apost_synRecModelIDArr, :);
+      p_numToRecordapost_syn = size(p_apost_synRecModelIDArr, 1);
+      p_apost_synRecording = cell(p_numToRecordapost_syn, TP.numGroups, RS.maxRecSamples);
+      
+      RecordingVars.apost_synRecCellIDArr = p_apost_synRecCellIDArr;
+      RecordingVars.apost_synRecording = p_apost_synRecording;
+    else
+      recordapost_syn = false;
+    end
+    RecordingVars.recordapost_syn = recordapost_syn;
+  end
+else
+  if ~isempty(RS.apre_syn)
+    recordapost_syn = true;
+   apost_synRecCellIDArr = IDMap.modelIDToCellIDMap(RS.apost_syn, :);
+    numToRecordapost_syn = size(apost_synRecCellIDArr, 1);
+    apost_synRecording = zeros(numToRecordapost_syn, TP.numGroups, RS.maxRecSamples);
+    
+    RecordingVars.apost_synRecCellIDArr = apost_synRecCellIDArr;
+    RecordingVars.apost_synRecording = apost_synRecording;
+  else
+    recordapost_syn = false;
+  end
+  RecordingVars.recordapost_syn = recordapost_syn;
+end
+
 % Synaptic current recording:
 if SS.parallelSim
   I_SynRecLab = SS.neuronInLab(RS.I_syn);

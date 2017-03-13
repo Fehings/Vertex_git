@@ -13,14 +13,14 @@
 
 TissueParams.X = 2000;
 TissueParams.Y = 400;
-TissueParams.Z = 650; % 1217 
+TissueParams.Z = 1217; % 1217 
 TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
-TissueParams.layerBoundaryArr = [% [1217, 715, 525, 0];
-TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl'); % slicecutoutsmallnew
+TissueParams.layerBoundaryArr =  [1217, 715, 525, 0];
+TissueParams.StimulationField = invitroSliceStim('layer4stim.stl',100000); % slicecutoutsmallnew
 %%
 %Calculating neuron proportions. 
 
@@ -409,7 +409,7 @@ NeuronParams(20).modelProportion = modpropL5MC;
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
 NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 80;
+NeuronParams(1).Input(1).stdInput = 50;
 NeuronParams(1).Input(1).tau = 2;
 
 %For layer 2/3 Inhibitory cells
@@ -430,15 +430,15 @@ end
 % %For layer 4 Inhibitory cells
 for i = 9:12
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).meanInput = 220;
     NeuronParams(i).Input(1).stdInput = 20;
     NeuronParams(i).Input(1).tau = 1;
 end
 % %For layer 5 Excitatory cells
 for i = 13:16
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 830;
-    NeuronParams(i).Input(1).stdInput = 160;
+    NeuronParams(i).Input(1).meanInput = 700;
+    NeuronParams(i).Input(1).stdInput = 30;
     NeuronParams(i).Input(1).tau = 2;
 end
 
@@ -455,12 +455,12 @@ end
 volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.29;
 volumemultiplier = 1;
 for i = 1:20
-    NeuronParams(i).Input(2).inputType = 'i_efield';
+    NeuronParams(i).Input(2).inputType = 'i_efieldpp';
 
     NeuronParams(i).Input(2).amplitude = 0;
 
-     NeuronParams(i).Input(2).timeOn = 1000;
-     NeuronParams(i).Input(2).timeOff = 1005;
+     NeuronParams(i).Input(2).timeOn = 2500;
+     NeuronParams(i).Input(2).timeOff = 2505;
 end
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 
@@ -484,11 +484,14 @@ for i = 1:20
             ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
+            ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4});
         catch %if there is no description in the file then set zero connections
             disp(['No connections between: ' ConnectivityNames{i} '_' ConnectivityNames{j}]); 
             ConnectionParams(i).numConnectionsToAllFromOne{j} = [0,0,0];
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = 0;
+            ConnectionParams(i).tau{j} = 10 ;
+            
         end
         
     end
@@ -509,7 +512,7 @@ ConnectionParams(1).axonArborLimit = [600, 400, 200];
 %for each post synaptic neuron group
 for j = 1:20
     ConnectionParams(1).targetCompartments{j} = NeuronParams(j).dendritesID;
-    ConnectionParams(1).tau{j} = 2;
+    %ConnectionParams(1).tau{j} = 2;
     ConnectionParams(1).E_reversal{j} = 0;
 end
 
@@ -523,7 +526,7 @@ end
 for i = 2:4
     for j = 1:20
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
-        ConnectionParams(i).tau{j} = 6;
+       % ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
     end
 end
@@ -531,7 +534,7 @@ end
 %For the martinotti cells - dendrite targetting INs
 for j = 1:20
     ConnectionParams(5).targetCompartments{j} = NeuronParams(j).dendritesID;
-    ConnectionParams(5).tau{j} = 2;
+    %ConnectionParams(5).tau{j} = 2;
     ConnectionParams(5).E_reversal{j} = -70;
 end
 
@@ -544,7 +547,7 @@ for i = 6:8
     ConnectionParams(i).axonArborLimit = [400, 600, 400];
     for j = 1:20
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).dendritesID;
-        ConnectionParams(i).tau{j} = 2;
+       % ConnectionParams(i).tau{j} = 2;
         ConnectionParams(i).E_reversal{j} = 0;
     end
 end
@@ -557,14 +560,14 @@ end
 for i = 9:11
     for j = 1:20
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
-        ConnectionParams(i).tau{j} = 6;
+       % ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
     end
 end
 %for Martinotti cells 
 for j = 1:20
     ConnectionParams(12).targetCompartments{j} = NeuronParams(j).dendritesID;
-    ConnectionParams(12).tau{j} = 6;
+    %ConnectionParams(12).tau{j} = 6;
     ConnectionParams(12).E_reversal{j} = -70;
 end
 
@@ -577,7 +580,7 @@ for i = 13:16
     ConnectionParams(i).axonArborLimit = [200, 400, 600];
     for j = 1:20
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).dendritesID;
-        ConnectionParams(i).tau{j} = 2;
+       % ConnectionParams(i).tau{j} = 2;
         ConnectionParams(i).E_reversal{j} = 0;
     end
 end
@@ -592,7 +595,7 @@ end
 for i = 17:19
     for j = 1:20
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
-        ConnectionParams(i).tau{j} = 6;
+       % ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
     end
 end
@@ -600,7 +603,7 @@ end
 %for martinotti cells
 for j = 1:20
     ConnectionParams(20).targetCompartments{j} = NeuronParams(j).dendritesID;
-    ConnectionParams(20).tau{j} = 6;
+    %ConnectionParams(20).tau{j} = 6;
     ConnectionParams(20).E_reversal{j} = -70;
 end
 
@@ -634,7 +637,7 @@ RecordingSettings.sampleRate = 2000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2000;
+SimulationSettings.simulationTime = 3000;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 

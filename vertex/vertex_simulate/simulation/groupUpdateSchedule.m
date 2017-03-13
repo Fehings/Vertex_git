@@ -1,5 +1,5 @@
 function [NeuronModel, SynModel, InModel] = ...
-  groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup, StimParams)
+  groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup)
 
 % update synaptic conductances/currents according to buffers
 for iSyn = 1:size(SynModel, 2)
@@ -15,6 +15,7 @@ if NP(iGroup).numCompartments > 1
 end
 
 
+    
 
 % update inputs
 if ~isempty(InModel)
@@ -22,7 +23,7 @@ if ~isempty(InModel)
         if ~isempty(InModel{iGroup, iIn})
             %if it is an electric field input pass it the electric field
             %effect at each compartment
-            if isa(InModel{iGroup, iIn}, 'InputModel_i_efield')
+            if isa(InModel{iGroup, iIn}, 'InputModel_i_efield') || isa(InModel{iGroup, iIn}, 'InputModel_i_efieldpp')
                 
                     if isfield(NP(iGroup).Input(iIn),'timeDependence')
                      if strcmp(NP(iGroup).Input(iIn).timeDependence,'rand')

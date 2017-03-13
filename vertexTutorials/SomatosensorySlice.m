@@ -457,8 +457,8 @@ end
 
 
 
-volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.8;
-%volumemultiplier = 1.5;
+%volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.8;
+volumemultiplier = 1;
 
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 

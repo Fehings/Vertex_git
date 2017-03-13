@@ -16,11 +16,14 @@ TissueParams.Z = 650;
 TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
-Tissueresistance = 1/0.33 * (0.02*0.004*0.006)/0.00050;
+%Tissueresistance = 1/0.33 * (0.02*0.004*0.006)/0.00050;
 TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are
-TissueParams.StimulationField = invitroSliceStim('slicecutoutsmallnew.stl'); % slicecutoutsmallnew
+TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
+
+TissueParams.StimulationOn = [10 20];
+TissueParams.StimulationOff = [14 24];
 %%
 % However, we need to set the number of layers to 3 and make sure we set
 % the layer boundaries to create a 200 micron thick layer 3, a 300 micron
@@ -47,7 +50,7 @@ TissueParams.layerBoundaryArr = [650, 450, 150, 0];
 
 NeuronParams(1).somaLayer = 1; % Pyramidal cells in layer 3
 NeuronParams(1).modelProportion = 0.4;
-NeuronParams(1).neuronModel = 'adex';
+NeuronParams(1).neuronModel = 'passive';
 NeuronParams(1).V_t = -50;
 NeuronParams(1).delta_t = 2;
 NeuronParams(1).a = 2.6;
@@ -99,7 +102,7 @@ NeuronParams(1).apicalID = [2 3 4 5];
 NeuronParams(2).somaLayer = 1; % Basket cells in layer 3
 NeuronParams(2).modelProportion = 0.08;
 NeuronParams(2).axisAligned = '';
-NeuronParams(2).neuronModel = 'adex';
+NeuronParams(2).neuronModel = 'passive';
 NeuronParams(2).V_t = -50;
 NeuronParams(2).delta_t = 2;
 NeuronParams(2).a = 0.04;
@@ -216,16 +219,6 @@ NeuronParams(6).modelProportion = 0.02;
 
 %%
 % The neurons to be affected by the field need to be given an i_efield input type:
-
-for i = 1:length(NeuronParams)
-    NeuronParams(i).Input(1).inputType = 'i_efield';
-    NeuronParams(i).Input(1).timeOn = 1;
-    NeuronParams(i).Input(1).timeOff = 10;
-% NeuronParams(1).Input(1).inputType = 'i_ou';
-% NeuronParams(1).Input(1).meanInput = 330;
-% NeuronParams(1).Input(1).stdInput = 90;
-% NeuronParams(1).Input(1).tau = 2;
-end
 
 %% Connectivity
 % Connectivity parameteres are specified as before, except that now we have
@@ -377,16 +370,14 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:1:10400;
+RecordingSettings.v_m = 1:10:10400;
 RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 18000;
+RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 50;
-SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.simulationTime = 25;
+SimulationSettings.timeStep = 0.001;
+SimulationSettings.parallelSim = true;
 
-SimulationSettings.ef_stimulation = true;
-SimulationSettings.fu_stimulation = false;
 
 
 %% Run simulation and load results

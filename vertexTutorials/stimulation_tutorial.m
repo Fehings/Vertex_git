@@ -19,7 +19,7 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 
 %% Show VERTEX where the electric field solution and mesh are.
-TissueParams.StimulationField = {p, t, u};
+TissueParams.StimulationField = invitroSliceStim('farapartelectrodesbig.stl',100);
 %%
 % However, we need to set the number of layers to 3 and make sure we set
 % the layer boundaries to create a 200 micron thick layer 3, a 300 micron
@@ -378,8 +378,6 @@ SimulationSettings.simulationTime = 50;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
-SimulationSettings.ef_stimulation = true;
-SimulationSettings.fu_stimulation = false;
 
 
 %% Run simulation and load results

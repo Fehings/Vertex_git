@@ -21,7 +21,7 @@ for iGroup = 1:numGroups
       ( ~isfield(NP(iGroup),'g_l') || isempty(NP(iGroup).g_l) )
     [l, d] = getDimensionsInCentimetres(NP(iGroup));
     R_M = NP(iGroup).R_M ./ (pi .* l .* d); % in Ohms
-    NP(iGroup).g_l = 10^9 ./ R_M; % in picoSiemens
+    NP(iGroup).g_l = (10^9 ./ R_M); % in picoSiemens
   end
   
   % if g_ax is required and not supplied, calculate it and the adjacent
@@ -29,11 +29,16 @@ for iGroup = 1:numGroups
   if sum(strcmp('g_ax', requiredParams)) ~= 0 && ...
       ( ~isfield(NP(iGroup),'g_ax') || isempty(NP(iGroup).g_ax) )
     [l, d] = getDimensionsInCentimetres(NP(iGroup));
+
+        
+   % l = l *1000;
     R_A = (4 .* l .* NP(iGroup).R_A) ./ (pi .* d .^ 2); % in Ohms
+    NP(iGroup).R_a = R_A;
     parents = NP(iGroup).compartmentParentArr(:)';
     maxNumChildren = sum(parents==mode(parents));
     axialConnectionCell = cell(1, maxNumChildren+1);
     axialConnectionCell{1} = [2:length(parents); parents(2:end)];
+    %max(axialConnectionCell{1}(2,:))
     axialConductanceCell = cell(1, maxNumChildren+1);
     axialConductanceCell{1} = ...
       10^9 ./ ((R_A(axialConnectionCell{1}(1,:)) + ...
@@ -64,4 +69,11 @@ end
 function [l, d] = getDimensionsInCentimetres(NP)
 l = NP.compartmentLengthArr .* 10^-4;
 d = NP.compartmentDiameterArr .* 10^-4;
+if min(l) <= 0 
+    disp(sum(min(l)>0))
+    error('cant have compartment of length less than or equaL to zero')
+end
+if min(d) <= 0 
+    error('cant have compartment of diameter less than or equaL to zero')
+end
 end

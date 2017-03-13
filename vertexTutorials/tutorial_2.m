@@ -96,7 +96,7 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 150;
+NeuronParams(1).R_A = 1500;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
@@ -169,7 +169,7 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
 NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 150;
+NeuronParams(2).R_A = 1500;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).Input(1).inputType = 'i_ou';
@@ -246,7 +246,7 @@ ConnectionParams(2).synapseReleaseDelay = 0.5;
 % tutorial 1, as the AdEx dyamics add complexity to the calculations.
 
 RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/';
-RecordingSettings.LFP = true;
+RecordingSettings.LFP = false;
 [meaX, meaY, meaZ] = meshgrid(0:1000:2000, 200, 600:-300:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -256,9 +256,10 @@ RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 500;
-SimulationSettings.timeStep = 0.03125;
+SimulationSettings.simulationTime = 50;
+SimulationSettings.timeStep = 0.001;
 SimulationSettings.parallelSim = false;
+control.stim = false;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
@@ -266,12 +267,12 @@ SimulationSettings.parallelSim = false;
 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
-              RecordingSettings, SimulationSettings);
+              RecordingSettings, SimulationSettings,control);
 
 %% Run the simulation
 % Now we can run the simulatio, and load the results:
 
-runSimulation(params, connections, electrodes);
+weightArr = runSimulation(params, connections, electrodes);
 Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results
