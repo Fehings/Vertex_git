@@ -36,12 +36,7 @@ if isfield(SS,'spikeLoad')
   end
 end
 
-% if isfield(TP, 'StimulationField')
-%     disp('Stimulation field specified, making sure compartment lengths are short enough and automatically adjusting them.')
-%     for iGroup = 1:length(NP)
-%        NeuronParams(iGroup) = adjustCompartments(NP(iGroup), TP);
-%     end
-% end
+
 %NP = NeuronParams;
 % Calculate passive neuron properties in correct units
 NP = calculatePassiveProperties(NP, TP);
@@ -94,7 +89,11 @@ end
 % Prepare synapses and synaptic weights. 
 [synapsesArrSim, weightArr] = prepareSynapsesAndWeights(TP,CP,SS,connections);
 
-
+%Setting the stimulation field v_ext for each neuron compartment
+%Get_V_ext returns the extracellular potential specified by
+%TP.StimulationsField at each of the compartment midpoints.
+%setVext is a function attached to the NeuronModel object. 
+%It will assign the values passed to it to the v_ext field of the neuron.
 if isfield(TP, 'StimulationField')
     if SS.parallelSim
         compartments = TP.compartmentlocations;
@@ -102,7 +101,6 @@ if isfield(TP, 'StimulationField')
                 subsetInLab = find(SS.neuronInLab==labindex());
             NeuronModelArr = get_compartment_midpoints(TP,NeuronModelArr, SS,compartments);
             for iGroup = 1:length(NeuronModelArr)
-                    
                 setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField));
             end
         end
