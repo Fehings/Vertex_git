@@ -57,7 +57,7 @@ stimcount = 1;
 
 % simulation loop
 %disp(['max: ' num2str(max(StimParams.activation))]);
-stdp = true;
+stdp = false;
 for iPostGroup = 1:length(SynModel(:,1))
     for iSpkSynGroup = 1:length(SynModel(iPostGroup,:))
         if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
