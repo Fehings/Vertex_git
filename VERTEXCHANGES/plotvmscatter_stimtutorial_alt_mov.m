@@ -1,8 +1,8 @@
-pyramidalgroups = [1 3 5];
-interneuron = [2 4 6];
+%pyramidalgroups = [1 3 5];
+%interneuron = [2 4 6];
 N = Results.params.TissueParams.N;
-neuronInGroup = createGroupsFromBoundaries(Results.params.TissueParams.groupBoundaryIDArr);
-pyramidalids = ismember(neuronInGroup,pyramidalgroups);
+%neuronInGroup = createGroupsFromBoundaries(Results.params.TissueParams.groupBoundaryIDArr);
+%pyramidalids = ismember(neuronInGroup,pyramidalgroups);
 
 %need to find the first spike and take the voltage up to that point..
 % if isempty(Results.spikes)
@@ -15,9 +15,12 @@ pyramidalids = ismember(neuronInGroup,pyramidalgroups);
 % end
 %timesteps = 0:SimulationSettings.timeStep:SimulationSettings.simulationTime;
 %timestop=find(timesteps==firstspike);
-pars.toPlot = pyramidalids;
+
+ntoplot = Results.params.RecordingSettings.v_m;
+
+pars.toPlot = ntoplot;
 pars.figureID = 1;
-pars.title = 'Change in membrane potential for pyramidal neurons';
+pars.title = 'Change in soma membrane potential';
 mxvm=max(max(Results.v_m));
 mnvm=min(min(Results.v_m));
 hold off
@@ -25,16 +28,17 @@ close all
 
 step = 1; %initialise step
 
+
 for i=size(Results.v_m,2):-100:1 %size(Results.v_m,2)
     
     
-endv_m = Results.v_m(:,i); % i is a time point that we are capturing v_m at.
+currentv_m = Results.v_m(:,i); % i is a time point that we are capturing v_m at.
     
 %endv_m = Results.v_m(:,timestop-1);
 %diffv_m = endv_m - Results.v_m(:,1);
-pyramidalv_ms = endv_m(pyramidalids);
+%pyramidalv_ms = endv_m(pyramidalids);
 
-F(step) = plotSomaPositionsMembranePotential(Results.params.TissueParams,pars,pyramidalv_ms);
+F(step) = plotSomaPositionsMembranePotential(Results.params.TissueParams,pars,currentv_m);
 h = colorbar('south');
 set(h, 'ylim', [mnvm mxvm])
 caxis('manual')

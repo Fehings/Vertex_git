@@ -90,7 +90,7 @@ for iGroup = 1:Results.params.TissueParams.numGroups
          'LineWidth', 1, 'Color', pars.groupBoundaryLines);
   end
 end
-hold off
+%hold off
 
 axis([pars.tmin pars.tmax ...
       0-(Results.params.TissueParams.N/100) ...

@@ -1,15 +1,17 @@
 %% Neocortical slice model from Tomsett et al. 2014
 
 cvc_tissue;
-cvc_neurons;
-cvc_connectivity;
+%cvc_neurons;
+%cvc_connectivity;
+cvc_neurons_gamma;
+cvc_connectivity_gamma;
 cvc_recording;
 cvc_simulation;
 cvc_field_stimulation;
 
 % Change this directory to where you would like to save the results of the
 % simulation
-RS.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_cvc_results/Stim2mvDC';
+RS.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_cvc_results/cvc_gamma_30hz4mvAC';
 % Change these settings if you need to use fewer cores or a different
 % parallel profile, or if you want to run in serial mode (this will take a
 % long time)

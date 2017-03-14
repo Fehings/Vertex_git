@@ -5,10 +5,11 @@ bsf_neurons;
 bsf_connectivity;
 bsf_recording;
 bsf_simulation;
+bsf_field_stimulation;
 
 % Change this directory to where you would like to save the results of the
 % simulation
-RS.saveDir = '~/VERTEX_bsf_results/';
+RS.saveDir = '/Users/a6028564/Documents/MATLAB/VERTEX_bsf_results/bsf2mvanodalstim';
 
 % Change these settings if you need to use fewer cores or a different
 % parallel profile, or if you want to run in serial mode (this will take a

@@ -71,6 +71,7 @@ hold on;
 
 view(3) 
 
+pars
 
 scatter3(TP.somaPositionMat(pars.toPlot, 1), ...
     TP.somaPositionMat(pars.toPlot, 2), ...

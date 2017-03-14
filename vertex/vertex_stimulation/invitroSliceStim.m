@@ -7,11 +7,11 @@ end
 
 model = createpde;
 importGeometry(model,geometryloc);
-figure(1)
-pdegplot(model,'FaceLabels', 'on')
+% figure(1)
+% pdegplot(model,'FaceLabels', 'on')
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',3:6,'g',0.0,'q',0.0); % for the
+applyBoundaryCondition(model,'face',1:6,'g',0.0,'q',0.0); % for the
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
 
@@ -20,7 +20,7 @@ applyBoundaryCondition(model,'face',3:6,'g',0.0,'q',0.0); % for the
 if isequal(geometryloc,'chrismodelmod9.stl') 
     applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',stimstrength); % r value is the input in mv. This is what to vary to change field strenght
     applyBoundaryCondition(model,'face',[7,10:13],'h',1.0,'r',-stimstrength); % also vary it for this one!
-elseif isequal(geometryloc, 'catvisblend1.stl')
+elseif isequal(geometryloc, 'catvisblend1.stl') || isequal(geometryloc, 'bsf.stl')
     applyBoundaryCondition(model,'face',1:6,'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond?
     applyBoundaryCondition(model,'face',2,'h',1.0,'r',stimstrength); %the 'r' 5.0 sets up a 5(mv?) voltage here
     applyBoundaryCondition(model,'face',1,'h',1.0,'r',-stimstrength);
@@ -55,20 +55,20 @@ generateMesh(model);
 disp(model.IsTimeDependent)
 result = solvepde(model);
 %  u = result.NodalSolution;
- figure(2)
- pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
- figure(3)
-[X,Y,Z] = meshgrid(0:100:2600,0:100:1800,0:100:700);
-V = interpolateSolution(result,X,Y,Z);
-V = reshape(V,size(X));
-figure
-colormap jet
-contourslice(X,Y,Z,V,1:100:2600,1:100:00,1:100:700)
-xlabel('x')
-ylabel('y')
-zlabel('z')
-colorbar
-view(-11,14)
-axis equal
-end
-
+%  figure(2)
+%  pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
+%  figure(3)
+% [X,Y,Z] = meshgrid(0:100:2600,0:100:1800,0:100:700);
+% V = interpolateSolution(result,X,Y,Z);
+% V = reshape(V,size(X));
+% figure
+% colormap jet
+% contourslice(X,Y,Z,V,1:100:2600,1:100:00,1:100:700)
+% xlabel('x')
+% ylabel('y')
+% zlabel('z')
+% colorbar
+% view(-11,14)
+% axis equal
+% end
+% 

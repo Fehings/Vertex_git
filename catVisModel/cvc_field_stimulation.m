@@ -1,8 +1,11 @@
 
-stimstrength=2;
-%B=20; % the frequency in Hz.
-TP.StimulationField = invitroSliceStim('catvisblend1.stl',stimstrength);
+%stimstrength=10;
+%B=30; % the frequency in Hz.
+%TP.StimulationField = invitroSliceStimAC('catvisblend1.stl',SS.timeStep,stimstrength,B);
+%TP.StimulationField = invitroSliceStim('catvisblend1.stl',stimstrength);
 
+Field = load('ACpderesult40hz10mv.mat');
+TP.StimulationField = Field.result;
 
 for i = 1:length(NP)
     NP(i).Input(2).inputType = 'i_efield';

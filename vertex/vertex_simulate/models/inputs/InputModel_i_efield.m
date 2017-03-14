@@ -61,10 +61,11 @@ classdef InputModel_i_efield < InputModel
     
     function IM = updateInput(IM,~,activation)
         
-      IM.meanInput = bsxfun(@times, activation', IM.membraneAreaRatio);
-        
+      %IM.meanInput = bsxfun(@times, activation', IM.membraneAreaRatio);
+      IM.meanInput = activation';
+      
      if IM.count >= IM.stepOn && IM.count <= IM.stepOff
-            IM.I_input = IM.meanInput;
+            IM.I_input =IM.meanInput;% activation';%
      else 
             IM.I_input = 0;
      end
