@@ -50,82 +50,82 @@ recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
 recordFac_syn = RecVar.recordFac_syn;
 record_apre_syn = RecVar.recordapre_syn;
-stimulation =  isfield(TP,'StimulationField');
-if ~stimulation
-    SS.ef_stimulation = false;
-    SS.fu_stimulation = false;
-end
-%disp(['Stimulation field: ' num2str(stimulation)]);
+record_apost_syn = RecVar.recordapost_syn;
 
-StimParams = {};
-%if we are applying an electric field stimulus
-if SS.ef_stimulation
-    % get compartments locations in suitable vectorised form
-    for iGroup = 1:TP.numGroups
-        [StimParams.compartmentlocations{iGroup,1}, StimParams.compartmentlocations{iGroup,2}] = ...
-            convertcompartmentlocations({TP.compartmentlocations{neuronInGroup==iGroup,1}},...
-            {TP.compartmentlocations{neuronInGroup==iGroup,2}},{TP.compartmentlocations{neuronInGroup==iGroup,3}});
-    end
-    %Calculate the activation function for each compartment
-    %Can be called on each iteration if the input field is time varying
-    disp('Getting extraceluu');
-    t=1:size(TP.StimulationField.NodalSolution,2);
-    StimParams.activation = getExtracellularInput(TP, StimParams,t, NeuronModel,NP); 
-    StimParams.activationAll = StimParams.activation; % calling this activationAll in case of AC or RNS. This means StimParams.activation can be overwritten further down without losing the full results.
-    count=1; %initialise a counter variable in case of AC input.
-    disp('Got extraceluu');
-   % max(max(StimParams.activation{1}));
-   
-   
-end
+stimcount = 1;
 
-%if we are applying an focussed ultrasound
-if SS.fu_stimulation
-    %Get compartments in suitable  vectorised form
-    for iGroup = 1:TP.numGroups
-        [StimParams.compartmentlocations{iGroup,1}, StimParams.compartmentlocations{iGroup,2}] = ...
-            convertcompartmentlocations({TP.compartmentlocations{neuronInGroup==iGroup,1}},...
-            {TP.compartmentlocations{neuronInGroup==iGroup,2}},{TP.compartmentlocations{neuronInGroup==iGroup,3}});
-    end
-    %Calculate the ultrasound value function for each compartment
-    %Can be called on each iteration if the input field is time varying
-    StimParams.ultrasound{iGroup} = getUltraSoundAtCompartments(TP);
-end
 
 % simulation loop
 %disp(['max: ' num2str(max(StimParams.activation))]);
-stdp = false;
-if stdp
-    posttoprearr = getPosttoPreSynArr(synArr);
-end
-for simStep = 1:simulationSteps
-    
-  if isa(TP.StimulationField, 'pde.TimeDependentResults')
-      for i=1:TP.numGroups
-           StimParams.activation{i} = StimParams.activationAll{i}(:,count);
-      end
-    count = count+1;
-    if count > length(t)
-        count = 1; % reset if getting to the end of the time steps.
-        %NB: this will work so long as the pde was solved for the right
-        %ntimesteps... so may well need some fixing as it is now!
+stdp = true;
+for iPostGroup = 1:length(SynModel(:,1))
+    for iSpkSynGroup = 1:length(SynModel(iPostGroup,:))
+        if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
+            stdp = true;
+        end
     end
-  else
-       StimParams.trns = wgn(1,1,0); % set a value for multipling the stimulation field by at each timestep for tRNS.
-       % this will exist for any non-time dependent stim (so DC as well as
-       % RNS) but will only be used for tRNS later.
-  end
-  
+end
+
+if stdp
+    disp('Using stdp, so calculating postsynaptic to presynaptic map');
+    
+    posttoprearr = getPosttoPreSynArr(synArr);
+    disp('Map calculated');
+end
+
+for simStep = 1:simulationSteps
+    if isfield(TP, 'StimulationField')
+        current_time = simStep * SS.timeStep;
+
+        if current_time > TP.StimulationOn(stimcount) && current_time < TP.StimulationOff(stimcount)
+            for iGroup = 1:TP.numGroups
+                if  ~NeuronModel{iGroup}.incorporate_vext
+                    stimulationOn(NeuronModel{iGroup});
+                    disp('stimulation on')
+                end
+            end
+        elseif current_time > TP.StimulationOff(stimcount)
+            for iGroup = 1:TP.numGroups
+                if  NeuronModel{iGroup}.incorporate_vext
+                    stimulationOn(NeuronModel{iGroup});
+                    disp('stimulation off')
+                    stimulationOff(NeuronModel{iGroup});
+                end
+                if stimcount < length(TP.StimulationOn)
+                    stimcount = stimcount+1;
+                end
+            end
+        end
+    end
+    %   if isa(TP.StimulationField, 'pde.TimeDependentResults')
+    %       for i=1:TP.numGroups
+    %            StimParams.activation{i} = StimParams.activationAll{i}(:,count);
+    %       end
+    %     count = count+1;
+    %     if count > length(t)
+%         count = 1; % reset if getting to the end of the time steps.
+%         %NB: this will work so long as the pde was solved for the right
+%         %ntimesteps... so may well need some fixing as it is now!
+%     end
+%   else
+%        StimParams.trns = wgn(1,1,0); % set a value for multipling the stimulation field by at each timestep for tRNS.
+%        % this will exist for any non-time dependent stim (so DC as well as
+%        % RNS) but will only be used for tRNS later.
+%   end
 
   for iGroup = 1:TP.numGroups
       
+        
+        
+          
     [NeuronModel, SynModel, InModel] = ...
-      groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup,StimParams);
+      groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup);
     
     S = addGroupSpikesToSpikeList(NeuronModel,IDMap,S,iGroup,comCount);
     
     % store group-collected recorded variables for membrane potential:
     if simStep == RS.samplingSteps(sampleStepCounter)
+        
       if recordIntra
         RecVar = ...
           updateIntraRecording(NeuronModel,RecVar,iGroup,recTimeCounter);
@@ -150,6 +150,12 @@ for simStep = 1:simulationSteps
       if record_apre_syn
           RecVar = updateApre_synRecording(SynModel, RecVar, iGroup, recTimeCounter);
       end
+      
+      if record_apost_syn
+          RecVar = updateApost_synRecording(SynModel, RecVar, iGroup, recTimeCounter);
+      end
+      
+
       
     end
     
@@ -260,11 +266,17 @@ for simStep = 1:simulationSteps
         end
 
       end
+      
+      
+      %if we are using stdp on any synapses, then update weights on
+      %connections presynaptic to the spiking neuron.
+      
       if stdp
           %get all neurons presynaptic to the spiking neuron
-          presynaptic = posttoprearr{allSpike(iSpk)};
+          presynaptic = posttoprearr{allSpike(iSpk),1};
+          postsynapticlocation = posttoprearr{allSpike(iSpk),2};
           preInGroup = neuronInGroup(presynaptic);
-          
+          %for each group get neurons presynaptic to the firing neuron
           for iPreGroup = 1:TP.numGroups
               inGroup = preInGroup == iPreGroup;
               if sum(inGroup ~= 0)
@@ -275,11 +287,26 @@ for simStep = 1:simulationSteps
                       processAsPostSynSpike(SynModel{iSpkSynGroup, iPreGroup},relativeind);
                       %if the synapses from the preSynaptic group to the
                       %spiking group have stdp on them
+
+                      %The neurons presynatpic to the one just fired and in
+                      %the group currently being processed
                       presyningroup = presynaptic(inGroup);
+                      postsynlocingroup = postsynapticlocation(inGroup);
+                      %weights for connections to neurons presynaptic to
+                      %the spiking neuron
+                      wMat = zeros(length(presyningroup),1);
                       for synInd = 1:length(presyningroup)
-                           wArr{presyningroup(synInd)}(synArr{presyningroup(synInd)}==allSpike(iSpk)) = updateweightsaspostsynspike(SynModel{iSpkSynGroup,iPreGroup}, wArr{presyningroup(synInd)}(synArr{presyningroup(synInd)}==allSpike(iSpk)), presyningroup(synInd)...
-                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                            wMat(synInd) = wArr{presyningroup(synInd)}(postsynlocingroup(synInd));
                       end
+                      wMat = updateweightsaspostsynspike(SynModel{iSpkSynGroup,iPreGroup},...
+                               wMat, presyningroup...
+                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                          
+                      for synInd = 1:length(presyningroup)
+                          max(wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) - wMat(synInd))
+                            wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
+                      end
+
                   end
               end
           end
@@ -288,21 +315,13 @@ for simStep = 1:simulationSteps
       
     end
     
-%     if stdp 
-%         for iPreGroup = 1:TP.numGroups
-%             preinGroup = neuronInGroup(allSpike) == iPreGroup;
-%             for iPostGroup = 1:TP.numGroups
-%                 
-%                 neuronsfiringinpregroup = preinGroup(neuronInGroup(synArr{preinGroup, 1}) == iPostGroup);
-%                 processAsPreSynSpike(SynModel{iPostGroup, iPreGroup}, neuronsinSynGroup -TP.groupBoundaryIDArr(neuronInGroup(inGroup(1))));
-% 
-%                 postinGroup = neuronInGroup(allSpike) == iPostGroup;
-%                 neuronsfiringinpostgroup = postinGroup(neuronInGroup(synArr{postinGroup, 1})== iPreGroup);
-%                 processAsPostSynSpike(SynModel{iPostGroup, iPreGroup}, allSpike(preinGroup) -TP.groupBoundaryIDArr(neuronInGroup(inGroup(1))));
-%             end
-%         end
-%     end
 
+  if simStep == RS.samplingSteps(sampleStepCounter)
+      if RecVar.recordWeights
+          
+              RecVar = updateWeightsRecording(wArr,RecVar,recTimeCounter);
+      end
+  end
     
     
     S.spikeCount = 0;

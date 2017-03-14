@@ -3,6 +3,9 @@ classdef NeuronModel < handle
     v
     I_ax
     treeChildren
+    v_ext
+    midpoints
+    incorporate_vext
     %doUpdate
   end
   
@@ -11,12 +14,18 @@ classdef NeuronModel < handle
       NM.v = zeros(number, Neuron.numCompartments);
       NM.I_ax = zeros(number, Neuron.numCompartments);
       NM.treeChildren = length(Neuron.adjCompart);
+      if isfield(Neuron, 'v_ext')
+        NM.v_ext = Neuron.v_ext;
+      end
+      NM.incorporate_vext = false;
       %NM.doUpdate = true(size(NM.v, 1));
     end
     
     function [NM] = updateNeurons(NM, IM, N, SM, dt)
       I_syn = NeuronModel.sumSynapticCurrents(SM);
       I_input = NeuronModel.sumInputCurrents(IM);
+      
+ 
       kv = bsxfun(@rdivide, (-bsxfun(@times, N.g_l, (NM.v - N.E_leak)) -...
         I_syn - NM.I_ax + I_input), N.C_m);
       
@@ -25,20 +34,52 @@ classdef NeuronModel < handle
       kv = bsxfun(@rdivide,(-bsxfun(@times, N.g_l,(k2v_in - N.E_leak)) -...
         I_syn - NM.I_ax + I_input), N.C_m);
       
-      NM.v = NM.v + dt .* kv;
+      NM.v = NM.v + 0.5 .* dt .* kv;
+%        if max(abs(kv)>0.00001)
+%           [a,i] = max(abs(kv)>0.00001);
+%           error(['First deviation at compartment: ' num2str(i)]);
+%       end
     end
     
     function [NM] = updateI_ax(NM, N)
       % update axial currents
       NM.I_ax = NM.I_ax .* 0;
+      %tree children is max number of children (neighbours) a node can have
+      %so vectorised over all compartments for each connecting neighbour
       for iTree = 1:NM.treeChildren %3
+          %Axial current is proportional to the difference between the
+          %membrane potential in adjacent compartments
         NM.I_ax(:, N.adjCompart{iTree}(1, :)) = ...
           NM.I_ax(:, N.adjCompart{iTree}(1, :)) + ...
           bsxfun(@times, N.g_ax{iTree}, ...
                          (NM.v(:, N.adjCompart{iTree}(1, :)) - ...
                          NM.v(:, N.adjCompart{iTree}(2, :))));
       end
+
+
+      
+      if NM.incorporate_vext
+          for iTree = 1:NM.treeChildren %3
+              %Additional Axial current caused by temporary v_ext change is proportional to the difference between the
+              %external potential in adjacent compartments
+              NM.I_ax(:, N.adjCompart{iTree}(1, :)) = ...
+                  NM.I_ax(:, N.adjCompart{iTree}(1, :)) + ...
+                  bsxfun(@times, N.g_ax{iTree}, ...
+                  (NM.v_ext(:, N.adjCompart{iTree}(1, :)) - ...
+                  NM.v_ext(:, N.adjCompart{iTree}(2, :))));
+              if isnan(NM.I_ax)
+                  error('NaNs in the axial currents')
+              end
+              if isinf(NM.I_ax)
+                  error('NaNs in the axial currents')
+              end
+          end
+      end
+
     end
+
+      
+    
     
     function v = get.v(NM)
       v = NM.v;
@@ -55,9 +96,29 @@ classdef NeuronModel < handle
     function s = spikes(NM)
       s = false(size(NM.v,1),1);
     end
+      
+  function setVext(NM,V_ext)
+    NM.v_ext = V_ext;
+  end
+  
+  function stimulationOn(NM)
+      NM.incorporate_vext = true;
+      disp('Stimulation on')
+  end
+    
+  function stimulationOff(NM)
+      NM.incorporate_vext = false;
+            disp('Stimulation off')
+
+  end
+  
+  function setmidpoints(NM,midpoints)
+      NM.midpoints = midpoints;
+  end
+  
     
   end % methods
-  
+
   methods(Static)
     
     function params = getRequiredParams()

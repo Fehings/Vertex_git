@@ -38,7 +38,7 @@ NeuronParams.E_leak = -70;
 % so that multiple input values can be tested simultaneously.
 
 NeuronParams.Input.inputType = 'i_step';
-NeuronParams.Input.amplitude = [150; 200; 250; 300; 350];
+NeuronParams.Input.amplitude = [150];
 NeuronParams.Input.timeOn = 50;
 NeuronParams.Input.timeOff = 350;
 NeuronParams.Input.compartmentsInput = 1;
@@ -47,11 +47,11 @@ NeuronParams.Input.compartmentsInput = 1;
 % simulation time step to use and how long to run the simulation for:
 
 SimulationParams.timeStep = 0.03125;
-SimulationParams.simulationTime = 400;
+SimulationParams.simulationTime = 200;
 
 %% Run the simulation
 % We are now ready to run the simulation...
-[v_m, I_input] = neuronDynamics(NeuronParams, SimulationParams);
+[v_m, I_input,NParams, spikes_rec,NeuronModel] = neuronDynamics(NeuronParams, SimulationParams);
 
 %% Plot the results
 % ... and plot the results. Note that v_m and I_input are 3-dimensional

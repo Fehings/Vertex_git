@@ -52,6 +52,9 @@ if nargin == 6
   if ~isfield(control, 'init')
     control.init = true;
   end
+  if ~isfield(control, 'stim')
+    control.stim = true;
+  end
   if ~isfield(control, 'connect')
     control.connect = true;
   end
@@ -62,6 +65,7 @@ else
   control.init = true;
   control.connect = true;
   control.LFPconsts = true;
+  control.stim = true;
 end
 
 % Convert Maps to structs if necessary
@@ -79,6 +83,19 @@ NP = checkNeuronStruct(NP);
 CP = checkConnectivityStruct(CP);
 RS = checkRecordingStruct(RS);
 SS = checkSimulationStruct(SS);
+
+if control.stim
+    disp('Stimulation field specified, making sure compartment lengths are short enough and automatically adjusting them.')
+    % Adjusts the number and size of compartments to ensure that the
+    % electric field calculations remain valid. Caution should be advised
+    % that this can drastically increase the size of the simulation.
+    for iGroup = 1:length(NP)
+        disp(['Adjusting group ' num2str(iGroup)]);
+        NeuronParams(iGroup) = adjustCompartments(NP(iGroup), TP);
+    end
+    NP = NeuronParams;
+    
+end
 
 if control.init
   % Calculate sampling constants
@@ -123,7 +140,14 @@ if control.LFPconsts
     disp('Pre-calculating LFP simulation constants...')
     [TP.compartmentlocations, electrodes] = setupLFPConstants(NP, RS, SS, TP);
   else
-      if SS.ef_stimulation || SS.fu_stimulation
+    electrodes = {};
+  end
+else
+  electrodes = {};
+
+end
+if control.stim
+    if isfield(TP, 'StimulationField')
         disp('Finding compartment locations...')
         if SS.parallelSim
             spmd
@@ -133,12 +157,7 @@ if control.LFPconsts
         else
             TP.compartmentlocations = getCompartmentLocations(NP,SS,TP);
         end
-      end
-    electrodes = {};
-  end
-else
-  electrodes = {};
-
+    end
 end
 
 % Store the parameters in a single params structure

@@ -14,7 +14,7 @@ end
 
 function [synapseArrMod,weightArr] = prep(CP, SS, synapseArr, neuronInGroup)
 weightArr = cell(size(synapseArr, 1), 1);
-
+%weightMat = sparse(length(synapseArr), length(synapseArr));
 synapseArrMod = synapseArr;
 for iN = 1:size(synapseArrMod, 1)
   if ~isempty(synapseArrMod{iN, 1})
@@ -26,6 +26,7 @@ for iN = 1:size(synapseArrMod, 1)
         CP(iNeuronGroup).weights{iW} = 0;
       end
     end
+    
     w = cell2mat(CP(iNeuronGroup).weights);
     weights = w(postGroups);
 
@@ -34,10 +35,12 @@ for iN = 1:size(synapseArrMod, 1)
     if SS.multiSyn
       weightArr{iN, 1} = multiSynapse(double(synapseArrMod{iN, 1}), ...
                                       double(synapseArrMod{iN, 2}), weights);
+      
     else
       weightArr{iN, 1} = weights(:)';
     end
-    
+
+%    weightMat(iN,synapseArrMod{iN, 1}) = weightArr{iN,1};
     toDelete = weightArr{iN, 1} == 0;
     synapseArrMod{iN, 1}(toDelete) = [];
     synapseArrMod{iN, 2}(toDelete) = [];

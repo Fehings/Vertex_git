@@ -1,4 +1,4 @@
-function [v_m, I, NParams, spikes_rec] = neuronDynamics(NeuronParams, pars)
+function [v_m, I, NParams, spikes_rec,NeuronModel] = neuronDynamics(NeuronParams, pars)
 %NEURONDYNAMICS runs a simulation of a single neuron group.
 %   V_M = neuronDynamics(NEURONPARAMS, PARS) creates a neuron group
 %   according to the parameters in the structure NEURONPARAMS.
@@ -92,6 +92,7 @@ spikes_rec = zeros(number, simulationSteps);
 
 
 for simStep = 1:simulationSteps
+    
   if NParams.numCompartments > 1
     updateI_ax(NeuronModel{1}, NParams);
   end
@@ -99,10 +100,12 @@ for simStep = 1:simulationSteps
   updateInput(InputModel{1}, NeuronModel{1});
   updateNeurons(NeuronModel{1}, InputModel, NParams, [], pars.timeStep);
   
-  v_m(:, :, simStep) = NeuronModel{1}.v;
-  I(:, :, simStep) = InputModel{1}.I_input;
-  spikes_rec(:,simStep) = NeuronModel{1}.spikes;
-%   if mod(simStep * pars.timeStep, 5) == 0
-%    disp(num2str(simStep * pars.timeStep));
-%   end
+     v_m(:, :, simStep) = NeuronModel{1}.v;
+     I(:, :, simStep) = InputModel{1}.I_input;
+ 
+
+%  spikes_rec(:,simStep) = NeuronModel{1}.spikes;
+  if mod(simStep * pars.timeStep, 0.001) == 0
+   disp(num2str(simStep * pars.timeStep));
+  end
 end

@@ -19,6 +19,9 @@ TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 
+TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
+TissueParams.StimulationOn = [10 40];
+TissueParams.StimulationOff = [15 45];
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
 % use the neuron models described in (Tomsett et al. 2014) for layer 2/3
@@ -96,7 +99,7 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 1500;
+NeuronParams(1).R_A = 1000;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
@@ -115,11 +118,11 @@ NeuronParams(1).apicalID = [2 3 4 5];
 % to |'i_ou'| (we could also apply our input as a conductance |'g_ou'|, in
 % which case we would also need to set an |E_reversal| parameter to set the
 % reversal potential).
-
-NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 90;
-NeuronParams(1).Input(1).tau = 2;
+% 
+% NeuronParams(1).Input(1).inputType = 'i_ou';
+% NeuronParams(1).Input(1).meanInput = 260;
+% NeuronParams(1).Input(1).stdInput = 90;
+% NeuronParams(1).Input(1).tau = 2;
 
 %%
 % Next we set the parameters for the 2nd neuron group, which represent
@@ -169,13 +172,13 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
 NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 1500;
+NeuronParams(2).R_A = 1000;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
-NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 190;
-NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 50;
+% NeuronParams(2).Input(1).inputType = 'i_ou';
+% NeuronParams(2).Input(1).meanInput = 140;
+% NeuronParams(2).Input(1).tau = 0.8;
+% NeuronParams(2).Input(1).stdInput = 30;
 
 
 %% Connectivity parameters
@@ -188,7 +191,7 @@ ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'i_exp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
-ConnectionParams(1).weights{1} = 1;
+ConnectionParams(1).weights{1} = 2.5;
 ConnectionParams(1).tau{1} = 2;
 
 %%
@@ -217,7 +220,7 @@ ConnectionParams(1).synapseReleaseDelay = 0.5;
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'i_exp';
 ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
-ConnectionParams(2).weights{1} = -5;
+ConnectionParams(2).weights{1} = -0.5;
 ConnectionParams(2).tau{1} = 6;
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
@@ -246,20 +249,20 @@ ConnectionParams(2).synapseReleaseDelay = 0.5;
 % tutorial 1, as the AdEx dyamics add complexity to the calculations.
 
 RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/';
-RecordingSettings.LFP = false;
-[meaX, meaY, meaZ] = meshgrid(0:1000:2000, 200, 600:-300:0);
+RecordingSettings.LFP = true;
+[meaX, meaY, meaZ] = meshgrid(0:100:2000, 200, 600:-300:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 250:250:4750;
+RecordingSettings.v_m = 1:2:1000;
 RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 1000;
+RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 50;
+SimulationSettings.simulationTime = 70;
 SimulationSettings.timeStep = 0.001;
-SimulationSettings.parallelSim = false;
-control.stim = false;
+SimulationSettings.parallelSim = true;
+control.stim = true;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
@@ -272,7 +275,8 @@ control.stim = false;
 %% Run the simulation
 % Now we can run the simulatio, and load the results:
 
-weightArr = runSimulation(params, connections, electrodes);
+NeuronModelArr = runSimulation(params, connections, electrodes);
+%%
 Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results
