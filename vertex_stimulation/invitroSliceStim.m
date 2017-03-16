@@ -9,13 +9,13 @@ end
 
 model = createpde;
 importGeometry(model,geometryloc);
-<<<<<<< HEAD:vertex/vertex_stimulation/invitroSliceStim.m
+
 % figure(1)
 % pdegplot(model,'FaceLabels', 'on')
-=======
+
 %figure(1)
 pdegplot(model,'FaceLabels', 'on')
->>>>>>> refs/remotes/origin/new_stimulation:vertex_stimulation/invitroSliceStim.m
+
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
 applyBoundaryCondition(model,'face',1:6,'g',0.0,'q',0.0); % for the
@@ -69,22 +69,22 @@ specifyCoefficients(model,'m',0, 'd',0, 'c',0.3/1000000, 'a',0, 'f',0);
 generateMesh(model);
 disp(model.IsTimeDependent)
 result = solvepde(model);
-<<<<<<< HEAD:vertex/vertex_stimulation/invitroSliceStim.m
+
 %  u = result.NodalSolution;
 %  figure(2)
 %  pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
-=======
+
  u = result.NodalSolution;
 
   pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
->>>>>>> refs/remotes/origin/new_stimulation:vertex_stimulation/invitroSliceStim.m
+
 %  figure(3)
 % [X,Y,Z] = meshgrid(0:100:2600,0:100:1800,0:100:700);
 % V = interpolateSolution(result,X,Y,Z);
 % V = reshape(V,size(X));
 % figure
 % colormap jet
-<<<<<<< HEAD:vertex/vertex_stimulation/invitroSliceStim.m
+
 % contourslice(X,Y,Z,V,1:100:2600,1:100:00,1:100:700)
 % xlabel('x')
 % ylabel('y')
@@ -94,7 +94,7 @@ result = solvepde(model);
 % axis equal
 % end
 % 
-=======
+
 % contourslice(X,Y,Z,V,1:10:1000,1:10:1800,1:10:700)
 % xlabel('x')
 % ylabel('y')
@@ -105,5 +105,3 @@ view(-11,14)
 axis equal
 
 end
-
->>>>>>> refs/remotes/origin/new_stimulation:vertex_stimulation/invitroSliceStim.m

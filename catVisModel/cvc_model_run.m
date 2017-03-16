@@ -11,18 +11,18 @@ cvc_field_stimulation;
 
 % Change this directory to where you would like to save the results of the
 % simulation
-RS.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_cvc_results/cvc_gamma_30hz4mvAC';
+RS.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_cvc_results/cvc_gamma_testnewstim';
 % Change these settings if you need to use fewer cores or a different
 % parallel profile, or if you want to run in serial mode (this will take a
 % long time)
-SS.parallelSim = true;
+SS.parallelSim = true; 
 SS.poolSize = 2; %was 12 in the original
 SS.profileName = 'local';
 
 %% Initialise the network
 [params, connections, electrodes] = initNetwork(TP, NP, CP, RS, SS);
 
-% Run the simulation
+%% Run the simulation
 runSimulation(params, connections, electrodes);
 
 % Load the simulation results

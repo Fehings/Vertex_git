@@ -100,14 +100,36 @@ if isfield(TP, 'StimulationField')
         spmd
                 subsetInLab = find(SS.neuronInLab==labindex());
             NeuronModelArr = get_compartment_midpoints(TP,NeuronModelArr, SS,compartments);
-            for iGroup = 1:length(NeuronModelArr)
-                setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField));
+            if isa(TP.StimulationField,'pde.TimeDependentResults')
+                 for iGroup = 1:length(NeuronModelArr)
+                     for iStimTime = 1:size(TP.StimulationField.NodalSolution,2)
+                        paraStimParam(iGroup).V_ext_mat(:,:,iStimTime) = get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,iStimTime);
+                     end
+                     setVext(NeuronModelArr{iGroup},paraStimParam(iGroup).V_ext_mat(:,:,1));
+                 end
+                 nsaves = 0;
+            else
+                for iGroup = 1:length(NeuronModelArr)
+                    setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1));
+                end
+                if isfield(TP,'tRNS')
+                    setVext(NeuronModelArr{iGroup},NeuronModelArr{iGroup}.v_ext*TP.tRNS);
+                end
             end
         end
     else
         NeuronModelArr = get_compartment_midpoints(TP,NeuronModelArr, SS, TP.compartmentlocations);
-        for iGroup = 1:length(NeuronModelArr)
-            setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField));
+        if isa(TP.StimulationField,'pde.TimeDependentResults')  
+            for iGroup = 1:length(NeuronModelArr)
+                for iStimTime = 1:size(TP.StimulationField.NodalSolution,2)
+                    NP(iGroup).V_ext_mat(:,:,iStimTime) = get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,iStimTime);
+                end                
+                setVext(NeuronModelArr{iGroup},NP(iGroup).V_ext_mat(:,:,1));
+            end
+        else
+            for iGroup = 1:length(NeuronModelArr)
+                setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1));
+            end
         end
     end
 
@@ -122,10 +144,15 @@ if SS.parallelSim
   % www.vertexsimulator.org), then uncomment the next line to get the
   % dynamic variables at the end of simulateParallel()
   %[NeuronModelArr, SynapseModelArr, InputModelArr, numSaves] = ...
-    simulateParallel(TP, NP, SS, RS, NeuronIDMap, NeuronModelArr, ...
-    SynapseModelArr, InputModelArr, RecordingVars, lineSourceModCell, ...
-    synapsesArrSim, weightArr, synMapCell);
-  
+   if isa(TP.StimulationField,'pde.TimeDependentResults')  
+       simulateParallel(TP, NP, SS, RS, NeuronIDMap, NeuronModelArr, ...
+           SynapseModelArr, InputModelArr, RecordingVars, lineSourceModCell, ...
+           synapsesArrSim, weightArr, synMapCell,nsaves,paraStimParam);
+   else
+           simulateParallel(TP, NP, SS, RS, NeuronIDMap, NeuronModelArr, ...
+           SynapseModelArr, InputModelArr, RecordingVars, lineSourceModCell, ...
+           synapsesArrSim, weightArr, synMapCell);
+   end
   % You can now alter the parameters in NP to change neuron or input
   % properties, then rerun simulateParallel() to run the next stage of the
   % simulation for another SS.simulationTime milliseconds. Passing numSaves

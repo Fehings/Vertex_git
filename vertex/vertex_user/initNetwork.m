@@ -53,7 +53,11 @@ if nargin == 6
     control.init = true;
   end
   if ~isfield(control, 'stim')
-    control.stim = true;
+      if isfield(TP, 'StimulationField')
+        control.stim = true;
+      else
+          control.stim = false;   
+      end
   end
   if ~isfield(control, 'connect')
     control.connect = true;
@@ -65,7 +69,11 @@ else
   control.init = true;
   control.connect = true;
   control.LFPconsts = true;
-  control.stim = true;
+      if isfield(TP, 'StimulationField')
+        control.stim = true;
+      else
+          control.stim = false;
+      end
 end
 
 % Convert Maps to structs if necessary
