@@ -55,8 +55,8 @@ classdef NeuronModel < handle
                          (NM.v(:, N.adjCompart{iTree}(1, :)) - ...
                          NM.v(:, N.adjCompart{iTree}(2, :))));
       end
-
-
+%     disp('initial axial current')
+%     max(max(NM.I_ax))
       
       if NM.incorporate_vext
           for iTree = 1:NM.treeChildren %3
@@ -67,6 +67,16 @@ classdef NeuronModel < handle
                   bsxfun(@times, N.g_ax{iTree}, ...
                   (NM.v_ext(:, N.adjCompart{iTree}(1, :)) - ...
                   NM.v_ext(:, N.adjCompart{iTree}(2, :))));
+              
+%               disp('with the added v_ext')
+%               max(max(NM.I_ax(:,N.adjCompart{iTree}(1,:))))
+%               disp('max v_ext incoming(?)')
+%               max(max(NM.v_ext(:, N.adjCompart{iTree}(1, :))))
+%                disp('max v_ext outgoing(?)')
+%               max(max(NM.v_ext(:, N.adjCompart{iTree}(2, :))))
+%               disp('N.g_ax')
+%               max(N.g_ax{iTree})
+              
               if isnan(NM.I_ax)
                   error('NaNs in the axial currents')
               end
