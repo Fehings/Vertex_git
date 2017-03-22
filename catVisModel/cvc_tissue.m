@@ -1,8 +1,8 @@
-TP.X = 400;%2200; % was 2000
+TP.X = 1000;%2200; % was 2000
 TP.Y = 400; % the thickness of the slice
-TP.Z = 500;%1240; % the total depth, taken from Beaulieu and Colonnier (1983)
+TP.Z = 1240; % the total depth, taken from Beaulieu and Colonnier (1983)
 TP.neuronDensity = 50000;
-TP.layerBoundaryArr = [500,400,300,200,100,0];%[1240, 1058, 691, 345, 240, 0];
+TP.layerBoundaryArr = [1240, 1058, 691, 345, 240, 0];
 TP.numLayers = 5;
 TP.numGroups = 15;
 TP.tissueConductivity = 0.3;
