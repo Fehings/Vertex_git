@@ -11,13 +11,31 @@
 
 TissueParams.X = 250;
 TissueParams.Y = 400;
-TissueParams.Z = 2000;
+TissueParams.Z = 1240;
 TissueParams.neuronDensity = 25000;
 TissueParams.numLayers = 1;
-TissueParams.layerBoundaryArr = [2000, 0];
+TissueParams.layerBoundaryArr = [1240, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
+
+%% Stim
+% 
+stimstrength=200;
+%B=40; % the frequency in Hz.
+SimulationSettings.timeStep = 0.03125;
+
+[TissueParams.StimulationField,model] = invitroSliceStim('catvisblend1.stl',stimstrength);
+
+SimulationSettings.ef_stimulation = true;
+SimulationSettings.fu_stimulation = false;
+
+for i = 1:2%length(NeuronParams)
+    NeuronParams(i).Input(1).inputType = 'i_efield';
+    NeuronParams(i).Input(1).timeOn = 0;
+    NeuronParams(i).Input(1).timeOff = 1000;
+   %NeuronParams(i).Input(2).timeDependence = 'rand'; % have 'oscil' and 'rand' as flags
+end
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
@@ -116,10 +134,10 @@ NeuronParams(1).apicalID = [2 3 4 5];
 % which case we would also need to set an |E_reversal| parameter to set the
 % reversal potential).
 
-NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330; %was 330
-NeuronParams(1).Input(1).stdInput = 90;
-NeuronParams(1).Input(1).tau = 2;
+% NeuronParams(1).Input(1).inputType = 'i_ou';
+% NeuronParams(1).Input(1).meanInput = 200; %was 330
+% NeuronParams(1).Input(1).stdInput = 90;
+% NeuronParams(1).Input(1).tau = 2;
 
 %%
 % Next we set the parameters for the 2nd neuron group, which represent
@@ -172,10 +190,10 @@ NeuronParams(2).R_M = 15000/2.93;
 NeuronParams(2).R_A = 150;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
-NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 190;
-NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 50;
+% NeuronParams(2).Input(1).inputType = 'i_ou';
+% NeuronParams(2).Input(1).meanInput = 190; %190
+% NeuronParams(2).Input(1).tau = 0.8;
+% NeuronParams(2).Input(1).stdInput = 50;
 
 
 %% Connectivity parameters
@@ -188,8 +206,8 @@ ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'i_exp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
-ConnectionParams(1).weights{1} = 0.5; % 1
-ConnectionParams(1).tau{1} = 40;
+ConnectionParams(1).weights{1} = 1; % 1
+ConnectionParams(1).tau{1} = 60;
 
 %%
 % Then the parameters for connections from group 1 to group 2 (the basket
@@ -198,8 +216,8 @@ ConnectionParams(1).tau{1} = 40;
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
 ConnectionParams(1).synapseType{2} = 'i_exp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(1).weights{2} = 1.5; %2  
-ConnectionParams(1).tau{2} = 50;
+ConnectionParams(1).weights{2} = 2; %2  
+ConnectionParams(1).tau{2} = 70;
 
 %%
 % And then the generic parameters for connections from group 1:
@@ -218,13 +236,13 @@ ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'i_exp';
 ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
 ConnectionParams(2).weights{1} = -5; %-5
-ConnectionParams(2).tau{1} = 100;
+ConnectionParams(2).tau{1} = 80;
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
 ConnectionParams(2).synapseType{2} = 'i_exp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(2).weights{2} = -4;
-ConnectionParams(2).tau{2} = 80;
+ConnectionParams(2).weights{2} = -4; %-4
+ConnectionParams(2).tau{2} = 90;
 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
 ConnectionParams(2).sliceSynapses = true;
@@ -252,11 +270,14 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 250:250:4750;
+
+totNeurons = floor((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000)*TissueParams.neuronDensity);
+
+RecordingSettings.v_m = 1:1:totNeurons;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 1500;
+SimulationSettings.simulationTime = 200;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 

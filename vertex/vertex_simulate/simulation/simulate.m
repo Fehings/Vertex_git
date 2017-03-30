@@ -53,7 +53,7 @@ record_apre_syn = RecVar.recordapre_syn;
 record_apost_syn = RecVar.recordapost_syn;
 
 stimcount = 1;
-
+timeStimStep = 1;
 
 % simulation loop
 %disp(['max: ' num2str(max(StimParams.activation))]);
@@ -84,7 +84,27 @@ for simStep = 1:simulationSteps
                     stimulationOn(NeuronModel{iGroup});
                     disp('stimulation on')
                 end
+                % For time varying stimulation, step through the time
+                % dimension of the vext matrix for each simStep where
+                % stimulation is active. The vext matrix should have
+                % been previously interpolated in runSimulation.
+                if isa(TP.StimulationField, 'pde.TimeDependentResults')
+                    setVext(NeuronModel{iGroup},NP(iGroup).V_ext_mat(:,:,timeStimStep));
+                elseif isfield(TP, 'tRNS')
+                    setVext(NeuronModel{iGroup},NeuronModel{iGroup}.v_ext*TP.tRNS);
+                end
+                
             end
+            if isfield(TP, 'tRNS')
+                TP.tRNS = wgn(1,1,0); % generate a new random number for tRNS.
+            end
+            timeStimStep = timeStimStep+1;
+            % reset timeStimStep if it gets passed the length of the
+            % time dimension in the stimulation field, this will loop
+            % back to the beginning of the time varying stimulation.
+            if timeStimStep > size(TP.StimulationField.NodalSolution,2)
+                timeStimStep = 1;
+            end    
         elseif current_time > TP.StimulationOff(stimcount)
             for iGroup = 1:TP.numGroups
                 if  NeuronModel{iGroup}.incorporate_vext

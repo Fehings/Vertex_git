@@ -330,7 +330,7 @@ groupWeightMat =  [ ...
 0.160/2.5 0.195 0.000 0.331 0.422 0.196 0.417 0.000 0.241*2.5 2.596 0.133 0.011 0.359 0.657 0.000;...
 0.003 0.836 0.012 0.137 0.145 0.095 0.181 0.001 0.253/3 0.164/3 0.704/3 0.003 0.064 0.062 0.060;...
 0.003 0.836 0.012 0.137 0.145 0.095 0.782 0.013 0.604/3 0.164/3 0.704/3 0.003 0.064 0.062 0.038;...
-0.493/4 0.112 0.000 0.274 0.273 0.151 0.154 0.000 0.362/4 0.362/4 0.017 0.000 0.442*2.5 0.307*2.5 0.012]; % temp adding the *2 as test
+0.493/4 0.112 0.000 0.274 0.273 0.151 0.154 0.000 0.362/4 0.362/4 0.017 0.000 0.442*2.5 0.307*2.5 0.012];
 
 ex = [1 4 5 6 9 10 13 14];
 in = [2 3 7 8 11 12 15];
@@ -365,21 +365,21 @@ for iPre = 1:numGroups
   for iPost = 1:numGroups
     CP(iPre).synapseType{iPost} = 'g_exp';
     if ismember(iPre,ex) && ismember(iPost,ex)
-      CP(iPre).tau{iPost} = 60;
+      CP(iPre).tau{iPost} = 2;
       CP(iPre).E_reversal{iPost} = 0;
-      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre)*1.25;
+      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre);
     elseif ismember(iPre,ex) && ismember(iPost,in)
-      CP(iPre).tau{iPost} = 150;
+      CP(iPre).tau{iPost} = 0.8;
       CP(iPre).E_reversal{iPost} = 0;
-      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre)*0.75;
+      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre);
     elseif ismember(iPre,in) && ismember(iPost,ex)
-      CP(iPre).tau{iPost} = 280;
+      CP(iPre).tau{iPost} = 6;
       CP(iPre).E_reversal{iPost} = -75;
-      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre).*1.25; % was multiplied by 1.25
+      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre).*1.25;
     elseif ismember(iPre,in) && ismember(iPost,in)
-      CP(iPre).tau{iPost} = 380;
+      CP(iPre).tau{iPost} = 3;
       CP(iPre).E_reversal{iPost} = -75;
-      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre).*0.75; % was multiplied by 1.25
+      CP(iPre).weights{iPost} = groupWeightMat(iPost, iPre).*1.25;
     else
       disp('WTF?!')
     end

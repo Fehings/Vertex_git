@@ -7,10 +7,10 @@
 %% Tissue parameters
 % Our tissue parameters are similar to the previous tutorials:
 
-TissueParams.X = 2000;
+TissueParams.X = 2200; %2000
 TissueParams.Y = 400;
-TissueParams.Z = 650;
-TissueParams.neuronDensity = 20000;
+TissueParams.Z = 1240; %650
+TissueParams.neuronDensity = 50000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
@@ -21,7 +21,7 @@ TissueParams.maxZOverlap = [-1 , -1];
 % thick layer 4 and a 150 micron thick layer 5:
 
 TissueParams.numLayers = 3;
-TissueParams.layerBoundaryArr = [650, 450, 150, 0];
+TissueParams.layerBoundaryArr = [1240, 450, 150, 0];
 
 %%
 % As the total Z-depth of the model is 650, we specify the top boundary of our
@@ -390,8 +390,8 @@ RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 500;
-SimulationSettings.timeStep = 0.03125;
+SimulationSettings.simulationTime = 100;
+SimulationSettings.timeStep = 0.001;%0.03125;
 SimulationSettings.parallelSim = false;
 
 %% Run simulation and load results

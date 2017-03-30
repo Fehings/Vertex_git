@@ -1,6 +1,6 @@
 function [NeuronModel, SynModel, InModel, numSaves] = ...
     simulateParallel(TP, NP, SS, RS, ...
-    IDMap, NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves)
+    IDMap, NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves,paraStimParam)
 %Parallel version of simulate.
 
 outputDirectory = RS.saveDir;
@@ -36,6 +36,7 @@ end
 
 if nargin == 13
     ns = 0;
+    paraStimParam = [];
 else
     ns = nsaves;
 end
@@ -129,6 +130,8 @@ end
     labBarrier();
     
     stimcount = 1;
+    timeStimStep = 1;
+    
     for simStep = 1:simulationSteps
         
         %%%%
@@ -144,6 +147,27 @@ end
                     if  ~NeuronModel{iGroup}.incorporate_vext
                         stimulationOn(NeuronModel{iGroup});
                     end
+                    % For time varying stimulation, step through the time
+                    % dimension of the vext matrix for each simStep where
+                    % stimulation is active. The vext matrix should have
+                    % been previously interpolated in runSimulation.
+                    if isa(TP.StimulationField, 'pde.TimeDependentResults')
+                        setVext(NeuronModel{iGroup},paraStimParam(iGroup).V_ext_mat(:,:,timeStimStep));
+                    elseif isfield(TP,'tRNS')
+                        setVext(NeuronModel{iGroup},NeuronModel{iGroup}.v_ext*TP.tRNS);
+                    end
+                end
+                
+                    if isfield(TP,'tRNS')
+                        TP.tRNS=wgn(1,1,0);
+                    end
+                
+                timeStimStep = timeStimStep+1;
+                % reset timeStimStep if it gets passed the length of the
+                % time dimension in the stimulation field, this will loop
+                % back to the beginning of the time varying stimulation.
+                if timeStimStep > size(TP.StimulationField.NodalSolution,2)
+                    timeStimStep = 1;
                 end
                 % otherwise if time is greater than current of time turn
                 % off
@@ -405,6 +429,7 @@ end
         
         if labindex() == 1 && mod(simStep * SS.timeStep, 5) == 0
             disp(num2str(simStep * SS.timeStep));
+                             
         end
         
         % write recorded variables to disk
