@@ -28,7 +28,7 @@ TissueParams.StimulationOff = [200.5 810]; % Turn stimulation off at 55 ms
 %Calculating neuron proportions. 
 
 totalneurons = 18294;
-% 18294 neurons in 3 layers in volume of 0.29mm^2 
+% 18294 neurons in 3 layers in volume of 0.29mm^3 
 
 %Number of all neurons from datasheet
 L23_num_neurons = 7524;
@@ -643,12 +643,12 @@ SimulationSettings.simulationTime = 300;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
-
+control.stim = true;
 
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
-              RecordingSettings, SimulationSettings);
+              RecordingSettings, SimulationSettings,control);
 
 
 %%
