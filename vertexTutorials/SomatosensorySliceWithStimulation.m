@@ -20,7 +20,10 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr =  [1217, 715, 525, 0];
-TissueParams.StimulationField = invitroSliceStim('layer4stim.stl',100000); % slicecutoutsmallnew
+
+TissueParams.StimulationField = invitroSliceStim('layer4stim.stl',1000); % slicecutoutsmallnew
+TissueParams.StimulationOn = [200 800]; % Turn stimulation on at 50 ms
+TissueParams.StimulationOff = [200.5 810]; % Turn stimulation off at 55 ms
 %%
 %Calculating neuron proportions. 
 
@@ -358,7 +361,7 @@ NeuronParams(13).compartmentZPositionMat = ...
   -87, -193];
 NeuronParams(13).C = 1.0*2.95;
 NeuronParams(13).R_M = 20000/2.95;
-NeuronParams(13).R_A = 150;
+NeuronParams(13).R_A = 600;
 NeuronParams(13).E_leak = -70;
 NeuronParams(13).dendritesID = [2 3 4 5 6 7 8 9];
 
@@ -408,60 +411,59 @@ NeuronParams(20).modelProportion = modpropL5MC;
 
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 50;
+NeuronParams(1).Input(1).meanInput = 200;
+NeuronParams(1).Input(1).stdInput = 70;
 NeuronParams(1).Input(1).tau = 2;
 
 %For layer 2/3 Inhibitory cells
 for i = 2:5
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
-    NeuronParams(i).Input(1).stdInput = 20;
+    NeuronParams(i).Input(1).meanInput = 100;
+    NeuronParams(i).Input(1).stdInput = 40;
     NeuronParams(i).Input(1).tau = 1;
 end
 
 %For layer 4 Excitatory cells
 for i = 6:8
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 230;
-    NeuronParams(i).Input(1).stdInput = 30;
+    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).stdInput = 70;
     NeuronParams(i).Input(1).tau = 2;
 end
 % %For layer 4 Inhibitory cells
 for i = 9:12
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 220;
-    NeuronParams(i).Input(1).stdInput = 20;
+    NeuronParams(i).Input(1).meanInput = 100;
+    NeuronParams(i).Input(1).stdInput = 40;
     NeuronParams(i).Input(1).tau = 1;
 end
 % %For layer 5 Excitatory cells
-for i = 13:16
+for i = 13:14
+    NeuronParams(i).Input(1).inputType = 'i_ou';
+    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).stdInput = 70;
+    NeuronParams(i).Input(1).tau = 2;
+end
+for i = 15:16
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 700;
-    NeuronParams(i).Input(1).stdInput = 30;
+    NeuronParams(i).Input(1).stdInput = 150;
     NeuronParams(i).Input(1).tau = 2;
 end
 
 % %For layer 5 Inhibitory cells
 for i = 17:20
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
-    NeuronParams(i).Input(1).stdInput = 20;
+    NeuronParams(i).Input(1).meanInput = 100;
+    NeuronParams(i).Input(1).stdInput = 40;
     NeuronParams(i).Input(1).tau = 1;
 end
 
 
 
 volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.29;
-volumemultiplier = 1;
-for i = 1:20
-    NeuronParams(i).Input(2).inputType = 'i_efieldpp';
+%volumemultiplier = 1;
 
-    NeuronParams(i).Input(2).amplitude = 0;
-
-     NeuronParams(i).Input(2).timeOn = 2500;
-     NeuronParams(i).Input(2).timeOff = 2505;
-end
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 
 %connectivity parameters. Weights and number of connections loaded from
@@ -637,15 +639,11 @@ RecordingSettings.sampleRate = 2000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 3000;
+SimulationSettings.simulationTime = 300;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
-%These are flags used for simulating electric field or focussed ultrasound
-%stimulation of the slice, these are currently in development and not used
-%for this project. 
-SimulationSettings.ef_stimulation = true;
-SimulationSettings.fu_stimulation = false;
+
 
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...

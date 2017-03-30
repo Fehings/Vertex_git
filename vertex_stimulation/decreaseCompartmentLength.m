@@ -1,7 +1,7 @@
 function [NP] = decreaseCompartmentLength(NP)
 %Find compartments greater than space constant/4, then split them in two
 %until they are small enough.
-bigcompartments = find(NP.compartmentLengthArr > NP.spaceconstant/4);
+bigcompartments = find(NP.compartmentLengthArr > NP.spaceconstant*2);
 for i = bigcompartments
     %compartment i is too big, so we will split it in two
     NP.compartmentParentArr(end+1) = i;
@@ -30,6 +30,7 @@ for i = bigcompartments
         (NP.compartmentYPositionMat(i,1) - NP.compartmentYPositionMat(i,2))^2 + ...
         (NP.compartmentZPositionMat(i,1) - NP.compartmentZPositionMat(i,2))^2);
     NP.numCompartments = NP.numCompartments+1;
+    
 end
 
 end

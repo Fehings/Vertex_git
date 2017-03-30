@@ -85,7 +85,6 @@ classdef NeuronModel_adex < NeuronModel
       
       NM.v = NM.v + dt .* kv;
       NM.w = NM.w + dt .* kw;
-      
       NM.spikes = NM.v(:,1) >= N.v_cutoff;
       NM.v(NM.spikes, 1) = N.v_reset;
       NM.w(NM.spikes, 1) = NM.w(NM.spikes, 1) + N.b;
