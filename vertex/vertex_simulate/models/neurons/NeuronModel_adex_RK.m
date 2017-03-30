@@ -1,4 +1,4 @@
-classdef NeuronModel_adex < NeuronModel
+classdef NeuronModel_adex_RK < NeuronModel
   %NeuronModel_adex Adaptive Exponential Integrate and Fire neuron model
   %   Parameters to set in NeuronParams in addition to passive parameters:
   %   - a, the adaptation coupling parameter (in nS)
