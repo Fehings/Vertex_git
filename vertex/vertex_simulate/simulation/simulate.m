@@ -70,6 +70,7 @@ if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
     
     posttoprearr = getPosttoPreSynArr(synArr);
+    
     disp('Map calculated');
 end
 
@@ -291,6 +292,9 @@ for simStep = 1:simulationSteps
                       %The neurons presynatpic to the one just fired and in
                       %the group currently being processed
                       presyningroup = presynaptic(inGroup);
+                      
+                      
+
                       postsynlocingroup = postsynapticlocation(inGroup);
                       %weights for connections to neurons presynaptic to
                       %the spiking neuron
@@ -303,7 +307,6 @@ for simStep = 1:simulationSteps
                               -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
                           
                       for synInd = 1:length(presyningroup)
-                          max(wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) - wMat(synInd))
                             wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
                       end
 

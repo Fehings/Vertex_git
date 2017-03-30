@@ -89,10 +89,12 @@ end
 % Prepare synapses and synaptic weights. 
 [synapsesArrSim, weightArr] = prepareSynapsesAndWeights(TP,CP,SS,connections);
 
+
 %Setting the stimulation field v_ext for each neuron compartment
 %Get_V_ext returns the extracellular potential specified by
 %TP.StimulationsField at each of the compartment midpoints.
 %setVext is a function attached to the NeuronModel object. 
+
 %It will assign the values passed to it to the v_ext field of the neuron.
 if isfield(TP, 'StimulationField')
     if SS.parallelSim
@@ -122,7 +124,7 @@ if SS.parallelSim
   % www.vertexsimulator.org), then uncomment the next line to get the
   % dynamic variables at the end of simulateParallel()
   %[NeuronModelArr, SynapseModelArr, InputModelArr, numSaves] = ...
-    simulateParallel(TP, NP, SS, RS, NeuronIDMap, NeuronModelArr, ...
+    simulateParallel(TP, NP, SS, RS,NeuronIDMap, NeuronModelArr, ...
     SynapseModelArr, InputModelArr, RecordingVars, lineSourceModCell, ...
     synapsesArrSim, weightArr, synMapCell);
   

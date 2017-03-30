@@ -41,7 +41,6 @@ else
 end
 % set field inputs
 
-
 spmd
     
     %Get the neuron ids processed in this lab
@@ -107,21 +106,24 @@ spmd
         loadedSpikes = pload(fName);
     end
     
+
     stdp = false;
-    for iPostGroup = 1:length(SynModel(:,1))
-        for iSpkSynGroup = 1:length(SynModel(iPostGroup,:))
-            if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
-                stdp = true;
-            end
+for iPostGroup = 1:length(SynModel(:,1))
+    for iSpkSynGroup = 1:length(SynModel(iPostGroup,:))
+        if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
+            stdp = true;
         end
     end
+end
+
+if stdp
+    disp('Using stdp, so calculating postsynaptic to presynaptic map');
     
-    if stdp
-        disp('Using stdp, so calculating postsynaptic to presynaptic map');
-        disp(['synarr length : ' num2str(length(synArr))]);
-        posttoprearr = getPosttoPreSynArr(synArr);
-        disp('Map calculated');
-    end
+    posttoprearr = getPosttoPreSynArr(synArr);
+    disp('Map calculated');
+end
+
+
     
     % simulation loop
     labBarrier();
@@ -244,10 +246,8 @@ spmd
             RecVar.spikeRecording{spikeRecCounter} = ...
                 receivedSpikes(labindex(), :);
             spikeRecCounter = spikeRecCounter + 1;
-            
             allSpike = cell2mat(receivedSpikes(:, 1));
             allSpikeTimes = cell2mat(receivedSpikes(:, 2));
-            
             % Go through spikes and insert events into relevant buffers
             % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
             for iSpk = 1:length(allSpike)
@@ -263,7 +263,9 @@ spmd
                         inGroup = postInGroup == iPostGroup;
 
                         inGroupInLab = subsetInLab(inGroup);
+                        
                         if sum(inGroup ~= 0)
+                            %
                             ind = ...
                                 uint32(IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)') + ...
                                 (uint32(synArr{allSpike(iSpk), 2}(inGroup)) - ...
@@ -279,6 +281,7 @@ spmd
                                 %we pass the id of the presynaptic neuron: allSpike(iSpk)
                                 %Synapse model stores stp vars for each pre to post
                                 %connection. iSpkSynGroup is the presynaptic group.
+                                
                                 bufferIncomingSpikes( ...
                                     SynModel{iPostGroup, iSpkSynGroup}, ...
                                     ind, wArr{allSpike(iSpk)}(inGroup),allSpike(iSpk), TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
@@ -291,52 +294,98 @@ spmd
                                 %process spike as presynaptic spike, updating weights for
                                 %post synaptic neurons in this synapse group.
                                 %passing weights and group relative ids of post synaptic neurons.
-                                processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
                                 
-                                postneurons = intersect(synArr{allSpike(iSpk),1},inGroupInLab);
-                                
-                                wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),postneurons -...
-                                    TP.groupBoundaryIDArr(neuronInGroup(postneurons(1))) );
+                                %update Apre for synapses of spiking neuron
+                                %if it is hosted on this core
+                                if ismember(allSpike(iSpk),subsetInLab )
+
+                                    
+                                    relativeSpikeID = IDMap.modelIDToCellIDMap(allSpike(iSpk));
+                                    processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup},relativeSpikeID );
+                                end
+                                %for all spikes on all labs
+                                   
+                                    % get postsynaptic neurons in this lab
+                                    % and this group
+                                    %translate their total ID to the one
+                                    %relative to their lab/group
+                                    relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
+                                    %update weights of connections from
+                                    %spiking neuron to all in this lab
+                                    wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs );
+                                 
                             end
                         end
                     end
                 end
                 %if we are using stdp on any synapses, then update weights on
                 %connections presynaptic to the spiking neuron.
-                
+                labBarrier();
                 if stdp
-                    disp('processing post syn')
                     %get all neurons presynaptic to the spiking neuron
+                    % in this lab
                     presynaptic = posttoprearr{allSpike(iSpk),1};
                     postsynapticlocation = posttoprearr{allSpike(iSpk),2};
                     preInGroup = neuronInGroup(presynaptic);
                     %for each group get neurons presynaptic to the firing neuron
                     for iPreGroup = 1:TP.numGroups
-                        inGroup = preInGroup == iPreGroup;
-                        %inGroupInLab = subsetInLab(inGroup);
-                        if sum(inGroup ~= 0)
-                            
-                            if isa(SynModel{iSpkSynGroup,iPreGroup}, 'SynapseModel_g_stdp')
-                                
-                                relativeind = allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
+                        
+                        %if the synapse between the spiking neuron and this
+                        %pre synaptic group has stdp then 
+                        if isa(SynModel{iSpkSynGroup,iPreGroup}, 'SynapseModel_g_stdp')
+                            % if the spiking neuron is on this lab 
+                            % then it is our responsibility to update its
+                            % Apost value - it is a postsynaptic spike on
+                            % the synapse currently being processed. The
+                            % Apost value for neurons on other labs will be
+                            % part of a synapse model hosted there. Synapse
+                            % models split up and exist individually on
+                            % each lab.
+                            if ismember(allSpike(iSpk),subsetInLab )
+                                relativeind = IDMap.modelIDToCellIDMap(allSpike(iSpk));
                                 processAsPostSynSpike(SynModel{iSpkSynGroup, iPreGroup},relativeind);
-                                %if the synapses from the preSynaptic group to the
-                                %spiking group have stdp on them
+                            end
+                            %logical array specifying which presynaptic
+                            %neurons are in the current group
+                            inGroup = preInGroup == iPreGroup;
+                            
+                            %inGroupInLab = subsetInLab(inGroup);
+                            %if there are presynaptic neurons in current
+                            %group
+                            if sum(inGroup ~= 0)
+
                                 
-                                %The neurons presynatpic to the one just fired and in
-                                %the group currently being processed
+                                
                                 presyningroup = presynaptic(inGroup);
-                                disp(length(presyningroup))
+                                ingroupinlab = ismember(presyningroup,subsetInLab);
+                                presyningroup = presyningroup(ingroupinlab);
                                 postsynlocingroup = postsynapticlocation(inGroup);
+                                 postsynlocingroup = postsynlocingroup(ingroupinlab);
+
+                                 relativepreID = IDMap.modelIDToCellIDMap(presyningroup);
+            
+                                
                                 %weights for connections to neurons presynaptic to
                                 %the spiking neuron
                                 wMat = zeros(length(presyningroup),1);
+
                                 for synInd = 1:length(presyningroup)
+                                   
+
+                                        if postsynlocingroup(synInd) > length(wArr{presyningroup(synInd)})
+                                            allSpike(iSpk)
+                                            presyningroup(synInd)
+                                            postsynlocingroup(synInd)
+                                            length(wArr{presyningroup(synInd)})
+                                            error('post synloc is too big')
+                                        end
+                                        
+                                        
+                                    
                                     wMat(synInd) = wArr{presyningroup(synInd)}(postsynlocingroup(synInd));
                                 end
                                 wMat = updateweightsaspostsynspike(SynModel{iSpkSynGroup,iPreGroup},...
-                                    wMat, presyningroup...
-                                    -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                                    wMat,relativepreID  );
                                 
                                 for synInd = 1:length(presyningroup)
                                     wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);

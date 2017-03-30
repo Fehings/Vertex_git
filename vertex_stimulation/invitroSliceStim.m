@@ -9,11 +9,11 @@ end
 
 model = createpde;
 importGeometry(model,geometryloc);
-%figure(1)
-pdegplot(model,'FaceLabels', 'on')
+% figure(1)
+% pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.5)
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',3:6,'g',0.0,'q',0.0); % for the
+applyBoundaryCondition(model,'face',3:17,'g',0.0,'q',0.0); % for the
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
 
@@ -40,6 +40,8 @@ elseif isequal(geometryloc, 'farapartlectrodesbig.stl')
     applyBoundaryCondition(model,'face',[2,11,12,1,16],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[4,14,3,13,15],'h',1.0,'r',-stimstrength);
 elseif isequal(geometryloc, 'layer4stim.stl')
+    applyBoundaryCondition(model,'face',[3,4,16,17,18],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[1,2,14,15,19],'h',1.0,'r',-stimstrength);
 elseif isequal(geometryloc, 'catvisblend1.stl')
     applyBoundaryCondition(model,'face',[2],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1],'h',1.0,'r',-stimstrength);
@@ -59,7 +61,9 @@ specifyCoefficients(model,'m',0, 'd',0, 'c',0.3/1000000, 'a',0, 'f',0);
 
 generateMesh(model);
 disp(model.IsTimeDependent)
+
 result = solvepde(model);
+
  u = result.NodalSolution;
 
   pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
@@ -69,7 +73,7 @@ result = solvepde(model);
 % V = reshape(V,size(X));
 % figure
 % colormap jet
-% contourslice(X,Y,Z,V,1:10:1000,1:10:1800,1:10:700)
+% contourslice(X,Y,Z,V,1:100:1000,1:10:1800,1:100:700)
 % xlabel('x')
 % ylabel('y')
 % zlabel('z')
