@@ -1,5 +1,5 @@
 function [RS, RecordingVars, lineSourceModCell] = ...
-  setupRecordingVars(TP, NP, SS, RS, IDMap, LSM)
+  setupRecordingVars(TP, NP, SS, RS, IDMap, LSM,wArr,synArr)
 
 groupBoundaryIDArr = TP.groupBoundaryIDArr;
 neuronInGroup = createGroupsFromBoundaries(groupBoundaryIDArr);
@@ -37,38 +37,56 @@ if ~isfield(RS, 'weights_preN_IDs')
     RS.weights_preN_IDs = [];
 end
 
+if ~isfield(RS, 'weights_postN_IDs')
+    RS.weights_postN_IDs = [];
+end
+
 % weights recording
 if SS.parallelSim
-  weightsRecLab = SS.neuronInLab(RS.weights_preN_IDs);
-  spmd
-    if ismember(labindex(), unique(weightsRecLab))
-      recordWeights = true;
-      p_weightsRecModelIDArr = RS.v_m(weightsRecLab == labindex());
-
-      p_numToRecordWeights = size(p_weightsRecModelIDArr, 1);
-      p_weightsRecording = cell(p_numToRecordWeights, RS.maxRecSamples);
-      RecordingVars.weightsRecCellIDArr = p_weightsRecModelIDArr;
-      RecordingVars.weightsRecording = p_weightsRecording;
-    else
-      recordWeights = false;
+    
+    
+    spmd
+        if ~isempty(RS.weights_preN_IDs)
+            recordWeights = true;
+            preweightsRecLab = RS.weights_preN_IDs;
+            weightsRec = cell(length(preweightsRecLab),1);
+            for c = 1:length(weightsRec)
+                weightsRec{c} = ones(round(RS.maxRecSamples),length(wArr{preweightsRecLab(c)}));
+                synapseIDs{c} = synArr{preweightsRecLab(c),1};
+            end
+            %RS.v_m=floor(RS.v_m);
+            
+            
+            RecordingVars.preweightsRecCellIDArr = RS.weights_preN_IDs;
+            RecordingVars.weightsRecording =  weightsRec;
+            RecordingVars.synapsepostIDs = synapseIDs;
+        else
+            recordWeights = false;
+        end
+        RecordingVars.recordWeights = recordWeights;
     end
-    RecordingVars.recordWeights = recordWeights;
-  end
+    disp(' ' )
+    
 else
   if ~isempty(RS.weights_preN_IDs)
     recordWeights = true;
-    %RS.v_m=floor(RS.v_m);
-    numToRecordWeights = size(RS.weights_preN_IDs, 1);
+    preweightsRecLab = RS.weights_preN_IDs;
     
-    weightsRecording = cell(numToRecordWeights, round(RS.maxRecSamples));
-    
-    RecordingVars.weightsRecCellIDArr = RS.weights_preN_IDs;
-    RecordingVars.weightsRecording = weightsRecording;
+    weightsRec = cell(length(preweightsRecLab),1);
+    for c = 1:length(weightsRec)
+        weightsRec{c} = ones(round(RS.maxRecSamples),length(wArr{preweightsRecLab(c)}));
+        synapseIDs{c} = synArr{c,1};
+    end
+
+    RecordingVars.preweightsRecCellIDArr = RS.weights_preN_IDs;
+    RecordingVars.weightsRecording =  weightsRec;
+    RecordingVars.synapsepostIDs = synapseIDs;
   else
     recordWeights = false;
   end
   RecordingVars.recordWeights = recordWeights;
 end
+
 
 % Intracellular recording:
 if SS.parallelSim
@@ -80,7 +98,7 @@ if SS.parallelSim
       p_intraRecCellIDArr = ...
         IDMap.modelIDToCellIDMap(p_intraRecModelIDArr, :);
       p_numToRecordIntra = size(p_intraRecModelIDArr, 1);
-      p_intraRecording = zeros(p_numToRecordIntra, RS.maxRecSamples);
+      p_intraRecording = zeros(p_numToRecordIntra,  round(RS.maxRecSamples));
       
       RecordingVars.intraRecCellIDArr = p_intraRecCellIDArr;
       RecordingVars.intraRecording = p_intraRecording;
@@ -114,9 +132,13 @@ fac_SynRecLab = SS.neuronInLab(RS.fac_syn);
       p_fac_synRecCellIDArr = ...
         IDMap.modelIDToCellIDMap(p_fac_synRecModelIDArr, :);
       p_numToRecordfac_syn = size(p_fac_synRecModelIDArr, 1);
-      p_fac_synRecording = zeros(p_numToRecordfac_syn, TP.numGroups, RS.maxRecSamples);
+      p_fac_synRecording = zeros(p_numToRecordfac_syn, TP.numGroups, round(RS.maxRecSamples));
       
       RecordingVars.fac_synRecCellIDArr = p_fac_synRecCellIDArr;
+       RecordingVars.fac_synRecModelIDArr = p_fac_synRecModelIDArr;
+       facGBA = groupBoundaryIDArr(neuronInGroup(p_fac_synRecModelIDArr))';
+      RecordingVars.fac_synRecCellIDArr = [p_fac_synRecModelIDArr - facGBA; uint16(neuronInGroup(p_fac_synRecModelIDArr))'];
+      
       RecordingVars.fac_synRecording = p_fac_synRecording;
     else
       recordFac_syn = false;
@@ -128,9 +150,8 @@ else
     recordFac_syn = true;
    fac_synRecCellIDArr = IDMap.modelIDToCellIDMap(RS.fac_syn, :);
     numToRecordfac_syn = size(fac_synRecCellIDArr, 1);
-    fac_synRecording = zeros(numToRecordfac_syn, TP.numGroups, RS.maxRecSamples);
-    
-    RecordingVars.fac_synRecCellIDArr = fac_synRecCellIDArr;
+    fac_synRecording = zeros(numToRecordfac_syn, 2, round(RS.maxRecSamples));
+    RecordingVars.fac_synRecCellIDArr = fac_synRecCellIDArr';
     RecordingVars.fac_synRecording = fac_synRecording;
   else
     recordFac_syn = false;
@@ -215,7 +236,7 @@ if SS.parallelSim
       p_I_synRecCellIDArr = ...
         IDMap.modelIDToCellIDMap(p_I_synRecModelIDArr, :);
       p_numToRecordI_syn = size(p_I_synRecModelIDArr, 1);
-      p_I_synRecording = zeros(p_numToRecordI_syn, TP.numGroups, RS.maxRecSamples);
+      p_I_synRecording = zeros(p_numToRecordI_syn, TP.numGroups, round(RS.maxRecSamples));
       
       RecordingVars.I_synRecCellIDArr = p_I_synRecCellIDArr;
       RecordingVars.I_synRecording = p_I_synRecording;
@@ -229,7 +250,7 @@ else
     recordI_syn = true;
     I_synRecCellIDArr = IDMap.modelIDToCellIDMap(RS.I_syn, :);
     numToRecordI_syn = size(I_synRecCellIDArr, 1);
-    I_synRecording = zeros(numToRecordI_syn, TP.numGroups, RS.maxRecSamples);
+    I_synRecording = zeros(numToRecordI_syn, TP.numGroups, round(RS.maxRecSamples));
     
     RecordingVars.I_synRecCellIDArr = I_synRecCellIDArr;
     RecordingVars.I_synRecording = I_synRecording;
@@ -250,11 +271,11 @@ if RS.LFP
       if isfield(RS, 'LFPoffline') && RS.LFPoffline
         for iGroup = 1:TP.numGroups
           LFPRecording{iGroup} = zeros(sum(p_neuronInGroup==iGroup,1), ...
-            NP(iGroup).numCompartments, RS.maxRecSamples);
+            NP(iGroup).numCompartments, round(RS.maxRecSamples));
         end
       else
         for iGroup = 1:TP.numGroups
-          LFPRecording{iGroup} = zeros(numElectrodes, RS.maxRecSamples);
+          LFPRecording{iGroup} = zeros(numElectrodes, round(RS.maxRecSamples));
         end
       end
       for iGroup = 1:TP.numGroups
@@ -271,11 +292,11 @@ if RS.LFP
     if isfield(RS, 'LFPoffline') && RS.LFPoffline
       for iGroup = 1:TP.numGroups
         LFPRecording{iGroup} = zeros(sum(neuronInGroup==iGroup, 1), ...
-          NP(iGroup).numCompartments, RS.maxRecSamples);
+          NP(iGroup).numCompartments, round(RS.maxRecSamples));
       end
     else
       for iGroup = 1:TP.numGroups
-        LFPRecording{iGroup} = zeros(numElectrodes, RS.maxRecSamples);
+        LFPRecording{iGroup} = zeros(numElectrodes, round(RS.maxRecSamples));
       end
     end
     for iGroup = 1:TP.numGroups

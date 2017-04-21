@@ -82,13 +82,14 @@ else
   InputModelArr = [];
 end
 
-% Initialise the recording variables
-[RS, RecordingVars, lineSourceModCell] = ...
-  setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes);
+
 
 % Prepare synapses and synaptic weights. 
 [synapsesArrSim, weightArr] = prepareSynapsesAndWeights(TP,CP,SS,connections);
 
+% Initialise the recording variables
+[RS, RecordingVars, lineSourceModCell] = ...
+  setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes, weightArr,synapsesArrSim);
 
 %Setting the stimulation field v_ext for each neuron compartment
 %Get_V_ext returns the extracellular potential specified by

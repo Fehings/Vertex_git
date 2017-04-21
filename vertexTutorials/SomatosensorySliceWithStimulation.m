@@ -21,9 +21,9 @@ TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr =  [1217, 715, 525, 0];
 
-TissueParams.StimulationField = invitroSliceStim('layer4stim.stl',1000); % slicecutoutsmallnew
-TissueParams.StimulationOn = [200 800]; % Turn stimulation on at 50 ms
-TissueParams.StimulationOff = [200.5 810]; % Turn stimulation off at 55 ms
+TissueParams.StimulationField = invitroSliceStim('layer4stim.stl',500); % slicecutoutsmallnew
+TissueParams.StimulationOn = [150 300]; % Turn stimulation on at 50 ms
+TissueParams.StimulationOff = [151 301]; % Turn stimulation off at 55 ms
 %%
 %Calculating neuron proportions. 
 
@@ -72,8 +72,8 @@ NeuronParams(1).neuronModel = 'adex';
 NeuronParams(1).V_t = -50;
 NeuronParams(1).delta_t = 2;
 NeuronParams(1).a = 2.6;
-NeuronParams(1).tau_w = 65;
-NeuronParams(1).b = 220;
+NeuronParams(1).tau_w = 10;
+NeuronParams(1).b = 150;
 NeuronParams(1).v_reset = -60;
 NeuronParams(1).v_cutoff = -45;
 NeuronParams(1).numCompartments = 8;
@@ -111,7 +111,7 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 600;
+NeuronParams(1).R_A = 400;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
@@ -321,7 +321,7 @@ NeuronParams(13).V_t = -52;
 NeuronParams(13).delta_t = 2;
 NeuronParams(13).a = 10;
 NeuronParams(13).tau_w = 75;
-NeuronParams(13).b = 345;
+NeuronParams(13).b = 150;
 NeuronParams(13).v_reset = -60;
 NeuronParams(13).v_cutoff = -47;
 NeuronParams(13).numCompartments = 9;
@@ -361,7 +361,7 @@ NeuronParams(13).compartmentZPositionMat = ...
   -87, -193];
 NeuronParams(13).C = 1.0*2.95;
 NeuronParams(13).R_M = 20000/2.95;
-NeuronParams(13).R_A = 600;
+NeuronParams(13).R_A = 400;
 NeuronParams(13).E_leak = -70;
 NeuronParams(13).dendritesID = [2 3 4 5 6 7 8 9];
 
@@ -411,15 +411,15 @@ NeuronParams(20).modelProportion = modpropL5MC;
 
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 200;
-NeuronParams(1).Input(1).stdInput = 70;
+NeuronParams(1).Input(1).meanInput = 190;
+NeuronParams(1).Input(1).stdInput = 60;
 NeuronParams(1).Input(1).tau = 2;
 
 %For layer 2/3 Inhibitory cells
 for i = 2:5
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 100;
-    NeuronParams(i).Input(1).stdInput = 40;
+    NeuronParams(i).Input(1).meanInput = 50;
+    NeuronParams(i).Input(1).stdInput = 20;
     NeuronParams(i).Input(1).tau = 1;
 end
 
@@ -427,35 +427,35 @@ end
 for i = 6:8
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 200;
-    NeuronParams(i).Input(1).stdInput = 70;
+    NeuronParams(i).Input(1).stdInput = 80;
     NeuronParams(i).Input(1).tau = 2;
 end
 % %For layer 4 Inhibitory cells
 for i = 9:12
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 100;
-    NeuronParams(i).Input(1).stdInput = 40;
+    NeuronParams(i).Input(1).meanInput = 50;
+    NeuronParams(i).Input(1).stdInput = 20;
     NeuronParams(i).Input(1).tau = 1;
 end
 % %For layer 5 Excitatory cells
 for i = 13:14
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
-    NeuronParams(i).Input(1).stdInput = 70;
+    NeuronParams(i).Input(1).meanInput = 190;
+    NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 15:16
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 700;
-    NeuronParams(i).Input(1).stdInput = 150;
+    NeuronParams(i).Input(1).meanInput = 300;
+    NeuronParams(i).Input(1).stdInput = 70;
     NeuronParams(i).Input(1).tau = 2;
 end
 
 % %For layer 5 Inhibitory cells
 for i = 17:20
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 100;
-    NeuronParams(i).Input(1).stdInput = 40;
+    NeuronParams(i).Input(1).meanInput = 50;
+    NeuronParams(i).Input(1).stdInput = 20;
     NeuronParams(i).Input(1).tau = 1;
 end
 
@@ -530,6 +530,7 @@ for i = 2:4
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
        % ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
+         ConnectionParams(i).weights{j} = 0;
     end
 end
 
@@ -538,6 +539,7 @@ for j = 1:20
     ConnectionParams(5).targetCompartments{j} = NeuronParams(j).dendritesID;
     %ConnectionParams(5).tau{j} = 2;
     ConnectionParams(5).E_reversal{j} = -70;
+     ConnectionParams(5).weights{j} = 0;
 end
 
 
@@ -564,6 +566,7 @@ for i = 9:11
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
        % ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
+         ConnectionParams(i).weights{j} = 0;
     end
 end
 %for Martinotti cells 
@@ -571,6 +574,7 @@ for j = 1:20
     ConnectionParams(12).targetCompartments{j} = NeuronParams(j).dendritesID;
     %ConnectionParams(12).tau{j} = 6;
     ConnectionParams(12).E_reversal{j} = -70;
+     ConnectionParams(12).weights{j} = 0;
 end
 
 
@@ -599,6 +603,7 @@ for i = 17:19
         ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
        % ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
+         ConnectionParams(i).weights{j} = 0;
     end
 end
 
@@ -607,6 +612,7 @@ for j = 1:20
     ConnectionParams(20).targetCompartments{j} = NeuronParams(j).dendritesID;
     %ConnectionParams(20).tau{j} = 6;
     ConnectionParams(20).E_reversal{j} = -70;
+     ConnectionParams(20).weights{j} = 0;
 end
 
 %%
@@ -639,7 +645,7 @@ RecordingSettings.sampleRate = 2000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 300;
+SimulationSettings.simulationTime = 50;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
@@ -663,20 +669,11 @@ Results = loadResults(RecordingSettings.saveDir);
 %make sure no figures are open to keep things tidy
 close all;
 %%
-%plot the slice anatomy
-figure
-rasterParams.colors = {'k','m','b','g','r','y','c','k','m','b','g','r','k','k','k','c','m','b','g','r'};
-
-pars.colors = rasterParams.colors;
-pars.markers = {'^','o','x','+','s','d','p','^','o','x','+','s','v','^','p','*','o','x','+','s'};
-N = Results.params.TissueParams.N;
-pars.toPlot = 1:5:N;
-plotSomaPositions(Results.params.TissueParams,pars);
 
 %%
 %plot the slice simulation spike raster, each dot represents the time(on the x axis) at
 %which the neuron of a particular id (on the y axis) fired. 
-figure
+
 rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Spike Raster';
 rasterParams.xlabel = 'Time (ms)';

@@ -45,7 +45,7 @@ NeuronParams(1).neuronModel = 'adex';
 NeuronParams(1).V_t = -50;
 NeuronParams(1).delta_t = 2;
 NeuronParams(1).a = 2.6;
-NeuronParams(1).tau_w = 65;
+NeuronParams(1).tau_w = 10;
 NeuronParams(1).b = 220;
 NeuronParams(1).v_reset = -60;
 NeuronParams(1).v_cutoff = -45;
@@ -221,8 +221,8 @@ ConnectionParams(1).tau{1} = 1;
 %indicating no synaptic plasticity. Try increasing the value of
 %facilitation to values between 0 and 1 to investigate its effect. 
 %Try doing the same with the depression. 
-ConnectionParams(1).facilitation{1} = 0;
-ConnectionParams(1).depression{1} = 1;
+ConnectionParams(1).facilitation{1} = 0.5;
+ConnectionParams(1).depression{1} = 0.5;
 
 %These are the time constants for the plasticity variables of these
 %synapses.
@@ -241,8 +241,8 @@ ConnectionParams(1).weights{2} = 0.15;
 ConnectionParams(1).tau{2} = 1;
 
 %Plasticity for connections between 
-ConnectionParams(1).facilitation{2} = 0;
-ConnectionParams(1).depression{2} = 1;
+ConnectionParams(1).facilitation{2} = 0.5;
+ConnectionParams(1).depression{2} = 0.5;
 ConnectionParams(1).tD{2} = 670;
 ConnectionParams(1).tF{2} = 17;
 % 
@@ -263,8 +263,8 @@ ConnectionParams(2).synapseType{1} = 'g_stp';
 ConnectionParams(2).targetCompartments{1} = [NeuronParams(1).somaID];
 ConnectionParams(2).weights{1} = 1;
 ConnectionParams(2).tau{1} = 3;
-ConnectionParams(2).facilitation{1} = 0;
-ConnectionParams(2).depression{1} = 1;
+ConnectionParams(2).facilitation{1} = 0.5;
+ConnectionParams(2).depression{1} = 0.5;
 ConnectionParams(2).tD{1} = 510;
 ConnectionParams(2).tF{1} = 180;
 
@@ -274,8 +274,8 @@ ConnectionParams(2).synapseType{2} = 'g_stp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(2).weights{2} = 1.5;
 ConnectionParams(2).tau{2} = 6;
-ConnectionParams(2).facilitation{2} = 0;
-ConnectionParams(2).depression{2} = 1;
+ConnectionParams(2).facilitation{2} = 0.5;
+ConnectionParams(2).depression{2} = 0.5;
 ConnectionParams(2).tD{2} = 510;
 ConnectionParams(2).tF{2} = 180;
 % 
@@ -309,19 +309,17 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:5:5000;
-%RecordingSettings.I_syn = 1:2:5000;
-RecordingSettings.maxRecTime = 300;
+RecordingSettings.v_m = 1:2:5000;
+RecordingSettings.I_syn = 1:2:5000;
+RecordingSettings.fac_syn = 1:2:5000;
+
+RecordingSettings.maxRecTime = 50;
 RecordingSettings.sampleRate = 5000;
 
-%These flags say whether electrical or focussed ultrasound stimulation are
-%to be used.
-SimulationSettings.ef_stimulation = false;
-SimulationSettings.fu_stimulation = false;
 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 300;
-SimulationSettings.timeStep = 0.025125;
+SimulationSettings.simulationTime = 70;
+SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = false;
 
 
@@ -338,6 +336,8 @@ SimulationSettings.parallelSim = false;
 tic;
 runSimulation(params, connections, electrodes);
 toc;
+%%
+
 Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results

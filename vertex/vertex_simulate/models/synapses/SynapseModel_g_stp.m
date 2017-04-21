@@ -81,8 +81,8 @@ classdef SynapseModel_g_stp < SynapseModel
       SM.D = SM.D + ((1 - SM.D)./SM.tD).*dt;
     end
 
-    function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd, pregroup)
-        preInd = preInd-pregroup;
+    function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd)
+        
         
         %In stp the changes to facilitation and depression depend only on
         %the presynaptic activity. When this function is called we know
@@ -90,15 +90,26 @@ classdef SynapseModel_g_stp < SynapseModel
         %preInd, an index then made relative to each synapse group by
         %subtracting the presynaptic group boundary.
         %update the facilitation variable by adding the facilitation rate
-        SM.F(preInd) = SM.facilitation + SM.F(preInd);
-        SM.D(preInd) = SM.depression * SM.D(preInd);
-        
+        if preInd == 0
+            SM.g_expEventBuffer(synIndeces) = ...
+                SM.g_expEventBuffer(synIndeces) + ((weightsToAdd));
+        else
+            try
+                SM.F(preInd) = SM.facilitation + SM.F(preInd);
+                SM.D(preInd) = SM.depression * SM.D(preInd);
+                SM.g_expEventBuffer(synIndeces) = ...
+                    SM.g_expEventBuffer(synIndeces) + ((weightsToAdd) .*(SM.F(preInd) * SM.D(preInd)));
+                
+            catch ME
+                disp(preInd)
+                size(SM.F)
+                rethrow(ME)
+            end
+        end
         %Add the weights multiplied by the plasticity variables to the
         %spike accumulator at the postsynaptic neuron (and compartment and
         %time) determined by synIndeces.
-      SM.g_expEventBuffer(synIndeces) = ...
-                            SM.g_expEventBuffer(synIndeces) + ((weightsToAdd) .*(SM.F(preInd) * SM.D(preInd)));
-      
+
     end
     
     function SM = randomInit(SM, g_mean, g_std)

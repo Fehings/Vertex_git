@@ -109,6 +109,8 @@ classdef NeuronModel < handle
       
   function setVext(NM,V_ext)
     NM.v_ext = V_ext;
+    NM.v_ext(NM.v_ext>100) = 100;
+    NM.v_ext(NM.v_ext<-100) = -100;
   end
   
   function stimulationOn(NM)

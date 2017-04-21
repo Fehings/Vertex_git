@@ -24,7 +24,13 @@ classdef NeuronModel_adex < NeuronModel
     function [NM] = updateNeurons(NM, IM, N, SM, dt)
       I_syn = NeuronModel.sumSynapticCurrents(SM);
       I_input = NeuronModel.sumInputCurrents(IM);
+       maxv = 0;
        
+
+       
+      if min(NM.v > 50)
+          disp('more than 50')
+      end
       kv = bsxfun(@rdivide, (-bsxfun(@times, N.g_l, (NM.v - N.E_leak)) -...
         I_syn - NM.I_ax + I_input), N.C_m);
       kv(:, 1) = kv(:, 1) + ...
@@ -48,9 +54,15 @@ classdef NeuronModel_adex < NeuronModel
       
       NM.v = NM.v + dt .* kv;
       NM.w = NM.w + dt .* kw;
+      
+%       if NM.w > 1000
+%           disp(NM.w)
+%       end
+      
       NM.spikes = NM.v(:,1) >= N.v_cutoff;
       NM.v(NM.spikes, 1) = N.v_reset;
       NM.w(NM.spikes, 1) = NM.w(NM.spikes, 1) + N.b;
+      NM.v(NM.v>0) = 0;
     end
     
     function spikes = get.spikes(NM)

@@ -78,8 +78,8 @@ disp(model.IsTimeDependent)
 result = solvepde(model);
 
 %  u = result.NodalSolution;
-%  figure(2)
-%  pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
+ figure(2)
+ pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
 
 
 

@@ -27,7 +27,6 @@ numSaves = 1;
 if nargin == 13
   nsaves = 0;
 end
-disp(SynModel)
 simulationSteps = round(SS.simulationTime / SS.timeStep);
 
 if isfield(SS,'spikeLoad')
@@ -49,8 +48,7 @@ end
 recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
 recordFac_syn = RecVar.recordFac_syn;
-record_apre_syn = RecVar.recordapre_syn;
-record_apost_syn = RecVar.recordapost_syn;
+recordWeights = RecVar.recordWeights;
 
 stimcount = 1;
 timeStimStep = 1;
@@ -134,6 +132,11 @@ for simStep = 1:simulationSteps
 %        % RNS) but will only be used for tRNS later.
 %   end
 
+    %Update weight recording
+    if recordWeights
+        RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr,SS);
+    end
+
   for iGroup = 1:TP.numGroups
       
         
@@ -165,16 +168,9 @@ for simStep = 1:simulationSteps
       end
       
       if recordFac_syn
-          RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,recTimeCounter);
+          RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,TP);
       end
       
-      if record_apre_syn
-          RecVar = updateApre_synRecording(SynModel, RecVar, iGroup, recTimeCounter);
-      end
-      
-      if record_apost_syn
-          RecVar = updateApost_synRecording(SynModel, RecVar, iGroup, recTimeCounter);
-      end
       
 
       
@@ -264,10 +260,13 @@ for simStep = 1:simulationSteps
                 %spikes to the buffers.
                 %we pass the id of the presynaptic neuron: allSpike(iSpk)
                 %Synapse model stores stp vars for each pre to post
-                %connection. iSpkSynGroup is the presynaptic group.
+                %connection. iSpkSynGroup is synapsetype not the
+                %presynaptic group but the index of the synapse group.
+                relative_preID = IDMap.modelIDToCellIDMap(allSpike(iSpk));
+                
                 bufferIncomingSpikes( ...
                     SynModel{iPostGroup, iSpkSynGroup}, ...
-                    ind, wArr{allSpike(iSpk)}(inGroup),allSpike(iSpk), TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+                    ind, wArr{allSpike(iSpk)}(inGroup),relative_preID);
             else
                 bufferIncomingSpikes( ...
                     SynModel{iPostGroup, iSpkSynGroup}, ...
@@ -363,7 +362,7 @@ for simStep = 1:simulationSteps
     end
     recTimeCounter = 1;
     fName = sprintf('%sRecordings%d.mat', outputDirectory, numSaves+nsaves);
-    save(fName, 'RecVar');
+    save(fName, 'RecVar','-v7.3');
     
     % Only imcrement numSaves if this isn't the last scheduled save point.
     if numSaves < length(RS.dataWriteSteps)

@@ -46,6 +46,7 @@ classdef SynapseModel_g_stdp < SynapseModel
 
       %trace variable for presynaptic neurons, contains an entry for each
       %neuron in the presynaptic group of the connection.
+      
       SM.Apre = zeros(1,number_in_pre);
       %trace variable for postsynaptic neurons, contains an entry for each
       %neuron in the post synaptic group of the connection.
@@ -123,7 +124,6 @@ classdef SynapseModel_g_stdp < SynapseModel
     %spikeInd are the indices of postsynaptic neurons from this group that
     %have spiked in this cycle
     function SM = processAsPostSynSpike(SM, spikeInd)
-        
         SM.Apost(spikeInd) = SM.Apost(spikeInd) + SM.postRate;
     end
 
