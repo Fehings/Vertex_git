@@ -42,14 +42,15 @@ else
 end
 % set field inputs
 
-stdp = true;
-% for iPostGroup = 1:length(SynModel(:,1))
-%     for iSpkSynGroup = 1:length(SynModel(iPostGroup,:))
-%         if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
-%             stdp = true;
-%         end
-%     end
-% end
+stdp = false;
+SynMod1 = SynModel{1};
+for iPostGroup = 1:length(SynMod1(:,1))
+    for iSpkSynGroup = 1:length(SynMod1(iPostGroup,:))
+        if isa(SynMod1{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
+            stdp = true;
+        end
+    end
+end
 
 
 if stdp

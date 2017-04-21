@@ -18,6 +18,9 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
+TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100);
+TissueParams.StimulationOn = [250:50:501]; % Turn stimulation on at 50 ms
+TissueParams.StimulationOff = [251:50:501]; % Turn stimulation off at 55 ms
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
@@ -41,7 +44,7 @@ NeuronParams(1).neuronModel = 'adex';
 NeuronParams(1).V_t = -50;
 NeuronParams(1).delta_t = 2;
 NeuronParams(1).a = 2.6;
-NeuronParams(1).tau_w = 65;
+NeuronParams(1).tau_w = 25;
 NeuronParams(1).b = 220;
 NeuronParams(1).v_reset = -60;
 NeuronParams(1).v_cutoff = -45;
@@ -96,7 +99,7 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 150;
+NeuronParams(1).R_A = 350;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
@@ -118,8 +121,8 @@ NeuronParams(1).minCompartmentSize = 0.8;
 % reversal potential).
 
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 90;
+NeuronParams(1).Input(1).meanInput = 200;
+NeuronParams(1).Input(1).stdInput = 50;
 NeuronParams(1).Input(1).tau = 2;
 
 %%
@@ -170,15 +173,15 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
 NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 150;
+NeuronParams(2).R_A = 350;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).labelNames = {'dendritesID'};
 NeuronParams(2).minCompartmentSize = 0.8;
 NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 190;
+NeuronParams(2).Input(1).meanInput = 160;
 NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 50;
+NeuronParams(2).Input(1).stdInput = 40;
 
 
 %% Connectivity parameters
@@ -261,7 +264,7 @@ RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim =true;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by

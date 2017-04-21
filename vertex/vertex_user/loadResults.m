@@ -198,6 +198,7 @@ postNIDs = cell(length(RS.weights_preN_IDs),1);
   end
 else
     weights_recording = [];
+    postNIDs = [];
 end
 
 

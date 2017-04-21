@@ -12,7 +12,8 @@ NParams.spaceconstant = (sqrt(d./(4.*(NParams.R_A).*(NParams.g_l.*10^-9).^(1/2))
 % according to Rattay this would be better divided by 4!
 
 NeuronParams.spaceconstant = NParams.spaceconstant;
-while sum(NeuronParams.compartmentLengthArr > NeuronParams.spaceconstant*2)>0
+
+while sum(NeuronParams.compartmentLengthArr > NeuronParams.spaceconstant*NParams.minCompartmentSize)>0
     NeuronParams = decreaseCompartmentLength(NeuronParams);
     NParams = calculatePassiveProperties(NeuronParams, tp);
     [l,d] = getDimensionsInCentimetres(NParams);
