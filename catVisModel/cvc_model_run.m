@@ -3,21 +3,21 @@
 cvc_tissue;
 %cvc_neurons;
 %cvc_connectivity;
-cvc_neurons_gamma_doublecomparts;
-cvc_connectivity_gamma;
+cvc_neurons_gamma;
+cvc_connectivity_gamma_update;
 cvc_recording;
 cvc_simulation;
-cvc_field_stimulation;
+%cvc_field_stimulation;
 
 % Change this directory to where you would like to save the results of the
 % simulation
-RS.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_cvc_results/cvc_gamma_4mv_doublecomparts';
+RS.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_cvc_results/cvc_gamma_newadjusttest';
 % Change these settings if you need to use fewer cores or a different
 % parallel profile, or if you want to run in serial mode (this will take a
 % long time)
-SS.parallelSim = true; 
-SS.poolSize = 2; %was 12 in the original
-SS.profileName = 'local';
+SS.parallelSim = false; %true; 
+%SS.poolSize = 2; %was 12 in the original
+%SS.profileName = 'local';
 
 %% Initialise the network
 [params, connections, electrodes] = initNetwork(TP, NP, CP, RS, SS);

@@ -7,10 +7,11 @@ else
   possiblePostCompartments = CP(iPreGroup).targetCompartments{iPostGroup};
 end
 
+
 if  NP(iPostGroup).numCompartments == 1
   chosenCompartments = ones(synapsesInLayer, 1);
 elseif sum(NP(iPostGroup).proportionCompartmentAreaInLayer( ...
-    iLayer, possiblePostCompartments)) ~=0
+    iLayer,possiblePostCompartments)) ~=0
   compartmentWeights = ...
     NP(iPostGroup).proportionCompartmentAreaInLayer(iLayer,possiblePostCompartments);
   % choose which comparts to connect to on the postsynaptic neurons according to

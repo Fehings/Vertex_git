@@ -125,9 +125,9 @@ for iGroup = 1:length(NP)
                 else
                     location = CP(iGroup).targetCompartments{iTC}(Loc);
                 end
-                locations = [locations NP(iGroup).(location)];
+                locations = [locations, NP(iTC).(location)];
             end
-            CP(iGroup).targetCompartments{iTC} = locations;
+            CP(iGroup).targetCompartments{iTC} = unique(locations);
         else
             if adjustedcompartments
                 disp(['For Neuron group: ' num2str(iGroup) ' connecting to : ' num2str(iTC)] ); 
