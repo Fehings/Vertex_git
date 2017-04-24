@@ -55,10 +55,6 @@ elseif isequal(geometryloc, 'layer4stim.stl')
   applyBoundaryCondition(model,'face',3:17,'g',0.0,'q',0.0);
     applyBoundaryCondition(model,'face',[3,4,16,17,18],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1,2,14,15,19],'h',1.0,'r',-stimstrength);
-elseif isequal(geometryloc, 'catvisblend1.stl')
-    applyBoundaryCondition(model,'face',[2],'h',1.0,'r',stimstrength);
-    applyBoundaryCondition(model,'face',[1],'h',1.0,'r',-stimstrength);
-    applyBoundaryCondition(model,'face',[3:6],'g',0.0,'q',0.0);
 else % boundaries for the default point stimulation geometry
     applyBoundaryCondition(model,'face',[2,11,12,1,16],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[4,14,3,13,15],'h',1.0,'r',-stimstrength);
