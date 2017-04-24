@@ -46,6 +46,7 @@ classdef SynapseModel_g_stdp < SynapseModel
 
       %trace variable for presynaptic neurons, contains an entry for each
       %neuron in the presynaptic group of the connection.
+      
       SM.Apre = zeros(1,number_in_pre);
       %trace variable for postsynaptic neurons, contains an entry for each
       %neuron in the post synaptic group of the connection.
@@ -95,11 +96,6 @@ classdef SynapseModel_g_stdp < SynapseModel
     function weightsArr = updateweightsaspresynspike(SM, weightsArr, postInd)
         %update the weight array for all connections from spiking neuron to
         %all post synaptic neurons.
-        size(postInd)
-        max(postInd)
-        size(SM.Apost)
-        size(weightsArr)
-       
         weightsArr = weightsArr + SM.Apost(postInd);
         weightsArr(weightsArr<SM.wmin) = SM.wmin;
         weightsArr(weightsArr>SM.wmax) = SM.wmax;
@@ -110,7 +106,7 @@ classdef SynapseModel_g_stdp < SynapseModel
         %update the weight array for all connections from spiking neuron to
         %all pre synaptic neurons.
 
-        weightsArr = weightsArr +SM.Apre(preInd)' ;
+        weightsArr = weightsArr +SM.Apre(preInd)';
         weightsArr(weightsArr<SM.wmin) = SM.wmin;
         weightsArr(weightsArr>SM.wmax) = SM.wmax;
     end
@@ -121,13 +117,13 @@ classdef SynapseModel_g_stdp < SynapseModel
         %update presynaptic trace variable Apre, should be same for all
         %presynaptic connections because the synapse parameters should be
         %the same for all group to group defined connections. 
+        
         SM.Apre(spikeInd) = SM.Apre(spikeInd) + SM.preRate;
     end
     
     %spikeInd are the indices of postsynaptic neurons from this group that
     %have spiked in this cycle
     function SM = processAsPostSynSpike(SM, spikeInd)
-        
         SM.Apost(spikeInd) = SM.Apost(spikeInd) + SM.postRate;
     end
 

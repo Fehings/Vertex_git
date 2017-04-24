@@ -9,6 +9,7 @@ for iSyn = 1:size(SynModel, 2)
   end
 end
 
+
 % update axial currents
 if NP(iGroup).numCompartments > 1
   updateI_ax(NeuronModel{iGroup}, NP(iGroup));

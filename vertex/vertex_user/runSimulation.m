@@ -82,17 +82,20 @@ else
   InputModelArr = [];
 end
 
-% Initialise the recording variables
-[RS, RecordingVars, lineSourceModCell] = ...
-  setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes);
+
 
 % Prepare synapses and synaptic weights. 
 [synapsesArrSim, weightArr] = prepareSynapsesAndWeights(TP,CP,SS,connections);
+
+% Initialise the recording variables
+[RS, RecordingVars, lineSourceModCell] = ...
+  setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes, weightArr,synapsesArrSim);
 
 %Setting the stimulation field v_ext for each neuron compartment
 %Get_V_ext returns the extracellular potential specified by
 %TP.StimulationsField at each of the compartment midpoints.
 %setVext is a function attached to the NeuronModel object. 
+
 %It will assign the values passed to it to the v_ext field of the neuron.
 if isfield(TP, 'StimulationField')
     if SS.parallelSim
@@ -144,6 +147,8 @@ if SS.parallelSim
   % www.vertexsimulator.org), then uncomment the next line to get the
   % dynamic variables at the end of simulateParallel()
   %[NeuronModelArr, SynapseModelArr, InputModelArr, numSaves] = ...
+
+
    if isfield(TP, 'StimulationField') && isa(TP.StimulationField,'pde.TimeDependentResults')  
        simulateParallel(TP, NP, SS, RS, NeuronIDMap, NeuronModelArr, ...
            SynapseModelArr, InputModelArr, RecordingVars, lineSourceModCell, ...
@@ -153,6 +158,7 @@ if SS.parallelSim
            SynapseModelArr, InputModelArr, RecordingVars, lineSourceModCell, ...
            synapsesArrSim, weightArr, synMapCell);
    end
+
   % You can now alter the parameters in NP to change neuron or input
   % properties, then rerun simulateParallel() to run the next stage of the
   % simulation for another SS.simulationTime milliseconds. Passing numSaves

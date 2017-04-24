@@ -10,7 +10,7 @@
 TissueParams.X = 2200; %2000
 TissueParams.Y = 400;
 TissueParams.Z = 1240; %650
-TissueParams.neuronDensity = 50000;
+TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];

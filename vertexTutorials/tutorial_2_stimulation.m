@@ -1,12 +1,10 @@
-%% VERTEX TUTORIAL Short term plasticity
-% In this
-% tutorial, we will create a  model containing excitatory
+%% VERTEX TUTORIAL 2
+% In the previous tutorial we looked at a network of 5000 layer 2/3
+% pyramidal cells, connected to each other and firing randomly. In this
+% tutorial, we will create a more interesting model containing excitatory
 % and inhibitory neurons with intrinsic spiking dynamics. We will stimulate
 % the neurons using random input currents, resulting in the generation of a
-% network oscillation. We will then demonstrate the use of synapse with a
-% form of short term plasticity, as implemented in Brody et al 2013. Both
-% facilitation and depression can be incorporated with different time
-% constants for each. 
+% network oscillation.
 % 
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
@@ -20,6 +18,9 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
+TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100);
+TissueParams.StimulationOn = [250:50:501]; % Turn stimulation on at 50 ms
+TissueParams.StimulationOff = [251:50:501]; % Turn stimulation off at 55 ms
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
@@ -43,7 +44,7 @@ NeuronParams(1).neuronModel = 'adex';
 NeuronParams(1).V_t = -50;
 NeuronParams(1).delta_t = 2;
 NeuronParams(1).a = 2.6;
-NeuronParams(1).tau_w = 65;
+NeuronParams(1).tau_w = 25;
 NeuronParams(1).b = 220;
 NeuronParams(1).v_reset = -60;
 NeuronParams(1).v_cutoff = -45;
@@ -98,12 +99,13 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 150;
+NeuronParams(1).R_A = 350;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
-
+NeuronParams(1).labelNames = {'somaID', 'basalID','apicalID'};
+NeuronParams(1).minCompartmentSize = 0.8;
 %%
 % In order to generate spikes, we need to provide the neurons with some
 % input. We set the inputs to our neuron group in another structure array,
@@ -119,8 +121,8 @@ NeuronParams(1).apicalID = [2 3 4 5];
 % reversal potential).
 
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 90;
+NeuronParams(1).Input(1).meanInput = 200;
+NeuronParams(1).Input(1).stdInput = 50;
 NeuronParams(1).Input(1).tau = 2;
 
 %%
@@ -171,13 +173,15 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
 NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 150;
+NeuronParams(2).R_A = 350;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
+NeuronParams(2).labelNames = {'dendritesID'};
+NeuronParams(2).minCompartmentSize = 0.8;
 NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 190;
+NeuronParams(2).Input(1).meanInput = 160;
 NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 50;
+NeuronParams(2).Input(1).stdInput = 40;
 
 
 %% Connectivity parameters
@@ -186,48 +190,23 @@ NeuronParams(2).Input(1).stdInput = 50;
 % two groups. First we set the parameters for connections from group 1 (the
 % pyramidal cells) to itself:
 
-PYScaler = 0.1;
-INScaler = 0.1;
-% 
-% 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
+ConnectionParams(1).synapseType{1} = 'i_exp';
+ConnectionParams(1).targetCompartments{1} = {'basalID', ...
+                                             'apicalID'};
+ConnectionParams(1).weights{1} = 1;
+ConnectionParams(1).tau{1} = 2;
 
-%Here we specify the synapse type, g_stp is the type for exponential
-%conductance based synapses with short term plasticity. 
-%g_exp is for the same synapses without plasticity. 
-ConnectionParams(1).synapseType{1} = 'g_stp';
-ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
-                                             NeuronParams(1).apicalID];
- ConnectionParams(1).weights{1} = 0.05;
-ConnectionParams(1).tau{1} = 1;
-
-%Here we specify the parameters for the plasticity,
-%facilitation is a unitless parameter with no biological correlate that
-%indicates the rate at which facilitation occurs. It should be a value
-%between 0 and 1, at 0 there will be no facilitation at 1 strong
-%facilitation. The depression value should also be between 1 and greater than 0 with 1
-%being no depression and small values being strong depression.
-%Depressing
-ConnectionParams(1).facilitation{1} = 0;
-ConnectionParams(1).depression{1} = 1;
-ConnectionParams(1).tD{1} = 670;
-ConnectionParams(1).tF{1} = 17;
 %%
 % Then the parameters for connections from group 1 to group 2 (the basket
 % interneurons):
 
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
-ConnectionParams(1).synapseType{2} = 'g_stp';
-ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(1).weights{2} = 0.3;
+ConnectionParams(1).synapseType{2} = 'i_exp';
+ConnectionParams(1).targetCompartments{2} = {'dendritesID'};
+ConnectionParams(1).weights{2} = 28;
 ConnectionParams(1).tau{2} = 1;
-%Depressing
-ConnectionParams(1).facilitation{2} = 0.8;
-ConnectionParams(1).depression{2} = 0.5;
 
-
-ConnectionParams(1).tD{2} =510;
-ConnectionParams(1).tF{2} = 180;
 %%
 % And then the generic parameters for connections from group 1:
 
@@ -237,33 +216,21 @@ ConnectionParams(1).axonArborRadius = 250;
 ConnectionParams(1).axonArborLimit = 500;
 ConnectionParams(1).axonConductionSpeed = 0.3;
 ConnectionParams(1).synapseReleaseDelay = 0.5;
-ConnectionParams(1).E_reversal{1} = -0;
-ConnectionParams(1).E_reversal{2} = -0;
+
 %%
 % We repeat this process for connections from group 2:
 
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
-ConnectionParams(2).synapseType{1} = 'g_stp';
-ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
-ConnectionParams(2).weights{1} = 0.2;
+ConnectionParams(2).synapseType{1} = 'i_exp';
+ConnectionParams(2).targetCompartments{1} = {'somaID'};
+ConnectionParams(2).weights{1} = -5;
 ConnectionParams(2).tau{1} = 6;
-%Facilitating
-ConnectionParams(2).facilitation{1} = 1;
-ConnectionParams(2).depression{1} = 1;
-ConnectionParams(2).tD{1} = 710;
-ConnectionParams(2).tF{1} = 23;
-
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
-ConnectionParams(2).synapseType{2} = 'g_stp';
-ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
-ConnectionParams(2).weights{2} = 0.1;
-ConnectionParams(2).tau{2} = 6;
-%Depressing
-ConnectionParams(2).facilitation{2} = 0;
-ConnectionParams(2).depression{2} = 1;
-ConnectionParams(2).tD{2} = 710;
-ConnectionParams(2).tF{2} = 21;
+ConnectionParams(2).synapseType{2} = 'i_exp';
+ConnectionParams(2).targetCompartments{2} = {'dendritesID'};
+ConnectionParams(2).weights{2} = -4;
+ConnectionParams(2).tau{2} = 3;
 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
 ConnectionParams(2).sliceSynapses = true;
@@ -271,8 +238,7 @@ ConnectionParams(2).axonArborRadius = 200;
 ConnectionParams(2).axonArborLimit = 500;
 ConnectionParams(2).axonConductionSpeed = 0.3;
 ConnectionParams(2).synapseReleaseDelay = 0.5;
-ConnectionParams(2).E_reversal{1} = -70;
-ConnectionParams(2).E_reversal{2} = -70;
+
 %%
 % Note that for the weights in |ConnectionParams(2)| we use negative
 % values, as basket interneurons are inhibitory. Of course, if we used
@@ -294,11 +260,11 @@ RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 000;
+RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 2000;
+SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim =true;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
@@ -312,6 +278,7 @@ SimulationSettings.parallelSim = false;
 % Now we can run the simulatio, and load the results:
 
 runSimulation(params, connections, electrodes);
+%%
 Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results

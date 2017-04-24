@@ -96,12 +96,13 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 1500;
+NeuronParams(1).R_A = 150;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
-
+NeuronParams(1).labelNames = {'somaID', 'basalID','apicalID'};
+NeuronParams(1).minCompartmentSize = 0.8;
 %%
 % In order to generate spikes, we need to provide the neurons with some
 % input. We set the inputs to our neuron group in another structure array,
@@ -169,9 +170,11 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
 NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 1500;
+NeuronParams(2).R_A = 150;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
+NeuronParams(2).labelNames = {'dendritesID'};
+NeuronParams(2).minCompartmentSize = 0.8;
 NeuronParams(2).Input(1).inputType = 'i_ou';
 NeuronParams(2).Input(1).meanInput = 190;
 NeuronParams(2).Input(1).tau = 0.8;
@@ -186,8 +189,8 @@ NeuronParams(2).Input(1).stdInput = 50;
 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'i_exp';
-ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
-                                             NeuronParams(1).apicalID];
+ConnectionParams(1).targetCompartments{1} = {'basalID', ...
+                                             'apicalID'};
 ConnectionParams(1).weights{1} = 1;
 ConnectionParams(1).tau{1} = 2;
 
@@ -197,7 +200,7 @@ ConnectionParams(1).tau{1} = 2;
 
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
 ConnectionParams(1).synapseType{2} = 'i_exp';
-ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
+ConnectionParams(1).targetCompartments{2} = {'dendritesID'};
 ConnectionParams(1).weights{2} = 28;
 ConnectionParams(1).tau{2} = 1;
 
@@ -216,13 +219,13 @@ ConnectionParams(1).synapseReleaseDelay = 0.5;
 
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'i_exp';
-ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
+ConnectionParams(2).targetCompartments{1} = {'somaID'};
 ConnectionParams(2).weights{1} = -5;
 ConnectionParams(2).tau{1} = 6;
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
 ConnectionParams(2).synapseType{2} = 'i_exp';
-ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
+ConnectionParams(2).targetCompartments{2} = {'dendritesID'};
 ConnectionParams(2).weights{2} = -4;
 ConnectionParams(2).tau{2} = 3;
 
@@ -246,7 +249,7 @@ ConnectionParams(2).synapseReleaseDelay = 0.5;
 % tutorial 1, as the AdEx dyamics add complexity to the calculations.
 
 RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/';
-RecordingSettings.LFP = false;
+RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(0:1000:2000, 200, 600:-300:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -256,10 +259,9 @@ RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 50;
-SimulationSettings.timeStep = 0.001;
+SimulationSettings.simulationTime = 500;
+SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
-control.stim = false;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
@@ -267,12 +269,13 @@ control.stim = false;
 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
-              RecordingSettings, SimulationSettings,control);
+              RecordingSettings, SimulationSettings);
 
 %% Run the simulation
 % Now we can run the simulatio, and load the results:
 
-weightArr = runSimulation(params, connections, electrodes);
+runSimulation(params, connections, electrodes);
+%%
 Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results

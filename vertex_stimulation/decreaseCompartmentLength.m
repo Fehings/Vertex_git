@@ -1,7 +1,8 @@
 function [NP] = decreaseCompartmentLength(NP)
 %Find compartments greater than space constant/4, then split them in two
 %until they are small enough.
-bigcompartments = find(NP.compartmentLengthArr > NP.spaceconstant/4);
+bigcompartments = find(NP.compartmentLengthArr > NP.spaceconstant*NP.minCompartmentSize);
+bigcompartments = bigcompartments(bigcompartments>1);
 for i = bigcompartments
     %compartment i is too big, so we will split it in two
     NP.compartmentParentArr(end+1) = i;
@@ -30,6 +31,18 @@ for i = bigcompartments
         (NP.compartmentYPositionMat(i,1) - NP.compartmentYPositionMat(i,2))^2 + ...
         (NP.compartmentZPositionMat(i,1) - NP.compartmentZPositionMat(i,2))^2);
     NP.numCompartments = NP.numCompartments+1;
+    
+    if ~isfield(NP, 'labelNames')
+        disp('Please provide a labelNames field in neuron parameters, giving the name of the field itentifying compartment labels.')
+        error('WARNING! no compartment label names provided. Cannot adjust compartment sizes without label names.')
+    end
+    for label = NP.labelNames
+         %if parent is member, so is child
+         
+        if max(ismember(NP.(label{1}), i))
+            NP.(label{1}) = [NP.(label{1}) length(NP.compartmentParentArr)]
+        end
+    end
 end
 
 end

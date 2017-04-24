@@ -464,7 +464,7 @@ volumemultiplier = 1;
 %Connectivity parameters loaded from connections.mat and assinged with the 
 %connectivity parameters. Weights and number of connections loaded from
 %file.
-connections = load('connections.mat');
+connections = load('connectionsSTP.mat');
 ConnectivityNamesnounderscore = {'L23PC','L23NBC','L23LBC','L23SBC','L23MC','L4SS','L4SP','L4PC','L4NBC','L4SBC','L4LBC','L4MC','L5TTPC2','L5TTPC1','L5UTPC','L5STPC','L5LBC','L5SBC','L5NBC','L5MC'};
 
 ConnectivityNames = {'L23_PC','L23_NBC','L23_LBC','L23_SBC','L23_MC','L4_SS','L4_SP','L4_PC','L4_NBC','L4_SBC','L4_LBC','L4_MC','L5_TTPC2','L5_TTPC1','L5_UTPC','L5_STPC','L5_LBC','L5_SBC','L5_NBC','L5_MC'};
@@ -480,19 +480,26 @@ for i = 1:20
             connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
             disp([[ConnectivityNames{i} '_' ConnectivityNames{j}] ': ' num2str(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}))])
             ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
-            ConnectionParams(i).synapseType{j} = 'g_exp';
+            ConnectionParams(i).synapseType{j} = 'g_stdp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
+            ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
+            ConnectionParams(i).rate{j} = 0.01;
+            ConnectionParams(i).tPre{j} = 2;
+            ConnectionParams(i).tPost{j} = 1+rand();
+            ConnectionParams(i).wmin{j} = 0;
+            ConnectionParams(i).wmax{j} = 100;
         catch %if there is no description in the file then set zero connections
             disp(['No connections between: ' ConnectivityNames{i} '_' ConnectivityNames{j}]); 
             ConnectionParams(i).numConnectionsToAllFromOne{j} = [0,0,0];
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = 0;
+            ConnectionParams(i).tau{j} = 10 ;
+            
         end
         
     end
   
 end
-
 
 %%
 
@@ -621,7 +628,7 @@ RecordingSettings.v_m = 1:100:19472;
 RecordingSettings.maxRecTime = 5000;
 RecordingSettings.sampleRate = 5000;
 %RecordingSettings.I_syn = 1:2:5000;
-
+RecordingSettings.weights_preN_IDs = 1:1:100;
 %%
 %Simulation settings:
 %Keep max delay steps at 80, 

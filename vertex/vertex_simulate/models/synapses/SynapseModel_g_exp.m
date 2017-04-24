@@ -47,7 +47,7 @@ classdef SynapseModel_g_exp < SynapseModel
         
       % update synaptic currents
       SM.I_syn = SM.g_exp .* (NM.v() - SM.E_reversal);
-      
+
       % update synaptic conductances
       kg = - SM.g_exp ./ SM.tau;
       k2g_in = SM.g_exp + 0.5 .* dt .* kg;

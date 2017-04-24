@@ -91,19 +91,54 @@ NP = checkNeuronStruct(NP);
 CP = checkConnectivityStruct(CP);
 RS = checkRecordingStruct(RS);
 SS = checkSimulationStruct(SS);
+adjustedcompartments = false;
+for iGroup = 1:length(NP)
+    if isfield(NP(iGroup), 'minCompartmentSize')
+        adjustedcompartments = true;
+        % Adjusts the number and size of compartments to ensure that the
+        % electric field calculations remain valid. Caution should be advised
+        % that this can drastically increase the size of the simulation.
+        if ~isempty(NP(iGroup).minCompartmentSize)
+            disp(['Adjusting group ' num2str(iGroup)]);
+            Nparams(iGroup) = adjustCompartments(NP(iGroup), TP);
+           
+        else
+            NP(iGroup).minCompartmentSize = Inf;
+            Nparams(iGroup) = adjustCompartments(NP(iGroup), TP);
+        end
+        
+    end
+end
 
-% if control.stim
-%     disp('Stimulation field specified, making sure compartment lengths are short enough and automatically adjusting them.')
-%     % Adjusts the number and size of compartments to ensure that the
-%     % electric field calculations remain valid. Caution should be advised
-%     % that this can drastically increase the size of the simulation.
-%     for iGroup = 1:length(NP)
-%         disp(['Adjusting group ' num2str(iGroup)]);
-%         NeuronParams(iGroup) = adjustCompartments(NP(iGroup), TP);
-%     end
-%     NP = NeuronParams;
-%     
-% end
+if adjustedcompartments
+    NP = Nparams;
+end
+
+for iGroup = 1:length(NP)
+    for iTC = 1:length(CP(iGroup).targetCompartments)
+        
+        if iscellstr(CP(iGroup).targetCompartments{iTC}) || isstring(CP(iGroup).targetCompartments{iTC}) || ischar(CP(iGroup).targetCompartments{iTC})
+            locations = [];
+            for iLoc = 1:length(CP(iGroup).targetCompartments{iTC})
+                if iscell(CP(iGroup).targetCompartments(iTC))
+                    location = CP(iGroup).targetCompartments{iTC}{iLoc};
+                else
+                    location = CP(iGroup).targetCompartments{iTC}(Loc);
+                end
+                locations = [locations NP(iGroup).(location)];
+            end
+            CP(iGroup).targetCompartments{iTC} = locations;
+        else
+            if adjustedcompartments
+                disp(['For Neuron group: ' num2str(iGroup) ' connecting to : ' num2str(iTC)] ); 
+                disp('You have specified synapse locations manually but selected to automatically adjust compartment numbers.')
+                disp('When adjusting compartments automatically, you should specify the synapse locations as a string.');
+                disp('Are you sure you wish to procede?')
+            end
+        end
+    end
+end
+
 
 if control.init
   % Calculate sampling constants

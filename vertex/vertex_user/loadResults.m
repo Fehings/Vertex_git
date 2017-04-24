@@ -70,7 +70,7 @@ SS = params.(pFields{1}){5};
 % Calculate relevant numbers for loading recordings
 SS.simulationTime = SS.simulationTime * numRuns;
 numSaves = floor(SS.simulationTime/RS.maxRecTime);
-maxRecSamples = RS.maxRecSamples;
+maxRecSamples = round(RS.maxRecSamples);
 maxRecSteps = RS.maxRecSteps;
 minDelaySteps = SS.minDelaySteps;
 simulationSamples = length(RS.samplingSteps); %(SS.simulationTime*(RS.sampleRate / 1000));
@@ -95,6 +95,12 @@ else
   I_syn = false;
 end
 
+if isfield(RS, 'fac_syn')
+  fac_syn = RS.fac_syn;
+else
+  fac_syn = false;
+end
+
 if isfield(RS, 'apre_syn')
     apre_syn = RS.apre_syn;
 else
@@ -105,8 +111,8 @@ if isfield(RS, 'apost_syn')
 else
     apost_syn = false;
 end
-if isfield(RS, 'weightsRecording')
-    weights = RS.weightsRecording;
+if isfield(RS, 'weights_preN_IDs')
+    weights = RS.weights_preN_IDs;
 else
     weights = false;
 end
@@ -169,39 +175,33 @@ if I_syn
 else
   I_syn_recording = [];
 end
+
+if fac_syn
+  fac_syn_recording = cell(TP.numGroups, 1);
+  for iType=1:2
+      fac_syn_recording{iType} = zeros(length(RS.fac_syn), simulationSamples);
+  end
+  if SS.parallelSim
+      fac_synCount = 0;
+      fac_synIDmap = [];
+  end
+else
+    fac_syn_recording = [];
+end
+
 if weights
-  weights_recording = zeros(length(RS.v_m), simulationSamples);
+  weights_recording = cell(length(RS.weights_preN_IDs),1);
+postNIDs = cell(length(RS.weights_preN_IDs),1);
   if SS.parallelSim
-    intraCount = 0;
-    intraIDmap = zeros(length(v_m), 1);
+      weights_syn_count = ones(length(weights_recording),1);
+      weights_synIDmap = [];
   end
 else
-  v_m_recording = [];
+    weights_recording = [];
+    postNIDs = [];
 end
-if apre_syn
-  apre_syn_recording = cell(TP.numGroups, 1);
-  for iGroup=1:TP.numGroups
-    apre_syn_recording{iGroup} = zeros(length(RS.apre_syn), simulationSamples);
-  end
-  if SS.parallelSim
-    apre_synCount = 0;
-    apre_synIDmap = zeros(length(apre_syn), 1);
-  end
-else
-  apre_syn_recording = [];
-end
-if apost_syn
-  apost_syn_recording = cell(TP.numGroups, 1);
-  for iGroup=1:TP.numGroups
-    apost_syn_recording{iGroup} = zeros(length(RS.apost_syn), simulationSamples);
-  end
-  if SS.parallelSim
-    apost_synCount = 0;
-    apost_synIDmap = zeros(length(apost_syn), 1);
-  end
-else
-  apre_post_recording = [];
-end
+
+
 
 sampleCount = 0;
 
@@ -256,27 +256,55 @@ for iSaves = 1:numSaves
         end
       end
     end
-    if apre_syn
-      if SS.parallelSim
-        if isfield(RecordingVars, 'apre_synRecording')
-          apre_Syn = RecordingVars.apre_synRecording;
-          for iGroup = 1:TP.numGroups
-            apre_syn_recording{iGroup}(apre_synCount+1:I_synCount+size(apre_Syn,1), ...
-              sampleCount+1:sampleCount+size(apre_Syn, 3)) = ...
-              squeeze(apre_Syn(:,iGroup,:));
-          end
-          apre_synID = find(SS.neuronInLab(apre_syn) == iLab);
-          apre_synIDmap(apre_synCount+1:apre_synCount+size(apre_synID)) = apre_synID;
-          apre_synCount = apre_synCount+size(apre_Syn,1);
+    
+    if fac_syn
+        if SS.parallelSim
+            if isfield(RecordingVars, 'fac_synRecording')
+                fac_Syn = RecordingVars.fac_synRecording;
+              for itype = 1:2
+               fac_syn_recording{itype}(fac_synCount+1:fac_synCount+size(fac_Syn,1), ...
+                  sampleCount+1:sampleCount+size(fac_Syn, 3)) = ...
+                  squeeze(fac_Syn(:, itype,:));
+              end
+              
+              fac_synID = find(SS.neuronInLab(fac_syn) == iLab);
+              size(fac_synID)
+              fac_synIDmap(fac_synCount+1:fac_synCount+size(fac_synID)) = fac_synID;
+              fac_synCount = fac_synCount+size(fac_Syn,1);
+            end
+        else
+            fac_Syn = RecordingVars.fac_synRecording;
+            for itype = 1:2
+                size(fac_Syn)
+              fac_syn_recording{itype}(:, sampleCount+1:sampleCount+size(fac_Syn, 3)) = ...
+                squeeze(fac_Syn(:,itype,:));
+            end
         end
-      else
-        apre_Syn = RecordingVars.apre_synRecording;
-        for iGroup = 1:TP.numGroups
-          apre_syn_recording{iGroup}(:, sampleCount+1:sampleCount+size(apre_Syn, 3)) = ...
-            squeeze(apre_Syn(:,iGroup,:));
-        end
-      end
     end
+    if weights
+        if SS.parallelSim
+                if isfield(RecordingVars, 'weightsRecording')
+                    weightsRec = RecordingVars.weightsRecording;
+                    synapseIDs = RecordingVars.synapsepostIDs;
+                    for preID = 1:length(weightsRec)
+                        weights_recording{preID}(weights_syn_count(preID):weights_syn_count(preID)+ size(weightsRec{preID},2)-1,sampleCount+1:sampleCount+size(weightsRec{preID}, 1)) = ...
+                            weightsRec{preID}';
+                        postNIDs{preID}(weights_syn_count(preID):weights_syn_count(preID)+size(weightsRec{preID},2)-1) = synapseIDs{preID};
+                        weights_syn_count(preID) = weights_syn_count(preID) + size(weightsRec{preID},2);
+                        
+                    end
+                end
+            
+        else
+            weightsRec = RecordingVars.weightsRecording;
+            for preID = 1:length(weightsRec)
+                weights_recording{preID}(sampleCount+1:sampleCount+size(weightsRec{preID}, 1),:) = ...
+                    weightsRec{preID};
+                postNIDs{preID} = synapseIDs{preID};
+            end
+        end
+    end
+
     if RS.LFP
       lr = RecordingVars.LFPRecording;
       if LFPoffline
@@ -340,12 +368,19 @@ if SS.parallelSim && ~isempty(I_syn_recording)
     I_syn_recording{iGroup}(I_synIDmap, :) = I_syn_recording{iGroup};
   end
 end
+if SS.parallelSim && ~isempty(fac_syn_recording)
+  for itype = 1:2
+    fac_syn_recording{itype}(fac_synIDmap, :) = fac_syn_recording{itype};
+  end
+end
 % Store loaded results in cell array to return
 Results.spikes = spikes;
 Results.LFP = LFP; 
 Results.v_m = v_m_recording;
 Results.I_syn = I_syn_recording;
-Results.apre_syn = apre_syn_recording;
+Results.fac_syn = fac_syn_recording;
+Results.weights = weights_recording;
+Results.synapsePostIDs = postNIDs;
 Results.params.TissueParams = TP;
 Results.params.NeuronParams = NP;
 Results.params.ConnectionParams = CP;
