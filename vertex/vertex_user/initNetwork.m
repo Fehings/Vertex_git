@@ -92,18 +92,18 @@ CP = checkConnectivityStruct(CP);
 RS = checkRecordingStruct(RS);
 SS = checkSimulationStruct(SS);
 
-if control.stim
-    disp('Stimulation field specified, making sure compartment lengths are short enough and automatically adjusting them.')
-    % Adjusts the number and size of compartments to ensure that the
-    % electric field calculations remain valid. Caution should be advised
-    % that this can drastically increase the size of the simulation.
-    for iGroup = 1:length(NP)
-        disp(['Adjusting group ' num2str(iGroup)]);
-        NeuronParams(iGroup) = adjustCompartments(NP(iGroup), TP);
-    end
-    NP = NeuronParams;
-    
-end
+% if control.stim
+%     disp('Stimulation field specified, making sure compartment lengths are short enough and automatically adjusting them.')
+%     % Adjusts the number and size of compartments to ensure that the
+%     % electric field calculations remain valid. Caution should be advised
+%     % that this can drastically increase the size of the simulation.
+%     for iGroup = 1:length(NP)
+%         disp(['Adjusting group ' num2str(iGroup)]);
+%         NeuronParams(iGroup) = adjustCompartments(NP(iGroup), TP);
+%     end
+%     NP = NeuronParams;
+%     
+% end
 
 if control.init
   % Calculate sampling constants

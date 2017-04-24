@@ -1,5 +1,5 @@
 
-stimstrength=2;
+stimstrength=4;
 TP.StimulationField = invitroSliceStim('catvisblend1.stl',stimstrength);
 % uncomment for tRNS:
 %TP.tRNS = wgn(1,1,0);
