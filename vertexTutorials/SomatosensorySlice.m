@@ -458,46 +458,58 @@ end
 
 
 volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.65;
-%volumemultiplier = 1;
+%Plasticity flags - stp = short term plasticity, STDP = spike time
+%dependent plasticity.
 stp = false;
 stdp = false;
 %%
-%Connectivity parameters loaded from connections.mat and assinged with the 
+%Connectivity parameters loaded from connectionsSTP.mat and assinged with the 
 %connectivity parameters. Weights and number of connections loaded from
 %file.
 connections = load('connectionsSTP.mat');
+%Lists of the neuron types that we wish to include in our model,
+%proportions and connectivity taken from Neocortical Collaborative Portal
 ConnectivityNamesnounderscore = {'L23PC','L23NBC','L23LBC','L23SBC','L23MC','L4SS','L4SP','L4PC','L4NBC','L4SBC','L4LBC','L4MC','L5TTPC2','L5TTPC1','L5UTPC','L5STPC','L5LBC','L5SBC','L5NBC','L5MC'};
-
 ConnectivityNames = {'L23_PC','L23_NBC','L23_LBC','L23_SBC','L23_MC','L4_SS','L4_SP','L4_PC','L4_NBC','L4_SBC','L4_LBC','L4_MC','L5_TTPC2','L5_TTPC1','L5_UTPC','L5_STPC','L5_LBC','L5_SBC','L5_NBC','L5_MC'};
-connectivities = zeros(20);
+
+%Assigning connection parameters from loaded connectionSTP.mat
+%For each presynaptic neuron group i
 for i = 1:20
+    % Parameters constant for all connections.
     ConnectionParams(i).axonArborSpatialModel = 'gaussian';
     ConnectionParams(i).sliceSynapses = true;
     ConnectionParams(i).axonConductionSpeed = 0.3;
     ConnectionParams(i).synapseReleaseDelay = 0.5;
+    
+    %For each postsynaptic neuron group j
     for j = 1:20
         try
+            % All synapses are conductance based 'g_exp'
+            % Setting number of connections to all in the postsynaptic group
+            % from one in presynaptic group.
+            % Setting connections weights, and time constant tau.
             disp(['Connecting..' num2str(i) ' - ' num2str(j)]);
-            connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
             disp([[ConnectivityNames{i} '_' ConnectivityNames{j}] ': ' num2str(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}))])
             ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
-
+            
+            % Adding plasticity to synapses if selected
             if stp
                 ConnectionParams(i).synapseType{j} = 'g_stp';
                 ConnectionParams(i).tF{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
                 ConnectionParams(i).tD{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){6});
                 ConnectionParams(i).facilitation{j} = 0.5+rand()/100;
                 ConnectionParams(i).depression{j} = 0.5+rand()/100;
-            elseif stdp 
-                ConnectionParams(i).synapseType{j} = 'g_stdp';
-                ConnectionParams(i).rate{j} = 0.01;
-                ConnectionParams(i).tPre{j} = 2;
-                ConnectionParams(i).tPost{j} = 1+rand();
-                ConnectionParams(i).wmin{j} = 0;
-                ConnectionParams(i).wmax{j} = 100;
+                
+            elseif stdp %Adding spike time dependent plasticity
+                ConnectionParams(i).synapseType{j} = 'g_stdp'; % update synapse type
+                ConnectionParams(i).rate{j} = 0.001; % set synapse change rate
+                ConnectionParams(i).tPre{j} = 2; % set time constant for presynaptic spike
+                ConnectionParams(i).tPost{j} = 1+rand();% set time constant for post synaptic spike
+                ConnectionParams(i).wmin{j} = 0; % set minimum weight
+                ConnectionParams(i).wmax{j} = 100; % set maximum weight
             end
         catch %if there is no description in the file then set zero connections
             disp(['No connections between: ' ConnectivityNames{i} '_' ConnectivityNames{j}]); 
@@ -655,9 +667,6 @@ SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = true;
 
-%These are flags used for simulating electric field or focussed ultrasound
-%stimulation of the slice, these are currently in development and not used
-%for this project. '
 
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...

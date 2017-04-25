@@ -117,7 +117,7 @@ end
 for iGroup = 1:length(NP)
     for iTC = 1:length(CP(iGroup).targetCompartments)
         
-        if iscellstr(CP(iGroup).targetCompartments{iTC}) 
+        if iscellstr(CP(iGroup).targetCompartments{iTC}) || isstring(CP(iGroup).targetCompartments{iTC}) || ischar(CP(iGroup).targetCompartments{iTC})
             locations = [];
             for iLoc = 1:length(CP(iGroup).targetCompartments{iTC})
                 

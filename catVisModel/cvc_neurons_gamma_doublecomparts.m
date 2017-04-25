@@ -12,27 +12,25 @@ NP(1).b = 220;
 NP(1).v_reset = -60;
 NP(1).v_cutoff = -45;
 NP(1).somaLayer = 2;
-NP(1).numCompartments = 8;
-NP(1).compartmentLengthArr = [13 48 124 145 137 40 143 143];
-NP(1).compartmentDiameterArr = [29.8 3.75 1.91 2.81 2.69 2.62 1.69 1.69];
-NP(1).compartmentParentArr = [0 1 2 2 4 1 6 6];
-NP(1).compartmentXPositionMat = [0 0; 0 0; 0 124; 0 0; 0 0; ...
-                                 0 0; 0 -139; 0 139];
+NP(1).numCompartments = 16;
+NP(1).compartmentLengthArr = [6.5 24 62 72.5 68.5 20 81.7267 81.7267 6.5 24 62 72.5 68.5 20 81.7267 81.7267];
+NP(1).compartmentDiameterArr = [29.8 3.75 1.91 2.81 2.69 2.62 1.69 1.69 29.8 3.75 1.91 2.81 2.69 2.62 1.69 1.69];
+NP(1).compartmentParentArr = [0 1 2 2 4 1 6 6 1 2 3 4 5 6 7 8];
+NP(1).compartmentXPositionMat = [0 0; 0 0; 0 62; 0 0; 0 0; ...
+                                 0 0; 0 -69.5; 0 69.5; 0 0; 0 0; 62 124; 0 0; 0 0; 0 0; -69.5 -139; 69.5 139];
 NP(1).compartmentYPositionMat = [0 0; 0 0; 0 0; 0 0; 0 0; ...
-                                 0 0; 0 0; 0 0];
-NP(1).compartmentZPositionMat = [-13 0; 0 48; 48 48; 48 193; ...
-                                 193 330; -13 -53; -53 -139; ...
-                                 -53 -139];
-NP(1).somaID = 1;
-NP(1).basalID = [6 7 8];
-NP(1).proximalID = [2 6];
-NP(1).distalID = [7 8];
-NP(1).obliqueID = 3;
-NP(1).apicalID = 4;
-NP(1).trunkID = 2;
-NP(1).tuftID = 5;
-NP(1).labelNames = {'somaID', 'basalID','proximalID','distalID','obliqueID','apicalID','trunkID','tuftID'};
-NP(1).minCompartmentSize = 3;
+                                 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0];
+NP(1).compartmentZPositionMat = [-13 -6.5; 0 24; 48 48; 48 120.5; ...
+                                 193 261.5; -13 -33; -53 -96; ...
+                                 -53 -96; -6.5 0; 24 48; 48 48; 120.5 193; 261.5 330; -33 -53; -96 -139; -96 -139];
+NP(1).somaID = [1 9];
+NP(1).basalID = [6 7 8 14 15 16];
+NP(1).proximalID = [2 6 10 14];
+NP(1).distalID = [7 8 15 16];
+NP(1).obliqueID = [3 11];
+NP(1).apicalID = [4 12];
+NP(1).trunkID = [2 10];
+NP(1).tuftID = [5 13];
 NP(1).axisAligned = 'z';
 NP(1).Input(1).inputType = 'i_ou';
 NP(1).Input(1).meanInput = 360;
@@ -53,23 +51,21 @@ NP(2).tau_w = 10;
 NP(2).b = 40;
 NP(2).v_reset = -65;
 NP(2).somaLayer = 2;
-NP(2).numCompartments = 7;
-NP(2).compartmentLengthArr = [10 56 151 151 56 151 151];
-NP(2).compartmentDiameterArr = [24 1.93 1.95 1.95 1.93 1.95 1.95];
-NP(2).compartmentParentArr = [0 1 2 2 1 5 5];
-NP(2).compartmentXPositionMat = [0 0; 0 0; 0 107; 0 -107; ...
-                                 0 0; 0 -107; 0 107];
+NP(2).numCompartments = 14;
+NP(2).compartmentLengthArr = [5 28 75.6604 75.6604 28 75.6604 75.6604 5 28 75.6604 75.6604 28 75.6604 75.6604];
+NP(2).compartmentDiameterArr = [24 1.93 1.95 1.95 1.93 1.95 1.95 24 1.93 1.95 1.95 1.93 1.95 1.95];
+NP(2).compartmentParentArr = [0 1 2 2 1 5 5 1 2 3 4 5 6 7];
+NP(2).compartmentXPositionMat = [0 0; 0 0; 0 53.5; 0 -53.5; ...
+                                 0 0; 0 -53.5; 0 53.5; 0 0; 0 0; 53.5 107; -53.5 -107; 0 0; -53.5 -107; 53.5 107];
 NP(2).compartmentYPositionMat = [0 0; 0 0; 0 0; 0 0; 0 0; ...
-                                 0 0; 0 0];
-NP(2).compartmentZPositionMat = [-10 0; 0 56; 56 163; ...
-                                  56 163; -10 -66; -66 -173; ...
-                                 -66 -173];
-NP(2).somaID = 1;
-NP(2).basalID = [3 4 5 6 7];
-NP(2).proximalID = [2 5];
-NP(2).distalID = [3 4 6 7];
-NP(2).labelNames = {'somaID', 'basalID','proximalID','distalID'};
-NP(2).minCompartmentSize = 3;
+                                 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0];
+NP(2).compartmentZPositionMat = [-10 -5; 0 28; 56 109.5; ...
+                                  56 109.5; -10 -38; -66 -119.5; ...
+                                 -66 -119.5; -5 0; 28 56; 109.5 163; 109.5 163; -38 -66; -119.5 -173; -119.5 -173];
+NP(2).somaID = [1 8];
+NP(2).basalID = [3 4 5 6 7 10 11 12 13 14];
+NP(2).proximalID = [2 5 9 12];
+NP(2).distalID = [3 4 6 7 10 11 13 14];
 NP(2).axisAligned = '';
 NP(2).Input(1).inputType = 'i_ou';
 NP(2).Input(1).meanInput = 200;
@@ -137,27 +133,25 @@ NP(9).tau_w = 75;
 NP(9).b = 345;
 NP(9).v_reset = -60;
 NP(9).somaLayer = 4;
-NP(9).numCompartments = 9;
-NP(9).compartmentLengthArr = [35 65 152 398 402 252 52 186 186];
-NP(9).compartmentDiameterArr = [25 4.36 2.65 4.10 2.25 2.4 5.94 3.45 3.45];
-NP(9).compartmentParentArr = [0 1 2 2 4 5 1 7 7];
-NP(9).compartmentXPositionMat = [0 0; 0 0; 0 152; 0 0; 0 0; ...
-                                 0 0; 0 0; 0 -193; 0 193];
+NP(9).numCompartments = 18;
+NP(9).compartmentLengthArr = [17.5 32.5 76 199 201 126 26 110.0965 110.0965 17.5 32.5 76 199 201 126 26 110.0965 110.0965];
+NP(9).compartmentDiameterArr = [25 4.36 2.65 4.10 2.25 2.4 5.94 3.45 3.45 25 4.36 2.65 4.10 2.25 2.4 5.94 3.45 3.45];
+NP(9).compartmentParentArr = [0 1 2 2 4 5 1 7 7 1 2 3 4 5 6 7 8 9];
+NP(9).compartmentXPositionMat = [0 0; 0 0; 0 76; 0 0; 0 0; ...
+                                 0 0; 0 0; 0 -96.5; 0 96.5; 0 0; 0 0; 76 152; 0 0; 0 0; 0 0; 0 0; -96.5 -193; 96.5 193];
 NP(9).compartmentYPositionMat = [0 0; 0 0; 0 0; 0 0; 0 0; ...
-                                 0 0; 0 0; 0 0; 0 0];
-NP(9).compartmentZPositionMat = [-35 0; 0 65; 65 65; ...
-                                  65 463; 463 865; 865 1117; ...
-                                 -35 -87; -87 -193; -87 -193];
-NP(9).somaID = 1;
-NP(9).basalID = [7 8 9];
-NP(9).proximalID = [2 7];
-NP(9).distalID = [8 9];
-NP(9).obliqueID = 3;
-NP(9).apicalID = [4 5];
-NP(9).trunkID = 2;
-NP(9).tuftID = 6;
-NP(9).labelNames = {'somaID', 'basalID','proximalID','distalID','obliqueID','apicalID','trunkID','tuftID'};
-NP(9).minCompartmentSize = 3;
+                                 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0; 0 0];
+NP(9).compartmentZPositionMat = [-35 -17.5; 0 32.5; 65 65; ...
+                                  65 264; 463 664; 865 991; ...
+                                 -35 -61; -87 -140; -87 -140; -17.5 0; 32.5 65; 65 65; 264 463; 664 865; 991 1117; -61 -87; -140 -193; -140 -193];
+NP(9).somaID = [1 10];
+NP(9).basalID = [7 8 9 16 17 18];
+NP(9).proximalID = [2 7 11 16];
+NP(9).distalID = [8 9 17 18];
+NP(9).obliqueID = [3 12];
+NP(9).apicalID = [4 5 13 14];
+NP(9).trunkID = [2 11];
+NP(9).tuftID = [6 15];
 NP(9).axisAligned = 'z';
 NP(9).Input(1).inputType = 'i_ou';
 NP(9).Input(1).meanInput = 860;
