@@ -73,7 +73,7 @@ numSaves = floor(SS.simulationTime/RS.maxRecTime);
 maxRecSamples = round(RS.maxRecSamples);
 maxRecSteps = RS.maxRecSteps;
 minDelaySteps = SS.minDelaySteps;
-simulationSamples = length(RS.samplingSteps); %(SS.simulationTime*(RS.sampleRate / 1000));
+simulationSamples = length(RS.samplingSteps)+1; %(SS.simulationTime*(RS.sampleRate / 1000));
 
 if SS.parallelSim
   numLabs = SS.poolSize;

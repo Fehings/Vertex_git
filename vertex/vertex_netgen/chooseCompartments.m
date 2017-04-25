@@ -7,6 +7,7 @@ else
   possiblePostCompartments = CP(iPreGroup).targetCompartments{iPostGroup};
 end
 
+
 if  NP(iPostGroup).numCompartments == 1
   chosenCompartments = ones(synapsesInLayer, 1);
 elseif sum(NP(iPostGroup).proportionCompartmentAreaInLayer( ...

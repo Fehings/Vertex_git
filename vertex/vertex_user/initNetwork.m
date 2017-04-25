@@ -117,17 +117,18 @@ end
 for iGroup = 1:length(NP)
     for iTC = 1:length(CP(iGroup).targetCompartments)
         
-        if iscellstr(CP(iGroup).targetCompartments{iTC}) || isstring(CP(iGroup).targetCompartments{iTC}) || ischar(CP(iGroup).targetCompartments{iTC})
+        if iscellstr(CP(iGroup).targetCompartments{iTC}) 
             locations = [];
             for iLoc = 1:length(CP(iGroup).targetCompartments{iTC})
+                
                 if iscell(CP(iGroup).targetCompartments(iTC))
                     location = CP(iGroup).targetCompartments{iTC}{iLoc};
                 else
                     location = CP(iGroup).targetCompartments{iTC}(Loc);
                 end
-                locations = [locations NP(iGroup).(location)];
+                locations = [locations NP(iTC).(location)];
             end
-            CP(iGroup).targetCompartments{iTC} = locations;
+            CP(iGroup).targetCompartments{iTC} = unique(locations);
         else
             if adjustedcompartments
                 disp(['For Neuron group: ' num2str(iGroup) ' connecting to : ' num2str(iTC)] ); 
