@@ -158,97 +158,97 @@ for iPre = 1:numGroups
   CP(iPre).targetCompartments = cell(1,numGroups);
 end
 
-CP(1).targetCompartments{1} = [NP(1).obliqueID NP(1).basalID];
-CP(1).targetCompartments{2} = NP(2).distalID;
-CP(1).targetCompartments{3} = NP(3).distalID;
-CP(1).targetCompartments{4} = NP(4).distalID;
-CP(1).targetCompartments{5} = NP(5).distalID;
-CP(1).targetCompartments{6} = [NP(6).obliqueID NP(6).basalID];
-CP(1).targetCompartments{7} = NP(7).distalID;
-CP(1).targetCompartments{8} = NP(8).distalID;
+CP(1).targetCompartments{1} = {'obliqueID', 'basalID'};
+CP(1).targetCompartments{2} = {'distalID'};
+CP(1).targetCompartments{3} = {'distalID'};
+CP(1).targetCompartments{4} = {'distalID'};
+CP(1).targetCompartments{5} = {'distalID'};
+CP(1).targetCompartments{6} = {'obliqueID', 'basalID'};
+CP(1).targetCompartments{7} = {'distalID'};
+CP(1).targetCompartments{8} = {'distalID'};
 CP(1).targetCompartments{9} = ...
-              unique([NP(9).basalID NP(9).apicalID ...
-                      NP(9).proximalID NP(9).obliqueID]);
+              unique({'basalID', 'apicalID', ...
+                      'proximalID','obliqueID'});
 CP(1).targetCompartments{10} = ...
-            unique([NP(10).basalID NP(10).apicalID ...
-                    NP(10).proximalID NP(10).obliqueID]);
-CP(1).targetCompartments{11} = NP(11).distalID;
-CP(1).targetCompartments{12} = NP(12).distalID;
+            unique({'basalID', 'apicalID', ...
+                      'proximalID','obliqueID'});
+CP(1).targetCompartments{11} = {'distalID'};
+CP(1).targetCompartments{12} = {'distalID'};
 CP(1).targetCompartments{13} = ...
-            unique([NP(13).basalID NP(13).apicalID ...
-                    NP(13).tuftID ...
-                    NP(13).proximalID NP(13).obliqueID]);
+            unique({'basalID', 'apicalID', ...
+                    'tuftID', ...
+                    'proximalID', 'obliqueID'});
 CP(1).targetCompartments{14} = ...
-            unique([NP(14).basalID NP(14).apicalID ...
-                    NP(14).tuftID ...
-                    NP(14).proximalID NP(14).obliqueID]);
-CP(1).targetCompartments{15} = NP(15).distalID;
+            unique({'basalID', 'apicalID', ...
+                    'tuftID', ...
+                    'proximalID', 'obliqueID'});
+CP(1).targetCompartments{15} = {'distalID'};
                                                 
-CP(2).targetCompartments{1} = unique([NP(1).somaID NP(1).proximalID]);
-CP(2).targetCompartments{2} = NP(2).distalID;
-CP(2).targetCompartments{3} = NP(3).distalID;
-CP(2).targetCompartments{4} = unique([NP(4).somaID NP(4).proximalID]);
-CP(2).targetCompartments{5} = unique([NP(5).somaID NP(5).proximalID]);
-CP(2).targetCompartments{6} = unique([NP(6).somaID NP(6).proximalID]);
-CP(2).targetCompartments{7} = NP(7).distalID;
-CP(2).targetCompartments{8} = NP(8).distalID;
-CP(2).targetCompartments{9} = unique([NP(9).somaID NP(9).proximalID]);
-CP(2).targetCompartments{10} = unique([NP(10).somaID NP(10).proximalID]);
-CP(2).targetCompartments{11} = NP(11).distalID;
-CP(2).targetCompartments{12} = NP(12).distalID;
-CP(2).targetCompartments{13} = unique([NP(13).somaID NP(13).proximalID]);
-CP(2).targetCompartments{14} = unique([NP(14).somaID NP(14).proximalID]);
-CP(2).targetCompartments{15} = NP(15).distalID;
+CP(2).targetCompartments{1} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{2} = {'distalID'};
+CP(2).targetCompartments{3} = {'distalID'};
+CP(2).targetCompartments{4} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{5} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{6} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{7} = {'distalID'};
+CP(2).targetCompartments{8} = {'distalID'};
+CP(2).targetCompartments{9} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{10} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{11} = {'distalID'};
+CP(2).targetCompartments{12} = {'distalID'};
+CP(2).targetCompartments{13} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{14} = unique({'somaID', 'proximalID'});
+CP(2).targetCompartments{15} = {'distalID'};
                                                 
                                                 
 CP(3).targetCompartments{1} = ...
-                 unique([NP(1).obliqueID NP(1).tuftID ...
-                         NP(1).apicalID NP(1).distalID]);
-CP(3).targetCompartments{2} = NP(2).distalID;
-CP(3).targetCompartments{3} = NP(3).distalID;
-CP(3).targetCompartments{4} = NP(4).distalID;
-CP(3).targetCompartments{5} = NP(5).distalID;
+                 unique({'obliqueID', 'tuftID', ...
+                         'apicalID', 'distalID'});
+CP(3).targetCompartments{2} = {'distalID'};
+CP(3).targetCompartments{3} = {'distalID'};
+CP(3).targetCompartments{4} = {'distalID'};
+CP(3).targetCompartments{5} = {'distalID'};
 CP(3).targetCompartments{6} = ...
-                 unique([NP(6).obliqueID NP(6).tuftID ...
-                         NP(6).apicalID NP(6).distalID]);
-CP(3).targetCompartments{7} = NP(7).distalID;
-CP(3).targetCompartments{8} = NP(8).distalID;
+                 unique({'obliqueID', 'tuftID', ...
+                         'apicalID', 'distalID'});
+CP(3).targetCompartments{7} = {'distalID'};
+CP(3).targetCompartments{8} = {'distalID'};
 CP(3).targetCompartments{9} = ...
-               unique([NP(9).obliqueID NP(9).distalID ...
-                           NP(9).tuftID NP(9).apicalID]);
+               unique({'obliqueID', 'distalID', ...
+                           'tuftID', 'apicalID'});
 CP(3).targetCompartments{10} = ...
-             unique([NP(10).obliqueID NP(10).distalID ...
-                         NP(10).tuftID NP(10).apicalID]);
-CP(3).targetCompartments{11} = NP(11).distalID;
-CP(3).targetCompartments{12} = NP(12).distalID;
+               unique({'obliqueID', 'distalID', ...
+                           'tuftID', 'apicalID'});
+CP(3).targetCompartments{11} = {'distalID'};
+CP(3).targetCompartments{12} = {'distalID'};
 CP(3).targetCompartments{13} = ...
-             unique([NP(13).obliqueID NP(13).distalID ...
-                         NP(13).tuftID NP(13).apicalID]);
+               unique({'obliqueID', 'distalID', ...
+                           'tuftID', 'apicalID'});
 CP(3).targetCompartments{14} = ...
-             unique([NP(14).obliqueID NP(14).distalID ...
-                         NP(14).tuftID NP(14).apicalID]);
-CP(3).targetCompartments{15} = NP(15).distalID;
+               unique({'obliqueID', 'distalID', ...
+                           'tuftID', 'apicalID'});
+CP(3).targetCompartments{15} = {'distalID'};
 
                                                 
-CP(4).targetCompartments{1} = NP(1).basalID;
-CP(4).targetCompartments{2} = NP(2).distalID;
-CP(4).targetCompartments{3} = NP(3).distalID;
-CP(4).targetCompartments{4} = NP(4).distalID;
-CP(4).targetCompartments{5} = NP(5).distalID;
-CP(4).targetCompartments{6} = NP(6).basalID;
-CP(4).targetCompartments{7} = NP(7).distalID;
-CP(4).targetCompartments{8} = NP(8).distalID;
+CP(4).targetCompartments{1} = {'basalID'};
+CP(4).targetCompartments{2} = {'distalID'};
+CP(4).targetCompartments{3} = {'distalID'};
+CP(4).targetCompartments{4} = {'distalID'};
+CP(4).targetCompartments{5} = {'distalID'};
+CP(4).targetCompartments{6} = {'basalID'};
+CP(4).targetCompartments{7} = {'distalID'};
+CP(4).targetCompartments{8} = {'distalID'};
 CP(4).targetCompartments{9} = ...
-                unique([NP(9).obliqueID NP(9).trunkID NP(9).apicalID]);
+                unique({'obliqueID', 'trunkID', 'apicalID'});
 CP(4).targetCompartments{10} = ...
-                unique([NP(10).obliqueID NP(10).trunkID NP(10).apicalID]);
-CP(4).targetCompartments{11} = NP(11).distalID;
-CP(4).targetCompartments{12} = NP(12).distalID;
+                unique({'obliqueID', 'trunkID', 'apicalID'});
+CP(4).targetCompartments{11} = {'distalID'};
+CP(4).targetCompartments{12} = {'distalID'};
 CP(4).targetCompartments{13} = ...
-                unique([NP(13).apicalID NP(13).trunkID]);
+                unique({'apicalID', 'trunkID'});
 CP(4).targetCompartments{14} = ...
-                unique([NP(14).apicalID NP(14).trunkID]);
-CP(4).targetCompartments{15} = NP(15).distalID;
+                unique({'apicalID', 'trunkID'});
+CP(4).targetCompartments{15} = {'distalID'};
                           
 CP(5).targetCompartments = CP(4).targetCompartments;
 CP(6).targetCompartments = CP(1).targetCompartments;
@@ -256,61 +256,61 @@ CP(6).targetCompartments = CP(1).targetCompartments;
 CP(7).targetCompartments = CP(2).targetCompartments;
 CP(8).targetCompartments = CP(3).targetCompartments;
 
-CP(9).targetCompartments{1} = [NP(1).apicalID, NP(1).tuftID];
-CP(9).targetCompartments{2} = NP(2).distalID;
-CP(9).targetCompartments{3} = NP(3).distalID;
-CP(9).targetCompartments{4} = NP(4).distalID;
-CP(9).targetCompartments{5} = NP(5).distalID;
-CP(9).targetCompartments{6} = [NP(6).apicalID, NP(6).tuftID];
-CP(9).targetCompartments{7} = NP(7).distalID;
-CP(9).targetCompartments{8} = NP(8).distalID;
+CP(9).targetCompartments{1} = {'apicalID', 'tuftID'};
+CP(9).targetCompartments{2} = {'distalID'};
+CP(9).targetCompartments{3} = {'distalID'};
+CP(9).targetCompartments{4} = {'distalID'};
+CP(9).targetCompartments{5} = {'distalID'};
+CP(9).targetCompartments{6} = {'apicalID', 'tuftID'};
+CP(9).targetCompartments{7} = {'distalID'};
+CP(9).targetCompartments{8} = {'distalID'};
 CP(9).targetCompartments{9} = ...
-               unique([NP(9).obliqueID NP(9).apicalID ...
-                           NP(9).trunkID NP(9).basalID]);
+               unique({'obliqueID', 'apicalID', ...
+                           'trunkID', 'basalID'});
 CP(9).targetCompartments{10} = ...
-             unique([NP(10).obliqueID NP(10).apicalID ...
-                         NP(10).trunkID NP(10).basalID]);
-CP(9).targetCompartments{11} = NP(11).distalID;
-CP(9).targetCompartments{12} = NP(12).distalID;
+               unique({'obliqueID', 'apicalID', ...
+                         'trunkID', 'basalID'});
+CP(9).targetCompartments{11} = {'distalID'};
+CP(9).targetCompartments{12} = {'distalID'};
 CP(9).targetCompartments{13} = ...
-             unique([NP(13).obliqueID NP(13).apicalID ...
-                     NP(13).trunkID NP(13).basalID ...
-                     NP(13).tuftID]);
+             unique({'obliqueID', 'apicalID', ...
+                     'trunkID', 'basalID', ...
+                     'tuftID'});
 CP(9).targetCompartments{14} = ...
-             unique([NP(14).obliqueID NP(14).apicalID ...
-                     NP(14).trunkID NP(14).basalID ...
-                     NP(14).tuftID]);
-CP(9).targetCompartments{15} = NP(15).distalID;
+             unique({'obliqueID', 'apicalID', ...
+                     'trunkID', 'basalID', ...
+                     'tuftID'});
+CP(9).targetCompartments{15} = {'distalID'};
                          
 CP(10).targetCompartments = CP(9).targetCompartments;
 CP(11).targetCompartments = CP(2).targetCompartments;
 CP(12).targetCompartments = CP(3).targetCompartments;
                                                 
-CP(13).targetCompartments{1} = NP(1).apicalID;
-CP(13).targetCompartments{2} = NP(2).distalID;
-CP(13).targetCompartments{3} = NP(3).distalID;
-CP(13).targetCompartments{4} = NP(4).distalID;
-CP(13).targetCompartments{5} = NP(5).distalID;
-CP(13).targetCompartments{6} = NP(6).apicalID;
-CP(13).targetCompartments{7} = NP(7).distalID;
-CP(13).targetCompartments{8} = NP(8).distalID;
+CP(13).targetCompartments{1} = {'apicalID'};
+CP(13).targetCompartments{2} = {'distalID'};
+CP(13).targetCompartments{3} = {'distalID'};
+CP(13).targetCompartments{4} = {'distalID'};
+CP(13).targetCompartments{5} = {'distalID'};
+CP(13).targetCompartments{6} = {'apicalID'};
+CP(13).targetCompartments{7} = {'distalID'};
+CP(13).targetCompartments{8} = {'distalID'};
 CP(13).targetCompartments{9} = ...
-               unique([NP(9).obliqueID NP(9).apicalID ...
-                           NP(9).trunkID NP(9).basalID]);
+               unique({'obliqueID', 'apicalID', ...
+                           'trunkID', 'basalID'});
 CP(13).targetCompartments{10} = ...
-             unique([NP(10).obliqueID NP(10).apicalID ...
-                         NP(10).trunkID NP(10).basalID]);
-CP(13).targetCompartments{11} = NP(11).distalID;
-CP(13).targetCompartments{12} = NP(12).distalID;
+             unique({'obliqueID', 'apicalID', ...
+                         'trunkID', 'basalID'});
+CP(13).targetCompartments{11} = {'distalID'};
+CP(13).targetCompartments{12} = {'distalID'};
 CP(13).targetCompartments{13} = ...
-             unique([NP(13).obliqueID NP(13).apicalID ...
-                     NP(13).trunkID NP(13).basalID ...
-                     NP(13).tuftID]);
+             unique({'obliqueID', 'apicalID', ...
+                     'trunkID', 'basalID', ...
+                     'tuftID'});
 CP(13).targetCompartments{14} = ...
-             unique([NP(14).obliqueID NP(14).apicalID ...
-                     NP(14).trunkID NP(14).basalID ...
-                     NP(14).tuftID]);
-CP(13).targetCompartments{15} = NP(15).distalID;
+             unique({'obliqueID', 'apicalID', ...
+                     'trunkID', 'basalID', ...
+                     'tuftID'});
+CP(13).targetCompartments{15} = {'distalID'};
 
 CP(14).targetCompartments = CP(13).targetCompartments;
 CP(15).targetCompartments = CP(2).targetCompartments;
