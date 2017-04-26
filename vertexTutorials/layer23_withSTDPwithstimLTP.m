@@ -322,7 +322,7 @@ SimulationSettings.parallelSim =true;
               RecordingSettings, SimulationSettings);
 
 %% Run the simulation
-% Now we can run the simulatio, and load the results:
+% Now we can run the simulation, and load the results:
 tic;
 synarr = runSimulation(params, connections, electrodes);
 toc;

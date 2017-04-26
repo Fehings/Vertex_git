@@ -20,7 +20,10 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
-%TissueParams.StimulationField = {p,t,u};
+% TissueParams.StimulationField = invitroSliceStim('catvisblend1.stl',10);
+% TissueParams.StimulationOn = 0;
+% TissueParams.StimulationOff = 70;
+
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
@@ -382,19 +385,19 @@ rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 % (seeding random numbers in VERTEX is covered in tutorial 5). The
 % oscillation can be seen in the LFP:
 
-figure(3)
-plot(Results.LFP', 'LineWidth', 2)
-set(gcf,'color','w');
-set(gca,'FontSize',16)
-title('Tutorial 2: LFP at all electrodes', 'FontSize', 16)
-xlabel('Time (ms)', 'FontSize', 16)
-ylabel('LFP (mV)', 'FontSize', 16)
-LFPfirstrow = Results.LFP';
-figure(4)
-for i = 1:10
-    subtightplot(10,1,i);
-    plot(LFPfirstrow(:,i))
-end
+% figure(3)
+% plot(Results.LFP', 'LineWidth', 2)
+% set(gcf,'color','w');
+% set(gca,'FontSize',16)
+% title('Tutorial 2: LFP at all electrodes', 'FontSize', 16)
+% xlabel('Time (ms)', 'FontSize', 16)
+% ylabel('LFP (mV)', 'FontSize', 16)
+% LFPfirstrow = Results.LFP';
+% figure(4)
+% for i = 1:10
+%     subtightplot(10,1,i);
+%     plot(LFPfirstrow(:,i))
+% end
 
 %%
 % Plotting the LFP from all electrodes also reveals a phase inversion,
