@@ -56,7 +56,7 @@ end
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
     spmd
-        posttoprearr = getPosttoPreSynArr(synArr);
+        posttoprearr = reverseSynArr(synArr);
         disp('Map calculated');
     end
         revSynArr = posttoprearr{1};

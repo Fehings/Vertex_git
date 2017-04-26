@@ -6,12 +6,15 @@ numrows = length(synarr);
 disp('Finding the neuron ids of synapses on to each neuron. May take a while...')
 count = zeros(numrows);
 % find the number of presynatpic connections for each neuron
-for i = 1:length(synarr)
-    for j = 1:length(synarr)
+tic;
+numrows = length(synarr);
+for i = 1:numrows
+    for j = 1:numrows
         x = find(synarr{j,1}==i);
         count(i) = count(i) +length(x);
     end
 end
+toc;
 %construct the cell array to contain the empty arrays for each neuron of
 %the size calculated above
 for i = 1:length(synarr)
@@ -22,9 +25,10 @@ end
 %searching synarr for mentions of it. Where it is mentioned 
 %the index into synarr j is the neuron presynatic to i. We place this as
 %the first row of our array. x(k)
-for i = 1:length(synarr)
+tic;
+for i = 1:numrows
     index = 1;
-    for j = 1:length(synarr)
+    for j = 1:numrows
          x = find(synarr{j,1}==i);
          if ~isempty(x)
              for k = 1:length(x)
@@ -35,6 +39,7 @@ for i = 1:length(synarr)
          end
     end
 end
+toc;
 % for i = 1:length(synarr)
 %     i
 %     index = 1;
@@ -49,6 +54,7 @@ end
 % 
 %     end
 % end
+
 
 
 end
