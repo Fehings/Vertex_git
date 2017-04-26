@@ -628,6 +628,7 @@ RecordingSettings.v_m = 1:100:19472;
 RecordingSettings.maxRecTime = 5000;
 RecordingSettings.sampleRate = 5000;
 %RecordingSettings.I_syn = 1:2:5000;
+
 RecordingSettings.weights_preN_IDs = 1:1:100;
 %%
 %Simulation settings:
