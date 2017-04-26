@@ -116,6 +116,11 @@ if isfield(RS, 'weights_preN_IDs')
 else
     weights = false;
 end
+if isfield(RS, 'weights_arr')
+    weightsarr = RS.weights_arr;
+else
+    weightsarr = false;
+end
 
 % Are we to calculate the LFP offline?
 if isfield(RS, 'LFPoffline') && RS.LFPoffline
@@ -190,18 +195,33 @@ else
 end
 
 if weights
-  weights_recording = cell(length(RS.weights_preN_IDs),1);
-postNIDs = cell(length(RS.weights_preN_IDs),1);
-  if SS.parallelSim
-      weights_syn_count = ones(length(weights_recording),1);
-      weights_synIDmap = [];
-  end
+    weights_recording = cell(length(RS.weights_preN_IDs),1);
+    postNIDs = cell(length(RS.weights_preN_IDs),1);
+    if SS.parallelSim
+        weights_syn_count = ones(length(weights_recording),1);
+        weights_synIDmap = [];
+    end
 else
     weights_recording = [];
     postNIDs = [];
 end
 
+if weightsarr
+    wcount = cell(length(RS.weights_arr),1);
+    for i = 1:length(wcount)
+        wcount{i} =  zeros(TP.N,1);
+    end
+    syncount = zeros(TP.N,1);
+    synArr = cell(TP.N,1);
+    allpost = cell(length(RS.weights_arr),1);
+    allpre = cell(length(RS.weights_arr),1);
+    allweight = cell(length(RS.weights_arr),1);
+  weightsarr_rec= cell(length(RS.weights_arr),1);
 
+else
+    weightsarr_rec = [];
+
+end
 
 sampleCount = 0;
 
@@ -304,6 +324,35 @@ for iSaves = 1:numSaves
             end
         end
     end
+    
+   if weightsarr
+       if SS.parallelSim
+           if isfield(RecordingVars, 'WeightArrRec')
+               weightRecArr = RecordingVars.WeightArrRec;
+               for iRec = 1:length(RecordingVars.WeightArrRec)
+
+                   for iN = 1:length(RecordingVars.WeightArrRec{iRec})
+                       weights_arr{iRec}{iN}(wcount{iRec}(iN)+1:wcount{iRec}(iN)+length(RecordingVars.WeightArrRec{iRec}{iN})) = RecordingVars.WeightArrRec{iRec}{iN};
+                       wcount{iRec}(iN) = wcount{iRec}(iN) + length(RecordingVars.WeightArrRec{iRec}{iN});
+                   end
+               end
+               for iN = 1:length(RecordingVars.synArr(:,1))
+                   synArr{iN,1}(syncount(iN)+1:syncount(iN)+length(RecordingVars.synArr{iN})) =  RecordingVars.synArr{iN,1};
+                   synArr{iN,2}(syncount(iN)+1:syncount(iN)+length(RecordingVars.synArr{iN})) =  RecordingVars.synArr{iN,2};
+                   synArr{iN,3}(syncount(iN)+1:syncount(iN)+length(RecordingVars.synArr{iN})) =  RecordingVars.synArr{iN,3};
+                   
+                   syncount(iN) = syncount(iN)+ length(RecordingVars.synArr{iN,1});
+               end
+               
+           end
+           
+        else
+           if isfield(RecordingVars, 'WeightArrRec')
+               weightRecArr = RecordingVars.WeightArrRec;
+               synArr = RecordingVars.synArr;
+           end
+        end
+    end
 
     if RS.LFP
       lr = RecordingVars.LFPRecording;
@@ -373,6 +422,7 @@ if SS.parallelSim && ~isempty(fac_syn_recording)
     fac_syn_recording{itype}(fac_synIDmap, :) = fac_syn_recording{itype};
   end
 end
+
 % Store loaded results in cell array to return
 Results.spikes = spikes;
 Results.LFP = LFP; 
@@ -381,6 +431,8 @@ Results.I_syn = I_syn_recording;
 Results.fac_syn = fac_syn_recording;
 Results.weights = weights_recording;
 Results.synapsePostIDs = postNIDs;
+Results.weights_arr = weights_arr;
+Results.syn_arr = synArr;
 Results.params.TissueParams = TP;
 Results.params.NeuronParams = NP;
 Results.params.ConnectionParams = CP;

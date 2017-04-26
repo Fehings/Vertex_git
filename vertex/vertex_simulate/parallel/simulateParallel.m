@@ -115,7 +115,8 @@ spmd
     recordI_syn = RecVar.recordI_syn;
     recordFac_syn = RecVar.recordFac_syn;
     recordWeights = RecVar.recordWeights;
-    
+    recordWeightsArr = RecVar.recordWeightsArr;
+    weightsArrcount = 1;
     comCount = SS.minDelaySteps;
     % vars to keep track of where we are in recording buffers:
     
@@ -202,6 +203,16 @@ spmd
         if simStep == RS.samplingSteps(sampleStepCounter)
             if recordWeights
                 RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr,SS);
+            end
+        end
+        if recordWeightsArr
+    
+            if weightsArrcount <= length(RS.weights_arr) && simStep == RS.weights_arr(weightsArrcount)
+                disp('recording weights')
+                disp(['simstep: ' num2str(simStep)]);
+                disp(['rectime: ' num2str(RS.weights_arr(weightsArrcount))]);
+                RecVar.WeightArrRec{weightsArrcount} = wArr;
+                weightsArrcount = weightsArrcount+1;
             end
         end
         
