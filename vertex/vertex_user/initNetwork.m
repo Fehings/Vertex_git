@@ -120,12 +120,13 @@ for iGroup = 1:length(NP)
         if iscellstr(CP(iGroup).targetCompartments{iTC}) || isstring(CP(iGroup).targetCompartments{iTC}) || ischar(CP(iGroup).targetCompartments{iTC})
             locations = [];
             for iLoc = 1:length(CP(iGroup).targetCompartments{iTC})
+                
                 if iscell(CP(iGroup).targetCompartments(iTC))
                     location = CP(iGroup).targetCompartments{iTC}{iLoc};
                 else
                     location = CP(iGroup).targetCompartments{iTC}(Loc);
                 end
-                locations = [locations, NP(iTC).(location)];
+                locations = [locations NP(iTC).(location)];
             end
             CP(iGroup).targetCompartments{iTC} = unique(locations);
         else

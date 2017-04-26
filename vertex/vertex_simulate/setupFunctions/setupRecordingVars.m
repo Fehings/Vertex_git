@@ -37,14 +37,14 @@ if ~isfield(RS, 'weights_preN_IDs')
     RS.weights_preN_IDs = [];
 end
 
-if ~isfield(RS, 'weights_postN_IDs')
-    RS.weights_postN_IDs = [];
+if ~isfield(RS, 'weights_arr')
+    RS.weights_arr = [];
 end
+
+
 
 % weights recording
 if SS.parallelSim
-    
-    
     spmd
         if ~isempty(RS.weights_preN_IDs)
             recordWeights = true;
@@ -65,7 +65,6 @@ if SS.parallelSim
         end
         RecordingVars.recordWeights = recordWeights;
     end
-    disp(' ' )
     
 else
   if ~isempty(RS.weights_preN_IDs)
@@ -87,6 +86,36 @@ else
   RecordingVars.recordWeights = recordWeights;
 end
 
+if SS.parallelSim
+    spmd
+        if ~isempty(RS.weights_arr)
+            recordWeightArr = true;
+            for c = 1:length(recordWeightArr)
+                WeightArrRec{c} = cell(wArr);
+            end
+            RecordingVars.WeightArrRec = WeightArrRec;
+            RecordingVars.synArr = synArr;
+        else
+            recordWeightArr = false;
+        end
+        RecordingVars.recordWeightsArr = recordWeightArr;
+        
+    end
+else
+        if ~isempty(RS.weights_arr)
+            recordWeightArr = true;
+            for c = 1:length(recordWeightArr)
+                WeightArrRec{c} = cell(wArr);
+            end
+            RecordingVars.synArr = synArr;
+            RecordingVars.WeightArrRec = WeightArrRec;
+        else
+            recordWeightArr = false;
+        end
+        RecordingVars.recordWeightsArr = recordWeightArr;
+        
+
+end
 
 % Intracellular recording:
 if SS.parallelSim

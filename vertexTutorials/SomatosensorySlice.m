@@ -107,12 +107,12 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 600;
+NeuronParams(1).R_A = 200;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
-
+NeuronParams(1).labelNames = {'somaID', 'basalID', 'apicalID'};
 
 disp(['modelpropL23NBC: ' num2str(modpropL23NBC)]);
 
@@ -166,7 +166,7 @@ NeuronParams(2).R_M = 15000/2.93;
 NeuronParams(2).R_A = 1000;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
-
+NeuronParams(2).labelNames = {'dendritesID'};
 %Layer 23 
 %Small Basket Cell
 disp(['modelpropL23SBC: ' num2str(modpropL23SBC)]);
@@ -226,7 +226,6 @@ NeuronParams(6) = NeuronParams(1);% spiny stellates same morphology as basket
 
 NeuronParams(6).somaLayer = 2;     % but in layer 4
 NeuronParams(6).modelProportion = modpropL4SS;
-NeuronParams(6).v_cutoff = -10;
 
 %Layer 4
 %Star Pyramidal
@@ -360,6 +359,7 @@ NeuronParams(13).R_M = 20000/2.95;
 NeuronParams(13).R_A = 150;
 NeuronParams(13).E_leak = -70;
 NeuronParams(13).dendritesID = [2 3 4 5 6 7 8 9];
+NeuronParams(13).labelNames = {'dendritesID'};
 
 
 %Layer 5 Thick tufted pyramidal 1
@@ -422,22 +422,22 @@ end
 %For layer 4 Excitatory cells
 for i = 6:8
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =330;
-    NeuronParams(i).Input(1).stdInput = 30;
+    NeuronParams(i).Input(1).meanInput =300;
+    NeuronParams(i).Input(1).stdInput = 50;
     NeuronParams(i).Input(1).tau = 2;
 end
 % %For layer 4 Inhibitory cells
 for i = 9:12
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).meanInput = 60;
     NeuronParams(i).Input(1).stdInput = 20;
     NeuronParams(i).Input(1).tau = 1;
 end
 % %For layer 5 Excitatory cells
 for i = 13:14
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 830;
-    NeuronParams(i).Input(1).stdInput = 150;
+    NeuronParams(i).Input(1).meanInput = 850;
+    NeuronParams(i).Input(1).stdInput = 100;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 15:16
@@ -450,43 +450,74 @@ end
 % %For layer 5 Inhibitory cells
 for i = 17:20
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).meanInput = 60;
     NeuronParams(i).Input(1).stdInput = 20;
     NeuronParams(i).Input(1).tau = 1;
 end
 
 
 
-%volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.8;
-volumemultiplier = 1;
-
+volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.65;
+%Plasticity flags - stp = short term plasticity, STDP = spike time
+%dependent plasticity.
+stp = false;
+stdp = false;
 %%
-%Connectivity parameters loaded from connections.mat and assinged with the 
+%Connectivity parameters loaded from connectionsSTP.mat and assinged with the 
 %connectivity parameters. Weights and number of connections loaded from
 %file.
-connections = load('connections.mat');
+connections = load('connectionsSTP.mat');
+%Lists of the neuron types that we wish to include in our model,
+%proportions and connectivity taken from Neocortical Collaborative Portal
 ConnectivityNamesnounderscore = {'L23PC','L23NBC','L23LBC','L23SBC','L23MC','L4SS','L4SP','L4PC','L4NBC','L4SBC','L4LBC','L4MC','L5TTPC2','L5TTPC1','L5UTPC','L5STPC','L5LBC','L5SBC','L5NBC','L5MC'};
-
 ConnectivityNames = {'L23_PC','L23_NBC','L23_LBC','L23_SBC','L23_MC','L4_SS','L4_SP','L4_PC','L4_NBC','L4_SBC','L4_LBC','L4_MC','L5_TTPC2','L5_TTPC1','L5_UTPC','L5_STPC','L5_LBC','L5_SBC','L5_NBC','L5_MC'};
-connectivities = zeros(20);
+
+%Assigning connection parameters from loaded connectionSTP.mat
+%For each presynaptic neuron group i
 for i = 1:20
+    % Parameters constant for all connections.
     ConnectionParams(i).axonArborSpatialModel = 'gaussian';
     ConnectionParams(i).sliceSynapses = true;
     ConnectionParams(i).axonConductionSpeed = 0.3;
     ConnectionParams(i).synapseReleaseDelay = 0.5;
+    
+    %For each postsynaptic neuron group j
     for j = 1:20
         try
+            % All synapses are conductance based 'g_exp'
+            % Setting number of connections to all in the postsynaptic group
+            % from one in presynaptic group.
+            % Setting connections weights, and time constant tau.
             disp(['Connecting..' num2str(i) ' - ' num2str(j)]);
-            connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
             disp([[ConnectivityNames{i} '_' ConnectivityNames{j}] ': ' num2str(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}))])
             ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
+            ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
+            
+            % Adding plasticity to synapses if selected
+            if stp
+                ConnectionParams(i).synapseType{j} = 'g_stp';
+                ConnectionParams(i).tF{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
+                ConnectionParams(i).tD{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){6});
+                ConnectionParams(i).facilitation{j} = 0.5+rand()/100;
+                ConnectionParams(i).depression{j} = 0.5+rand()/100;
+                
+            elseif stdp %Adding spike time dependent plasticity
+                ConnectionParams(i).synapseType{j} = 'g_stdp'; % update synapse type
+                ConnectionParams(i).rate{j} = 0.001; % set synapse change rate
+                ConnectionParams(i).tPre{j} = 2; % set time constant for presynaptic spike
+                ConnectionParams(i).tPost{j} = 1+rand();% set time constant for post synaptic spike
+                ConnectionParams(i).wmin{j} = 0; % set minimum weight
+                ConnectionParams(i).wmax{j} = 100; % set maximum weight
+            end
         catch %if there is no description in the file then set zero connections
             disp(['No connections between: ' ConnectivityNames{i} '_' ConnectivityNames{j}]); 
             ConnectionParams(i).numConnectionsToAllFromOne{j} = [0,0,0];
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = 0;
+            ConnectionParams(i).tau{j} = 10 ;
+            
         end
         
     end
@@ -520,7 +551,7 @@ end
 %For each layer 23 basket cell
 for i = 2:4
     for j = 1:20
-        ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
+        ConnectionParams(i).targetCompartments{j} = {'somaID'};
         ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
     end
@@ -528,7 +559,7 @@ end
 
 %For the martinotti cells - dendrite targetting INs
 for j = 1:20
-    ConnectionParams(5).targetCompartments{j} = NeuronParams(j).dendritesID;
+    ConnectionParams(5).targetCompartments{j} = {'dendritesID'};
     ConnectionParams(5).tau{j} = 2;
     ConnectionParams(5).E_reversal{j} = -70;
 end
@@ -541,7 +572,7 @@ for i = 6:8
     ConnectionParams(i).axonArborRadius = [200, 300, 200];
     ConnectionParams(i).axonArborLimit = [400, 600, 400];
     for j = 1:20
-        ConnectionParams(i).targetCompartments{j} = NeuronParams(j).dendritesID;
+        ConnectionParams(i).targetCompartments{j} = {'dendritesID'};
         ConnectionParams(i).tau{j} = 2;
         ConnectionParams(i).E_reversal{j} = 0;
     end
@@ -554,14 +585,14 @@ end
 %For basket cells
 for i = 9:11
     for j = 1:20
-        ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
+        ConnectionParams(i).targetCompartments{j} = {'somaID'};
         ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
     end
 end
 %for Martinotti cells 
 for j = 1:20
-    ConnectionParams(12).targetCompartments{j} = NeuronParams(j).dendritesID;
+    ConnectionParams(12).targetCompartments{j} = {'dendritesID'};
     ConnectionParams(12).tau{j} = 6;
     ConnectionParams(12).E_reversal{j} = -70;
 end
@@ -574,7 +605,7 @@ for i = 13:16
     ConnectionParams(i).axonArborRadius = [100, 200, 300];
     ConnectionParams(i).axonArborLimit = [200, 400, 600];
     for j = 1:20
-        ConnectionParams(i).targetCompartments{j} = NeuronParams(j).dendritesID;
+        ConnectionParams(i).targetCompartments{j} = {'dendritesID'};
         ConnectionParams(i).tau{j} = 2;
         ConnectionParams(i).E_reversal{j} = 0;
     end
@@ -589,7 +620,7 @@ end
 %For basket cells
 for i = 17:19
     for j = 1:20
-        ConnectionParams(i).targetCompartments{j} = NeuronParams(j).somaID;
+        ConnectionParams(i).targetCompartments{j} = {'somaID'};
         ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
     end
@@ -597,7 +628,7 @@ end
 
 %for martinotti cells
 for j = 1:20
-    ConnectionParams(20).targetCompartments{j} = NeuronParams(j).dendritesID;
+    ConnectionParams(20).targetCompartments{j} = {'dendritesID'};
     ConnectionParams(20).tau{j} = 6;
     ConnectionParams(20).E_reversal{j} = -70;
 end
@@ -620,6 +651,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 1:100:19472;
 RecordingSettings.maxRecTime = 5000;
 RecordingSettings.sampleRate = 5000;
+
 %RecordingSettings.I_syn = 1:2:5000;
 
 %%
@@ -632,13 +664,10 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 50;
-SimulationSettings.timeStep = 0.025;
+SimulationSettings.simulationTime = 5000;
+SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = true;
 
-%These are flags used for simulating electric field or focussed ultrasound
-%stimulation of the slice, these are currently in development and not used
-%for this project. '
 
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...

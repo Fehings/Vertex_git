@@ -645,7 +645,7 @@ RecordingSettings.sampleRate = 2000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 50;
+SimulationSettings.simulationTime = 5000;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 

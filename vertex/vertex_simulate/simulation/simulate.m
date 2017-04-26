@@ -49,6 +49,7 @@ recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
 recordFac_syn = RecVar.recordFac_syn;
 recordWeights = RecVar.recordWeights;
+recordWeightsArr = RecVar.recordWeightsArr;
 
 stimcount = 1;
 timeStimStep = 1;
@@ -134,7 +135,15 @@ for simStep = 1:simulationSteps
 
     %Update weight recording
     if recordWeights
-        RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr,SS);
+        if simStep == RS.samplingSteps(sampleStepCounter)
+            RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr,SS);
+        end
+    end
+    if recordWeightsArr
+        rec_time = ismember(simStep, RS.weights_arr);
+        if rec_time
+            RecVar.WeightArrRec(rec_times) = wArr;
+        end
     end
 
   for iGroup = 1:TP.numGroups
