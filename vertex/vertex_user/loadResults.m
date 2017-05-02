@@ -219,7 +219,8 @@ if weightsarr
   weightsarr_rec= cell(length(RS.weights_arr),1);
 
 else
-    weightsarr_rec = [];
+    synArr = [];
+    weights_arr= [];
 
 end
 
