@@ -457,11 +457,12 @@ end
 
 
 
-volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.65;
+volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.85;
+volumemultiplier = 1;
 %Plasticity flags - stp = short term plasticity, STDP = spike time
 %dependent plasticity.
 stp = false;
-stdp = false;
+stdp = true;
 %%
 %Connectivity parameters loaded from connectionsSTP.mat and assinged with the 
 %connectivity parameters. Weights and number of connections loaded from
@@ -651,7 +652,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 1:100:19472;
 RecordingSettings.maxRecTime = 5000;
 RecordingSettings.sampleRate = 5000;
-
+RecordingSettings.weights_arr = [1000:1000:16000];
 %RecordingSettings.I_syn = 1:2:5000;
 
 %%
@@ -664,7 +665,7 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 5000;
+SimulationSettings.simulationTime = 2000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = true;
 

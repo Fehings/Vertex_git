@@ -627,6 +627,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 1:100:19472;
 RecordingSettings.maxRecTime = 5000;
 RecordingSettings.sampleRate = 5000;
+RecordingSettings.weights_arr = [1:1000:16000];
 %RecordingSettings.I_syn = 1:2:5000;
 
 RecordingSettings.weights_preN_IDs = 1:1:100;
@@ -640,7 +641,7 @@ RecordingSettings.weights_preN_IDs = 1:1:100;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 50;
+SimulationSettings.simulationTime = 300;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
