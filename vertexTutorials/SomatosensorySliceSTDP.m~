@@ -20,7 +20,6 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr = [1217, 715, 525, 0];
-
 %%
 %Calculating neuron proportions. 
 
@@ -618,7 +617,7 @@ end
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '/Users/a6028564/Documents/MATLAB/Vertex_Results/somatosensory_slice_STDP/stim4mvDC';
+RecordingSettings.saveDir = '~/VERTEX_somatosensory_slice_Oscillations/';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1000, 300, 0:100:1200);
 RecordingSettings.meaXpositions = meaX;
@@ -630,12 +629,7 @@ RecordingSettings.maxRecTime = 5000;
 RecordingSettings.sampleRate = 5000;
 %RecordingSettings.I_syn = 1:2:5000;
 RecordingSettings.weights_preN_IDs = 1:1:100;
-RecordingSettings.weights_arr = 1:500:2000;
-
-
-
-
-
+RecordingSettings.weights_Arr
 %%
 %Simulation settings:
 %Keep max delay steps at 80, 
@@ -650,15 +644,10 @@ SimulationSettings.simulationTime = 50;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
-%% stimulation
-TissueParams.StimulationField = invitroSliceStim('catvisblend1.stl',10);
-TissueParams.StimulationOn = 0;
-TissueParams.StimulationOff = SimulationSettings.simulationTime;
 %These are flags used for simulating electric field or focussed ultrasound
 %stimulation of the slice, these are currently in development and not used
 %for this project. '
 
-%%
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...

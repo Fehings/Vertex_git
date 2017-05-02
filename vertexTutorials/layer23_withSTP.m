@@ -20,7 +20,8 @@ TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 [TissueParams.StimulationField, model] = invitroSliceStim('farapartlectrodesbig.stl',50000); % slicecutoutsmallnew%TissueParams.StimulationField = {p,t,u};
-
+TissueParams.StimulationOn = 10;
+TissueParams.StimulationOff = 15;
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
 % use the neuron models described in (Tomsett et al. 2014) for layer 2/3
