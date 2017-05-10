@@ -42,7 +42,7 @@ else
 end
 % set field inputs
 
-stdp = false;
+stdp = true;
 SynMod1 = SynModel{1};
 for iPostGroup = 1:length(SynMod1(:,1))
     for iSpkSynGroup = 1:length(SynMod1(iPostGroup,:))
@@ -51,7 +51,7 @@ for iPostGroup = 1:length(SynMod1(:,1))
         end
     end
 end
-
+clear SynMod1;
 
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
@@ -413,6 +413,7 @@ spmd
                         
                          postGroup = neuronInGroup(allSpike(iSpk));
                          iSpkSynGroup = synMap{postGroup}(iPreGroup);
+                         
                         if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp')
                             % if the spiking neuron is on this lab 
                             % then it is our responsibility to update its

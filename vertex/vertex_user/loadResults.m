@@ -311,13 +311,13 @@ for iSaves = 1:numSaves
                         weights_recording{preID}(weights_syn_count(preID):weights_syn_count(preID)+ size(weightsRec{preID},2)-1,sampleCount+1:sampleCount+size(weightsRec{preID}, 1)) = ...
                             weightsRec{preID}';
                         postNIDs{preID}(weights_syn_count(preID):weights_syn_count(preID)+size(weightsRec{preID},2)-1) = synapseIDs{preID};
-                        weights_syn_count(preID) = weights_syn_count(preID) + size(weightsRec{preID},2);
-                        
+                        weights_syn_count(preID) = weights_syn_count(preID) + size(weightsRec{preID},2);                        
                     end
                 end
-            
+                
         else
             weightsRec = RecordingVars.weightsRecording;
+            synapseIDs = RecordingVars.synapsepostIDs;
             for preID = 1:length(weightsRec)
                 weights_recording{preID}(sampleCount+1:sampleCount+size(weightsRec{preID}, 1),:) = ...
                     weightsRec{preID};

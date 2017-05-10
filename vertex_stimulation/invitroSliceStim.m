@@ -16,7 +16,7 @@ importGeometry(model,geometryloc);
 % pdegplot(model,'FaceLabels', 'on')
 
 %figure(1)
-pdegplot(model,'FaceLabels', 'on')
+pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
 
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
@@ -55,6 +55,10 @@ elseif isequal(geometryloc, 'layer4stim.stl')
   applyBoundaryCondition(model,'face',3:17,'g',0.0,'q',0.0);
     applyBoundaryCondition(model,'face',[3,4,16,17,18],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1,2,14,15,19],'h',1.0,'r',-stimstrength);
+elseif isequal(geometryloc, '6layermodelstiml4placedin.stl')
+  applyBoundaryCondition(model,'face',5:12,'g',0.0,'q',0.0);
+    applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
 else % boundaries for the default point stimulation geometry
     applyBoundaryCondition(model,'face',[2,11,12,1,16],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[4,14,3,13,15],'h',1.0,'r',-stimstrength);

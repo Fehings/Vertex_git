@@ -101,11 +101,11 @@ for simStep = 1:simulationSteps
   updateNeurons(NeuronModel{1}, InputModel, NParams, [], pars.timeStep);
   
      v_m(:, :, simStep) = NeuronModel{1}.v;
-     I(:, :, simStep) = InputModel{1}.I_input;
+     %I(:, :, simStep) = InputModel{1}.I_input;
  
 
-%  spikes_rec(:,simStep) = NeuronModel{1}.spikes;
-  if mod(simStep * pars.timeStep, 0.001) == 0
-   disp(num2str(simStep * pars.timeStep));
-  end
+  spikes_rec(:,simStep) = NeuronModel{1}.spikes;
+%   if mod(simStep * pars.timeStep, 0.001) == 0
+%    disp(num2str(simStep * pars.timeStep));
+%   end
 end

@@ -115,7 +115,7 @@ NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
-
+NeuronParams(1).labels = {'somaID', 'basalID', 'apicalID'};
 NeuronParams(1).Input(1).inputType = 'i_ou';
 NeuronParams(1).Input(1).meanInput = 290;
 NeuronParams(1).Input(1).stdInput =40;
@@ -192,7 +192,7 @@ NeuronParams(2).R_A = 1000;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).minCompartmentSize = 2;
-NeuronParams(2).labelNames = ['dendritesID'];
+NeuronParams(2).labelNames = {'dendritesID'};
 
 NeuronParams(2).Input(1).inputType = 'i_ou';
 NeuronParams(2).Input(1).meanInput = 160;
@@ -212,7 +212,7 @@ INScaler = 0.8;
 % 
 % 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
-ConnectionParams(1).synapseType{1} = 'g_stdp';
+ConnectionParams(1).synapseType{1} = 'g_exp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
  ConnectionParams(1).weights{1} = 0.05;
@@ -248,7 +248,7 @@ ConnectionParams(1).E_reversal{2} = -0;
 % 
 % %GABA_B synapses
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
-ConnectionParams(2).synapseType{1} = 'g_stdp';
+ConnectionParams(2).synapseType{1} = 'g_exp';
 ConnectionParams(2).targetCompartments{1} = [NeuronParams(1).somaID];
 ConnectionParams(2).weights{1} = 0.1;
 ConnectionParams(2).tau{1} = 3;
@@ -259,7 +259,7 @@ ConnectionParams(2).wmin{1} = 0;
 ConnectionParams(2).wmax{1} = 100;
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 600;
-ConnectionParams(2).synapseType{2} = 'g_stdp';
+ConnectionParams(2).synapseType{2} = 'g_exp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(2).weights{2} = 0.1;
 ConnectionParams(2).tau{2} = 6;
@@ -310,7 +310,7 @@ RecordingSettings.sampleRate = 5000;
 SimulationSettings.maxDelaySteps = 80;
 SimulationSettings.simulationTime = 150;
 SimulationSettings.timeStep = 0.025;
-SimulationSettings.parallelSim =true;
+SimulationSettings.parallelSim =false;
 
 
 %% Generate the network

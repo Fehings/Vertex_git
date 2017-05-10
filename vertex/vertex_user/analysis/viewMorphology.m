@@ -12,7 +12,7 @@ function [figureHandle] = viewMorphology(NP)
 %   % group 6, we do:
 %   viewMorphology(NeuronParams(6));
 
-%figureHandle = figure();
+figureHandle = figure();
 hold on;
 
 for iComp = 1:NP.numCompartments
