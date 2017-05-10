@@ -7,5 +7,5 @@ TP.numLayers = 5;
 TP.numGroups = 15;
 TP.tissueConductivity = 0.3;
 TP.numStrips = 44;
-TP.maxZOverlap = [0 -25];
+TP.maxZOverlap = [-1 -25];
 

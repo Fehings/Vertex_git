@@ -618,7 +618,7 @@ end
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '/Users/a6028564/Documents/MATLAB/Vertex_Results/somatosensory_slice_STDP/stim4mvDC';
+RecordingSettings.saveDir = '/Users/a6028564/Documents/MATLAB/Vertex_Results/somatosensory_slice_STDP/dc40mvstimstdp_cathodal';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1000, 300, 0:100:1200);
 RecordingSettings.meaXpositions = meaX;
@@ -648,12 +648,12 @@ RecordingSettings.weights_arr = 1:500:2000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 300;
+SimulationSettings.simulationTime = 100;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
 %% stimulation
-TissueParams.StimulationField = invitroSliceStim('catvisblend1.stl',10);
+TissueParams.StimulationField = invitroSliceStim('catvisblend1.stl',40);
 TissueParams.StimulationOn = 0;
 TissueParams.StimulationOff = SimulationSettings.simulationTime;
 %These are flags used for simulating electric field or focussed ultrasound
@@ -672,7 +672,6 @@ runSimulation(params, connections, electrodes);
 
 %%
 %The results of the simulation can be loaded from file.
-RecordingSettings.saveDir = '~/VERTEX_somatosensory_slice_Oscillations/';
 
 Results = loadResults(RecordingSettings.saveDir);
 

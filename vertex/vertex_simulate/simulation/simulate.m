@@ -147,9 +147,7 @@ for simStep = 1:simulationSteps
     end
 
   for iGroup = 1:TP.numGroups
-      
-        
-        
+          
           
     [NeuronModel, SynModel, InModel] = ...
       groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup);

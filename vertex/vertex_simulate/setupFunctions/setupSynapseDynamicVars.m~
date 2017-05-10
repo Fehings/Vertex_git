@@ -13,8 +13,8 @@ for iPost = 1:TP.numGroups
           if iscell(CP(iPre).(params{iP}))
               model = [model, num2str(CP(iPre).(params{iP}){iPost})];
           else
-              CP(iPre).(params{iP}) = num2cell(CP(iPre).(params{iP}));
-              model = [model, num2str(CP(iPre).(params{iP}){iPost})];
+              num2cell(
+              model = [model, num2str(CP(iPre).(params{iP}))];
           end
       end
       postSynDetails{iPre} = model;
