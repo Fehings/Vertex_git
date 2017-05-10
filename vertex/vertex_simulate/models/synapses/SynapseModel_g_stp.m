@@ -43,6 +43,8 @@ classdef SynapseModel_g_stp < SynapseModel
       SM.F = ones(number_in_pre, 1);
       SM.D = ones(number_in_pre, 1);
       
+      size(SM.F)
+      
       %for each connection group an event buffer stores the spike accumulation at
       %each compartment for each time step of each post synaptic neuron. 
       SM.g_expEventBuffer = zeros(number_in_post, numComparts, maxDelaySteps);
@@ -79,6 +81,8 @@ classdef SynapseModel_g_stp < SynapseModel
       SM.g_exp = SM.g_exp + dt .* kg;
       SM.F = SM.F + ((1 - SM.F)./SM.tF).*dt;
       SM.D = SM.D + ((1 - SM.D)./SM.tD).*dt;
+      %size(SM.F)
+      
     end
 
     function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd)
@@ -90,22 +94,13 @@ classdef SynapseModel_g_stp < SynapseModel
         %preInd, an index then made relative to each synapse group by
         %subtracting the presynaptic group boundary.
         %update the facilitation variable by adding the facilitation rate
-        if preInd == 0
-            SM.g_expEventBuffer(synIndeces) = ...
-                SM.g_expEventBuffer(synIndeces) + ((weightsToAdd));
-        else
-            try
-                SM.F(preInd) = SM.facilitation + SM.F(preInd);
-                SM.D(preInd) = SM.depression * SM.D(preInd);
-                SM.g_expEventBuffer(synIndeces) = ...
-                    SM.g_expEventBuffer(synIndeces) + ((weightsToAdd) .*(SM.F(preInd) * SM.D(preInd)));
-                
-            catch ME
-                disp(preInd)
-                size(SM.F)
-                rethrow(ME)
-            end
-        end
+
+        SM.F(preInd) = SM.facilitation + SM.F(preInd);
+        SM.D(preInd) = SM.depression * SM.D(preInd);
+        SM.g_expEventBuffer(synIndeces) = ...
+            SM.g_expEventBuffer(synIndeces) + ((weightsToAdd) .*(SM.F(preInd) * SM.D(preInd)));
+       
+        
         %Add the weights multiplied by the plasticity variables to the
         %spike accumulator at the postsynaptic neuron (and compartment and
         %time) determined by synIndeces.

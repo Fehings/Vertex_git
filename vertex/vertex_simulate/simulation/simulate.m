@@ -68,7 +68,7 @@ end
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
     
-    posttoprearr = reverseSynArr(synArr);
+    revSynArr = reverseSynArr(synArr);
     
     disp('Map calculated');
 end
@@ -284,10 +284,8 @@ for simStep = 1:simulationSteps
                 %post synaptic neurons in this synapse group. 
                 %passing weights and group relative ids of post synaptic neurons.
                 processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
-                postneurons = synArr{allSpike(iSpk),1}(inGroup);
-                
-                wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),postneurons -...
-                    TP.groupBoundaryIDArr(neuronInGroup(postneurons(1))) );
+                relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';                
+                wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs);
             end
           end
         end
@@ -300,18 +298,21 @@ for simStep = 1:simulationSteps
       
       if stdp
           %get all neurons presynaptic to the spiking neuron
-          presynaptic = posttoprearr{allSpike(iSpk),1};
-          postsynapticlocation = posttoprearr{allSpike(iSpk),2};
+          presynaptic = revSynArr{allSpike(iSpk),1};
+          postsynapticlocation = revSynArr{allSpike(iSpk),2};
           preInGroup = neuronInGroup(presynaptic);
           %for each group get neurons presynaptic to the firing neuron
           for iPreGroup = 1:TP.numGroups
               inGroup = preInGroup == iPreGroup;
               if sum(inGroup ~= 0)
                   
-                  if isa(SynModel{iSpkSynGroup,iPreGroup}, 'SynapseModel_g_stdp')
+                  postGroup = neuronInGroup(allSpike(iSpk));
+                  iSpkSynGroup = synMap{postGroup}(iPreGroup);
+
+                  if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp')
                       
                       relativeind = allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
-                      processAsPostSynSpike(SynModel{iSpkSynGroup, iPreGroup},relativeind);
+                      processAsPostSynSpike(SynModel{postGroup,iSpkSynGroup},relativeind);
                       %if the synapses from the preSynaptic group to the
                       %spiking group have stdp on them
 
@@ -328,7 +329,7 @@ for simStep = 1:simulationSteps
                       for synInd = 1:length(presyningroup)
                             wMat(synInd) = wArr{presyningroup(synInd)}(postsynlocingroup(synInd));
                       end
-                      wMat = updateweightsaspostsynspike(SynModel{iSpkSynGroup,iPreGroup},...
+                      wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
                                wMat, presyningroup...
                               -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
                           

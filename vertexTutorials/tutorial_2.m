@@ -261,7 +261,7 @@ RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim = true;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by

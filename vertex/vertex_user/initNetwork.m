@@ -76,6 +76,10 @@ else
       end
 end
 
+if ~isfield(SS,'onTopsy')
+    SS.onTopsy = 0;
+end
+
 % Convert Maps to structs if necessary
 if isNewMatlab()
   TP = vertexMapToStruct(TP);
@@ -91,6 +95,9 @@ NP = checkNeuronStruct(NP);
 CP = checkConnectivityStruct(CP);
 RS = checkRecordingStruct(RS);
 SS = checkSimulationStruct(SS);
+
+
+
 adjustedcompartments = false;
 for iGroup = 1:length(NP)
     if isfield(NP(iGroup), 'minCompartmentSize')

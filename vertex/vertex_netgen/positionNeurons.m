@@ -21,7 +21,7 @@ Z = TissueProperties.Z;
 somaPositionMat = zeros(N, 4);
 somaPositionMat(:,4) = 1:N;
 
-for iGroup = 1:numGroups;
+for iGroup = 1:numGroups
 maxZOverlap = TissueProperties.maxZOverlap;
   % List of all neuron IDs in this group
   groupInd = ...

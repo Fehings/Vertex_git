@@ -25,6 +25,7 @@ for iPreGroup = 1:TP.numGroups
     %  ones(size(TP.somaPositionMat(inGroup, 1), 1), TP.numLayers);
         end
   end
+  iPreGroup
   preC = cell2mat(CP(iPreGroup).numConnectionsToAllFromOne')';
   for iLayer = 1:TP.numLayers
     numSynapses(inGroup, iLayer, :) = ...
