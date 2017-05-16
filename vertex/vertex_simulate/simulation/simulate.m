@@ -139,12 +139,16 @@ for simStep = 1:simulationSteps
             RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr,SS);
         end
     end
-    if recordWeightsArr
-        rec_time = ismember(simStep, RS.weights_arr);
-        if rec_time
-            RecVar.WeightArrRec(rec_times) = wArr;
-        end
+if recordWeightsArr
+    
+    if iterator.weightsArrcount <= length(RS.weights_arr) && simStep == RS.weights_arr(iterator.weightsArrcount)
+        disp('recording weights')
+        disp(['simstep: ' num2str(simStep)]);
+        disp(['rectime: ' num2str(RS.weights_arr(iterator.weightsArrcount))]);
+        RecVar.WeightArrRec{iterator.weightsArrcount} = wArr;
+        iterator.weightsArrcount = iterator.weightsArrcount+1;
     end
+end
 
   for iGroup = 1:TP.numGroups
           

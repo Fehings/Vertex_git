@@ -269,7 +269,7 @@ ConnectionParams(3).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(3).synapseType{1} = 'g_stdp'; %using plasticity on these synapses so the connection can change weight
 ConnectionParams(3).targetCompartments{1} = {'basalID', ...
                                              'apicalID'};
-ConnectionParams(3).weights{1} = 1;
+ConnectionParams(3).weights{1} = 5;
 ConnectionParams(3).tau{1} = 2;
 % include a few additional parameters for the stdp to work:
 ConnectionParams(3).rate{1} = 0.01;

@@ -21,5 +21,14 @@ classdef NeuronModel_passive < NeuronModel
       spikes = NM.spikes;
     end
     
+    function NM = assignSpikes(NM,spikes)
+        NM.spikes = spikes;
+    % as passive neurons can't spike on their own, this method allows
+    % spikes to be assigned to them, intended particularly for use in the
+    % multiregional simulations where dummy passive neurons work as
+    % conduits for the spikes that should be passed from another external
+    % population. 'spikes' should be a logical vector the length of the
+    % number of passive dummy neurons in the current region.
+    end
   end % methods
 end % classdef

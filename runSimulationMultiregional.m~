@@ -23,10 +23,10 @@ ROI_N = length(pS);
 % Get the directory to save files to (and create it if necessary)
 outputDirectory = pS{1}.RecordingSettings.saveDir; %the saveDir should be the same for each region.
 if ~strcmpi(outputDirectory(end), '/')
-  outputDirectory = [outputDirectory '/'];
+    outputDirectory = [outputDirectory '/'];
 end
 if exist(outputDirectory, 'dir') ~= 7
-  mkdir(outputDirectory);
+    mkdir(outputDirectory);
 end
 
 numSaves = 1;
@@ -102,7 +102,7 @@ for rn=1:ROI_N %loop for region number
     
     % Initialise the recording variables
     [pS{rn}.RecordingSettings, RecVar{rn}, lineSourceModCell{rn}] = ...
-        setupRecordingVars(pS{rn}.TissueParams, pS{rn}.NeuronParams, pS{rn}.SimulationSettings, pS{rn}.RecordingSettings, NeuronIDMap{rn}, electrodeStacked{rn}, weightArr{rn},synapsesArrSim);
+        setupRecordingVars(pS{rn}.TissueParams, pS{rn}.NeuronParams, pS{rn}.SimulationSettings, pS{rn}.RecordingSettings, NeuronIDMap{rn}, electrodeStacked{rn}, weightArr{rn},synapsesArrSim{rn});
     
     %% Setting the stimulation field v_ext for each neuron compartment
     %Get_V_ext returns the extracellular potential specified by
@@ -151,7 +151,7 @@ for rn=1:ROI_N %loop for region number
         
     end
     
-   %% spike loading nad stdp
+    %% spike loading
     
     if isfield(pS{rn}.SimulationSettings,'spikeLoad')
         S{rn}.spikeLoad = pS{rn}.SimulationSettings.spikeLoad;
@@ -166,7 +166,7 @@ for rn=1:ROI_N %loop for region number
         end
         fName = sprintf('%sRecordings%d.mat', inputDirectory, numSaves);
         loadedSpikes = load(fName);
-        dataFieldName{rn} = fields(loadedSpikes);
+        iterator(rn).dataFieldName = fields(loadedSpikes);
     else
         loadedSpikes = [];
         
@@ -182,6 +182,8 @@ for rn=1:ROI_N %loop for region number
     neuronInGroup{rn} = ...
         createGroupsFromBoundaries(pS{rn}.TissueParams.groupBoundaryIDArr);
     
+    %% stdp
+    
     %disp(['max: ' num2str(max(StimParams.activation))]);
     iterator(rn).stdp = false;
     for iPostGroup = 1:length(SynapseModelArr{rn}(:,1))
@@ -191,19 +193,31 @@ for rn=1:ROI_N %loop for region number
             end
         end
     end
-    
     if iterator(rn).stdp
         disp('Using stdp, so calculating postsynaptic to presynaptic map');
         
-        posttoprearr{rn} = reverseSynArr(synapsesArrSim{rn});
-        
-        disp('Map calculated');
+        if pS{1}.SimulationSettings.parallelSim
+            spmd
+                posttoprearr = reverseSynArr(synapsesArrSim{rn});
+                disp('Map calculated');
+            end
+            revSynArr = posttoprearr{1};
+            for iLab = 1:length(posttoprearr)
+                currLabSynArr = posttoprearr{iLab};
+                revSynArr(~cellfun(@isempty,currLabSynArr(:,1)),1) = currLabSynArr(~cellfun(@isempty,currLabSynArr(:,1)),1);
+                revSynArr(~cellfun(@isempty,currLabSynArr(:,2)),2) = currLabSynArr(~cellfun(@isempty,currLabSynArr(:,2)),2);
+            end
+        else
+            revSynArr{rn} = reverseSynArr(synapsesArrSim{rn});
+            disp('Map calculated');
+        end
     else
-        posttoprearr{rn} = [];
+        revSynArr{rn} = [];
     end
     
     
-    % vars to keep track of where we are in recording buffers:
+    
+    %% vars to keep track of where we are in recording buffers:
     iterator(rn).recTimeCounter = 1;
     iterator(rn).sampleStepCounter = 1;
     iterator(rn).spikeRecCounter = 1;
@@ -212,9 +226,47 @@ for rn=1:ROI_N %loop for region number
     iterator(rn).loadedSpikes = loadedSpikes;
     iterator(rn).bufferLength = pS{rn}.SimulationSettings.maxDelaySteps;
     iterator(rn).nsaves = 0;
+    iterator(rn).weightsArrcount = 1;
+    
+    if isempty(regionConnect.dummyNeuronPops{rn})
+        dummyNeuronIDs{rn} = [];
+    else
+        dummyNeuronIDs{rn} = find(neuronInGroup{rn}==regionConnect.dummyNeuronPops{rn});
+    end
+    if isempty(regionConnect.exportingNeuronPops{rn})
+        exportingNeuronIDs{rn} =[];
+    else
+        exportingNeuronIDs{rn} = find(neuronInGroup{rn}==regionConnect.exportingNeuronPops{rn});
+    end
     
 end
 clear rn
+
+
+
+for rn= 1:ROI_N
+    for rr = find(regionConnect.map(rn,:)) % for all regions recieving connections from the current region
+        % check that the number of exporting neurons and dummy recieving regions
+        % are the same, and if they aren't, adjust accordingly.
+        if length(exportingNeuronIDs{rn})>length(dummyNeuronIDs{rr})
+            fprintf('Size mismatch between exporting neurons and dummy neurons for connection from region %s to region %d \n', rn, rr)
+            disp('More exporting neurons than dummy neurons, reducing the number of exporting neurons to fit the number of dummy neurons')
+            
+            exportingNeuronIDs{rn} = datasample(exportingNeuronIDs{rn},length(dummyNeuronIDs{rr}),'Replace',false);
+            
+        elseif length(exportingNeuronIDs{rn})<length(dummyNeuronIDs{rr})
+            fprintf('Size mismatch between exporting neurons and dummy neurons for connection from region %s to region %d \n', rn, rr)
+            disp('More dummy neurons than exporting neurons, reducing the number of dummy neurons passing signals to fit the number of exporting neurons')
+            
+            dummyNeuronIDs{rn} = datasample(dummyNeuronIDs{rn},length(exportingNeuronIDs{rn}),'Replace',false);
+            
+        end
+    end
+    pS{rn}.TissueParams.exportNeuronIDs = exportingNeuronIDs{rn};
+    pS{rn}.TissueParams.dummyNeuronIDs = dummyNeuronIDs{rn};
+end
+
+clear rn rr
 
 outputDirectory = pS{1}.RecordingSettings.saveDir;
 
@@ -223,6 +275,8 @@ timeStimStep = 1;
 
 
 simulationSteps = round(pS{1}.SimulationSettings.simulationTime / pS{1}.SimulationSettings.timeStep);
+
+
 
 
 
@@ -285,42 +339,86 @@ for simStep = 1:simulationSteps
         if pS{1}.SimulationSettings.parallelSim
             % IF IN PARALLEL MODE:
             
-            if isfield(pS{rgn}.TissueParams, 'StimulationField') && isa(pS{rgn}.TissueParams.StimulationField,'pde.TimeDependentResults')
-                simulateParallelMultiregion(pS{rgn}.TissueParams, pS{rgn}.NeuronParams, pS{rgn}.SimulationSettings, pS{rgn}.RecordingSettings, NeuronIDMap{rgn}, NeuronModelArr{rgn}, ...
-                    SynapseModelArr{rgn}, InputModelArr{rgn}, RecVar{rgn}, lineSourceModCell{rgn}, ...
-                    synapsesArrSim{rgn}, weightArr{rgn}, synMapCell{rgn},paraStimParam{rgn});
-            else
-                simulateParallelMultiregion(pS{rgn}.TissueParams, pS{rgn}.NeuronParams, pS{rgn}.SimulationSettings, pS{rgn}.RecordingSettings, NeuronIDMap{rgn}, NeuronModelArr{rgn}, ...
-                    SynapseModelArr{rgn}, InputModelArr{rgn}, RecordingVars{rgn}, lineSourceModCell{rgn}, ...
-                    synapsesArrSim, weightArr, synMapCell);
+            simulateParallelMultiregion(pS{rgn}.TissueParams, pS{rgn}.NeuronParams, pS{rgn}.SimulationSettings, pS{rgn}.RecordingSettings, NeuronIDMap{rgn}, NeuronModelArr{rgn}, ...
+                SynapseModelArr{rgn}, InputModelArr{rgn}, RecVar{rgn}, lineSourceModCell{rgn}, ...
+                synapsesArrSim{rgn}, weightArr{rgn}, synMapCell{rgn}, iterator(rgn), simStep, S{rgn}, revSynArr{rgn}, neuronInGroup{rgn});
+            
+            if sum(regionConnect.map(rgn,:)>0) %check if the current region has an outbound connection and any spikes to send
+                %update the spikes by putting these into the recieving region.
+                nlab=pS{rgn}.SimulationSettings.neuronInLab;
+                neuronIDs=1:length(nlab);
+                exportingNeuronSpikes = 0; % initialise exporting neuron spikes
+                for lb = 1:length(NeuronModelArr{rgn}) % for each lab
+                    NMA=NeuronModelArr{rgn}{lb}; % cloning the current region and lab neuron model to a placeholder so it can be accessed and edited
+                    IDsinLab=neuronIDs(nlab==lb);
+                    exportingNeuronSpikes=[exportingNeuronSpikes;NMA{regionConnect.exportingNeuronPops{rgn}}.spikes(ismember(IDsinLab,exportingNeuronIDs{rgn}))]; % find spikes from neurons which can export to the other region
+                    %NB: the order of spikes here will be muddled up, but
+                    %should be the same each time at least. The dummy
+                    %neurons don't need an exact correspondence to the
+                    %exporting neurons, but it should be a consistent
+                    %correspondance.
+                end
+                clear lb
+                for rr = find(regionConnect.map(rgn,:)) % for all regions recieving connections from the current region
+                    nlab_rr=pS{rr}.SimulationSettings.neuronInLab;
+                    neuronIDs=1:length(nlab_rr);
+                    for lb=1:length(
+                        NMA_rr = NeuronModelArr{rr}{lb}; % cloning the connected region and lab neuron model to a placeholder so it can be accessed and edited
+                        IDsinLab=neuronIDs(nlab_rr==lb);
+                        numDummyNeuronsInLab=sum(ismember(dummyNeuronIDs{rr},IDsinLab));
+                        if lb==1
+                            assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes(1:numDummyNeuronsInLab));
+                            NeuronModelArr{rr}{lb}=NMA_rr;
+                            labDummyCount=numDummyNeuronsInLab;
+                        else                     
+                            assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes(labDummyCount:labDummyCount+numDummyNeuronsInLab));
+                            labDummyCount=labDummyCount+numDummyNeuronsInLab;
+                            NeuronModelArr{rr}{lb}=NMA_rr;
+                        end
+                        % NB: the assignSpikes method is unique to passive
+                        % neurons, so the dummy neurons must have passive
+                        % dynamics for this to work.
+                    end
+                    labDummyCount=0;
+                    clear lb 
+                end
             end
+               clear exportingNeuronSpikes 
             
             
         else
             % IF IN SERIAL MODE:
             
-            [NeuronModelArr{rgn}, SynapseModelArr{rgn}, InputModelArr{rgn}, iterator(rgn)] = simulateMultiregional(pS{rgn}.TissueParams, pS{rgn}.NeuronParams, pS{rgn}.SimulationSettings, pS{rgn}.RecordingSettings, S{rgn}, iterator(rgn), simStep, posttoprearr{rgn}, NeuronIDMap{rgn}, NeuronModelArr{rgn}, ...
+            [NeuronModelArr{rgn}, SynapseModelArr{rgn}, InputModelArr{rgn}, iterator(rgn),S{rgn},RecVar{rgn}] = simulateMultiregional(pS{rgn}.TissueParams, pS{rgn}.NeuronParams, pS{rgn}.SimulationSettings,...
+                pS{rgn}.RecordingSettings, S{rgn}, iterator(rgn), simStep, revSynArr{rgn}, NeuronIDMap{rgn}, NeuronModelArr{rgn}, ...
                 SynapseModelArr{rgn}, InputModelArr{rgn}, RecVar{rgn}, neuronInGroup{rgn}, lineSourceModCell{rgn}, ...
-                synapsesArrSim{rgn}, weightArr{rgn}, synMapCell{rgn});
+                synapsesArrSim{rgn}, weightArr{rgn}, synMapCell{rgn},rgn);
             
+            %now need to check for incoming spikes for the next region and
+            %feed these in by modifying the S parameter? To make this
+            %extendible I will need some kind of matrix to hold which
+            %regions connect to which other regions, and then only send
+            %spikes to the recieving regions.
+            
+            
+            %update rates for the connections from rgn to all other
+            %regions
+            if sum(regionConnect.map(rgn,:)>0) %check if the current region has an outbound connection and any spikes to send
+                %update the spikes by putting these into the recieving region.
+                exportingNeuronSpikes=NeuronModelArr{rgn}{regionConnect.exportingNeuronPops{rgn}}.spikes(exportingNeuronIDs{rgn}); % find spikes from neurons which can export to the other region
+                for rr = find(regionConnect.map(rgn,:)) % for all regions recieving connections from the current region
+                    
+                    assignSpikes(NeuronModelArr{rr}{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes);
+                    % NB: the assignSpikes method is unique to passive
+                    % neurons, so the dummy neurons must have passive
+                    % dynamics for this to work.
+                end
+            end
         end
-        %now need to check for incoming spikes for the next region and
-        %feed these in by modifying the S parameter? To make this
-        %extendible I will need some kind of matrix to hold which
-        %regions connect to which other regions, and then only send
-        %spikes to the recieving regions.
         
-        if sum(regionConnect(rgn,:)>1) %check if the current region has an outbound connection
-            %update the spikes by putting these into the incoming
-            %population and 
-        end
-        
-        %update rates for the connections from rgn to all other
-        %regions
         
         
     end
-    
 end
 
 

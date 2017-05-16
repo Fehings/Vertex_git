@@ -1,5 +1,5 @@
-function [NeuronModel, SynModel, InModel, iterator] = simulateMultiregional(TP, NP, SS, RS, S, iterator, simStep, posttoprearr, IDMap, ...
-    NeuronModel, SynModel, InModel, RecVar, neuronInGroup, lineSourceModCell, synArr, wArr, synMap)
+function [NeuronModel, SynModel, InModel, iterator,S,RecVar] = simulateMultiregional(TP, NP, SS, RS, S, iterator, simStep, revSynArr, IDMap, ...
+    NeuronModel, SynModel, InModel, RecVar, neuronInGroup, lineSourceModCell, synArr, wArr, synMap,rgn)
 
 recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
@@ -13,13 +13,17 @@ outputDirectory = RS.saveDir;
 %Update weight recording
 if recordWeights
     if simStep == RS.samplingSteps(sampleStepCounter)
-        RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr,SS);
+        RecVar = updateWeightsRecording(RecVar,iterator.recTimeCounter,wArr,SS);
     end
 end
 if recordWeightsArr
-    rec_time = ismember(simStep, RS.weights_arr);
-    if rec_time
-        RecVar.WeightArrRec(rec_times) = wArr;
+    
+    if iterator.weightsArrcount <= length(RS.weights_arr) && simStep == RS.weights_arr(iterator.weightsArrcount)
+        disp('recording weights')
+        disp(['simstep: ' num2str(simStep)]);
+        disp(['rectime: ' num2str(RS.weights_arr(iterator.weightsArrcount))]);
+        RecVar.WeightArrRec{iterator.weightsArrcount} = wArr;
+        iterator.weightsArrcount = iterator.weightsArrcount+1;
     end
 end
 
@@ -54,8 +58,6 @@ for iGroup = 1:TP.numGroups
         if recordFac_syn
             RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,iterator.recTimeCounter,synMap,TP);
         end
-        
-        
         
         
     end
@@ -175,49 +177,52 @@ if iterator.comCount == 1
         %if we are using stdp on any synapses, then update weights on
         %connections presynaptic to the spiking neuron.
         
-        if iterator.stdp
-            %get all neurons presynaptic to the spiking neuron
-            presynaptic = posttoprearr{allSpike(iSpk),1};
-            postsynapticlocation = posttoprearr{allSpike(iSpk),2};
-            preInGroup = neuronInGroup(presynaptic);
-            %for each group get neurons presynaptic to the firing neuron
-            for iPreGroup = 1:TP.numGroups
-                inGroup = preInGroup == iPreGroup;
-                if sum(inGroup ~= 0)
-                    
-                    if isa(SynModel{iSpkSynGroup,iPreGroup}, 'SynapseModel_g_stdp')
-                        
-                        relativeind = allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
-                        processAsPostSynSpike(SynModel{iSpkSynGroup, iPreGroup},relativeind);
-                        %if the synapses from the preSynaptic group to the
-                        %spiking group have stdp on them
-                        
-                        %The neurons presynatpic to the one just fired and in
-                        %the group currently being processed
-                        presyningroup = presynaptic(inGroup);
-                        
-                        
-                        
-                        postsynlocingroup = postsynapticlocation(inGroup);
-                        %weights for connections to neurons presynaptic to
-                        %the spiking neuron
-                        wMat = zeros(length(presyningroup),1);
-                        for synInd = 1:length(presyningroup)
+      
+      if iterator.stdp
+          %get all neurons presynaptic to the spiking neuron
+          presynaptic = revSynArr{allSpike(iSpk),1};
+          postsynapticlocation = revSynArr{allSpike(iSpk),2};
+          preInGroup = neuronInGroup(presynaptic);
+          %for each group get neurons presynaptic to the firing neuron
+          for iPreGroup = 1:TP.numGroups
+              inGroup = preInGroup == iPreGroup;
+              if sum(inGroup ~= 0)
+                  
+                  postGroup = neuronInGroup(allSpike(iSpk));
+                  iSpkSynGroup = synMap{postGroup}(iPreGroup);
+
+                  if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp')
+                      
+                      relativeind = allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
+                      processAsPostSynSpike(SynModel{postGroup,iSpkSynGroup},relativeind);
+                      %if the synapses from the preSynaptic group to the
+                      %spiking group have stdp on them
+
+                      %The neurons presynatpic to the one just fired and in
+                      %the group currently being processed
+                      presyningroup = presynaptic(inGroup);
+                      
+                      
+
+                      postsynlocingroup = postsynapticlocation(inGroup);
+                      %weights for connections to neurons presynaptic to
+                      %the spiking neuron
+                      wMat = zeros(length(presyningroup),1);
+                      for synInd = 1:length(presyningroup)
                             wMat(synInd) = wArr{presyningroup(synInd)}(postsynlocingroup(synInd));
-                        end
-                        wMat = updateweightsaspostsynspike(SynModel{iSpkSynGroup,iPreGroup},...
-                            wMat, presyningroup...
-                            -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
-                        
-                        for synInd = 1:length(presyningroup)
+                      end
+                      wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
+                               wMat, presyningroup...
+                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                          
+                      for synInd = 1:length(presyningroup)
                             wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
-                        end
-                        
-                    end
-                end
-            end
-        end
-        
+                      end
+
+                  end
+              end
+          end
+      end
         
     end
     
@@ -245,7 +250,7 @@ if simStep == RS.dataWriteSteps(iterator.numSaves)
         RecVar.spikeRecording{end} = {[], []};
     end
     iterator.recTimeCounter = 1;
-    fName = sprintf('%sRecordings%d.mat', outputDirectory, iterator.numSaves+iterator.nsaves);
+    fName = sprintf('%sRecordings%d_%d.mat', outputDirectory, iterator.numSaves+iterator.nsaves,rgn);
     save(fName, 'RecVar','-v7.3');
     
     % Only imcrement numSaves if this isn't the last scheduled save point.
@@ -257,7 +262,7 @@ if simStep == RS.dataWriteSteps(iterator.numSaves)
     
     if S.spikeLoad
         if iterator.numSaves <= length(RS.dataWriteSteps)
-            fName = sprintf('%sRecordings%d.mat',inputDirectory,iterator.numSaves+iterator.nsaves);
+            fName = sprintf('%sRecordings%d_%d.mat',inputDirectory,iterator.numSaves+iterator.nsaves,rgn);
             iterator.loadedSpikes = load(fName);
             dataFieldName = fields(iterator.loadedSpikes);
             disp(size(iterator.loadedSpikes.(dataFieldName{1}).spikeRecording));
