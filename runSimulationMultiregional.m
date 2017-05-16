@@ -365,7 +365,7 @@ for simStep = 1:simulationSteps
                     for lb=1:length(NeuronModelArr{rgn})
                         NMA_rr = NeuronModelArr{rr}{lb}; % cloning the connected region and lab neuron model to a placeholder so it can be accessed and edited
                         IDsinLab=neuronIDs(nlab_rr==lb);
-                        numDummyNeuronsInLab=sum(ismember(dummyNeuronIDs{rr},IDsinLab));
+                        numDummyNeuronsInLab=sum(ismember(dummyNeuronIDs{rr},IDsinLab))
                         if lb==1
                             assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes(1:numDummyNeuronsInLab));
                             NeuronModelArr{rr}{lb}=NMA_rr;
@@ -374,6 +374,7 @@ for simStep = 1:simulationSteps
                             assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes(labDummyCount:labDummyCount+numDummyNeuronsInLab));
                             labDummyCount=labDummyCount+numDummyNeuronsInLab;
                             NeuronModelArr{rr}{lb}=NMA_rr;
+                            size(NMA_rr{regionConnect.dummyNeuronPops{rr}}.spikes)
                         end
                         % NB: the assignSpikes method is unique to passive
                         % neurons, so the dummy neurons must have passive
