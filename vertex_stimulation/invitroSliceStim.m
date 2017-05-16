@@ -16,7 +16,8 @@ importGeometry(model,geometryloc);
 % pdegplot(model,'FaceLabels', 'on')
 
 %figure(1)
-pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
+%pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
+pdegplot(model,'FaceLabels', 'off','FaceAlpha',0.3)
 
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries

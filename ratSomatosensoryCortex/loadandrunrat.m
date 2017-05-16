@@ -1,0 +1,7 @@
+loadRatTissueandNeuronParams
+loadRatConnectionParams
+setUpBipolarElectrodeStimulation
+loadSimulationSettings
+tic;
+runRatSimulation
+toc

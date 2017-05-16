@@ -5,7 +5,7 @@ classdef SynapseModel_dummy < handle
   end
   
   methods
-    function SM = SynapseModel_dummy(~, ~, ~, ~, ~)
+    function SM = SynapseModel_dummy(~, ~, ~, ~, ~,~)
       SM.I_syn = 0;
     end
     

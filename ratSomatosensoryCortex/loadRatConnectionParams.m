@@ -1,4 +1,4 @@
-volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.52;
+volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.31;
 %volumemultiplier = 1;
 
 %%
@@ -23,16 +23,13 @@ for i = 1:length(ConnectivityNames)
     ConnectionParams(i).synapseReleaseDelay = 0.5;
     for j = 1:length(ConnectivityNames)
         try
-            disp(['Connecting..' num2str(i) ' - ' num2str(j)]);
             connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
-            disp([[ConnectivityNames{i} '_' ConnectivityNames{j}] ': ' num2str(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}))])
             ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
 
         catch %if there is no description in the file then set zero connections
-            disp(['No connections between: ' ConnectivityNames{i} '_' ConnectivityNames{j}]); 
             ConnectionParams(i).numConnectionsToAllFromOne{j} = [0,0,0,0,0];
             ConnectionParams(i).synapseType{j} = 'g_exp';
             ConnectionParams(i).weights{j} = 0;

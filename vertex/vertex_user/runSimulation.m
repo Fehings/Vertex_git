@@ -35,7 +35,15 @@ if isfield(SS,'spikeLoad')
     end
   end
 end
-
+SS.stdp = false;
+for c = 1:length(CP)
+    for cc = 1:length(CP(c).synapseType)
+        if strcmp('g_stdp', CP(c).synapseType{cc})
+            SS.stdp = true;
+        end
+    end
+end
+    
 
 %NP = NeuronParams;
 % Calculate passive neuron properties in correct units
@@ -67,13 +75,13 @@ end
 
 % Setup the neuron ID mapping for routing spikes, saving variables etc.
 [NeuronIDMap] = setupNeuronIDMapping(TP, SS);
-
+disp('Ndyn')
 % Initialise the neuron models
 [NeuronModelArr] = ...
   setupNeuronDynamicVars(TP, NP, SS, NeuronIDMap, loadedSpikeTimeCell);
-
+disp('syndyn')
 % Initialise the synapse models
-[SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS,connections);
+[SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS);
 
 % Initialise the input models (if any)
 if isfield(NP, 'Input')
@@ -82,11 +90,11 @@ else
   InputModelArr = [];
 end
 
-
+disp('synweightds')
 
 % Prepare synapses and synaptic weights. 
 [synapsesArrSim, weightArr] = prepareSynapsesAndWeights(TP,CP,SS,connections);
-
+disp('rec vars')
 % Initialise the recording variables
 [RS, RecordingVars, lineSourceModCell] = ...
   setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes, weightArr,synapsesArrSim);

@@ -1,4 +1,4 @@
-function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS,connections)
+function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS)
 
 paramsMapCell = cell(TP.numGroups,1);
 synMapCell = cell(TP.numGroups,1);
@@ -17,7 +17,6 @@ for iPost = 1:TP.numGroups
       postSynDetails{iPre} = '';
     end
   end
-  length(postSynDetails)
  % [~, paramsMap, synMap] = unique(postSynDetails);
  [~, paramsMap, synMap] = unique(postSynDetails);
   paramsMapCell{iPost, 1} = paramsMap;
@@ -52,6 +51,7 @@ end
 
 if SS.parallelSim
   spmd
+      numdoubles = 0;
     SynapseModelArr = cell(TP.numGroups, numSynTypes);
     numInGroup = diff(TP.groupBoundaryIDArr);
     for iPost = 1:TP.numGroups
@@ -59,16 +59,21 @@ if SS.parallelSim
         if ~isempty(constructorCell{iPost, iSynType})
           preID = paramsMapCell{iPost}(iSynType);
           constructor = constructorCell{iPost, iSynType};
-          disp(['creating synapse from group: ' num2str(preID) ' to ' num2str(iPost)]);
-        disp(['with ' num2str(numInGroup(preID)) ' presynaptic neurons']);
-          SynapseModelArr{iPost, iSynType} = ...
+          preID_N = find(synMapCell{iPost}==iSynType);
+%           disp(['creating syn from ' num2str(preID) ' to ' num2str(iPost) ' with ' ...
+%                 num2str(numInGroup(preID)) ' presynaptic variables and ' ...
+%                 num2str(TP.numInGroupInLab(iPost, labindex())) ' postsynaptic variables.']);
+%             numdoubles = numdoubles+TP.numInGroupInLab(iPost, labindex()) + numInGroup(preID);
+              SynapseModelArr{iPost, iSynType} = ...
             constructor(NP(iPost),CP(preID), ...
-            SS,iPost, TP.numInGroupInLab(iPost, labindex()),numInGroup(preID));
+            SS,iPost, TP.numInGroupInLab(iPost, labindex()),numInGroup(preID_N), preID_N);
         else
           SynapseModelArr{iPost, iSynType} = [];
         end
       end
     end
+    
+    disp(['number of doubles: ' num2str(numdoubles)]);
   end
 else
   numInGroup = diff(TP.groupBoundaryIDArr);
@@ -77,12 +82,11 @@ else
     for iSynType = 1:numSynTypes
       if ~isempty(constructorCell{iPost, iSynType})
         preID = paramsMapCell{iPost}(iSynType);
+        preID_N = find(synMapCell{iPost}==iSynType);
         constructor = constructorCell{iPost, iSynType};
-        disp(['creating synapse from group: ' num2str(preID) ' to ' num2str(iPost)]);
-        disp(['with ' num2str(numInGroup(preID)) ' presynaptic neurons']);
-        disp(['iSynType: ' num2str(iSynType)]);
+        
         SynapseModelArr{iPost, iSynType} = ...  
-          constructor(NP(iPost),CP(preID),SS,iPost,numInGroup(iPost),numInGroup(preID));
+          constructor(NP(iPost),CP(preID),SS,iPost,numInGroup(iPost),numInGroup(preID_N),preID_N);
       
       else
         SynapseModelArr{iPost, iSynType} = [];

@@ -6,14 +6,15 @@ function [ v_ext ] = get_V_ext(locations,field,t)
 % stationary results or time varying - or whether it is specified 
 % by a function (passed as a function handle string) or
 % whether it is specified as a gridded interpolant.
-v_ext = zeros(size(squeeze(locations(1,:,:))))';
+
+v_ext = zeros(size(squeeze(locations(1,:,:))));
 for iComp = 1:length(locations(1,:,1))
     if isa(field, 'pde.TimeDependentResults')
         v_ext(:,iComp) = interpolateSolution(field,squeeze(locations(:,iComp,:)),t);
     elseif isa(field, 'pde.StationaryResults')
         a = interpolateSolution(field,squeeze(locations(:,iComp,:)));
         v_ext(:,iComp) = a;
-    elseif isstring(field)
+    elseif ischar(field)
         funchand = str2func(field);
         v_ext(:,iComp) = feval(funchand,squeeze(locations(:,iComp,:)));
     elseif isa(field, 'griddedInterpolant')

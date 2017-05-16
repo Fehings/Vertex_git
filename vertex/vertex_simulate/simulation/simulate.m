@@ -56,14 +56,8 @@ timeStimStep = 1;
 
 % simulation loop
 %disp(['max: ' num2str(max(StimParams.activation))]);
-stdp = false;
-for iPostGroup = 1:length(SynModel(:,1))
-    for iSpkSynGroup = 1:length(SynModel(iPostGroup,:))
-        if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
-            stdp = true;
-        end
-    end
-end
+
+stdp = SS.stdp;
 
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
@@ -147,10 +141,7 @@ for simStep = 1:simulationSteps
     end
 
   for iGroup = 1:TP.numGroups
-      
-        
-        
-          
+
     [NeuronModel, SynModel, InModel] = ...
       groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup);
     
@@ -275,7 +266,7 @@ for simStep = 1:simulationSteps
                 
                 bufferIncomingSpikes( ...
                     SynModel{iPostGroup, iSpkSynGroup}, ...
-                    ind, wArr{allSpike(iSpk)}(inGroup),relative_preID);
+                    ind, wArr{allSpike(iSpk)}(inGroup),relative_preID,neuronInGroup(allSpike(iSpk)));
             else
                 bufferIncomingSpikes( ...
                     SynModel{iPostGroup, iSpkSynGroup}, ...
@@ -285,7 +276,7 @@ for simStep = 1:simulationSteps
                 %process spike as presynaptic spike, updating weights for
                 %post synaptic neurons in this synapse group. 
                 %passing weights and group relative ids of post synaptic neurons.
-                processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+                processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))),neuronInGroup(allSpike(iSpk)));
                 relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';                
                 wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs);
             end
@@ -333,7 +324,7 @@ for simStep = 1:simulationSteps
                       end
                       wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
                                wMat, presyningroup...
-                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))),neuronInGroup(presyningroup(synInd)) );
                           
                       for synInd = 1:length(presyningroup)
                             wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);

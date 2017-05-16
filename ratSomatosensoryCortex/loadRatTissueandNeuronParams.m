@@ -17,7 +17,7 @@ TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 2082;
 TissueParams.neuronDensity = 20000;
-TissueParams.neuronDensity = 103730;
+%TissueParams.neuronDensity = 103730;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
@@ -37,7 +37,6 @@ TissueParams.neuron_names = {'L23_PC','L23_NBC','L23_LBC','L23_SBC','L23_MC',...
 totalneurons1 = 18294;
 totalneurons = 0;
 for n = 1:length(TissueParams.neuron_names)
-    TissueParams.neuron_names{n}
     totalneurons = totalneurons + neuronnumbers.(TissueParams.neuron_names{n});
 end
 % 18294 neurons in 3 layers in volume of 0.29mm^2 
@@ -63,7 +62,6 @@ modpropL23MC = double(neuronnumbers.L23_MC)/totalneurons;
 %%
 %Setting Neuron parameters and shapes.
 
-disp(['modelpropL23PC: ' num2str(modpropL23PC)]);
 
 % Pyramidal cells in layer 23
 NeuronParams(1).somaLayer = 2; 
@@ -124,7 +122,6 @@ NeuronParams(1).trunkID = 2;
 NeuronParams(1).tuftID = 5;
 NeuronParams(1).labelnames = {'somaID', 'basalID', 'proximalID', 'distalID', 'obliqueID', 'apicalID',...
     'trunkID', 'tuftID'};
-disp(['modelpropL23NBC: ' num2str(modpropL23NBC)]);
 
 %Layer 23
 %Nest Basket Cell
@@ -180,17 +177,15 @@ NeuronParams(2).somaID = 1;
 NeuronParams(2).basalID = [3 4 5 6 7];
 NeuronParams(2).proximalID = [2 5];
 NeuronParams(2).distalID = [3 4 6 7];
-NeuronParams(2).labelnames = {'somaID','basalID', 'proximalID', 'distalID'};
+NeuronParams(2).labelNames = {'somaID','basalID', 'proximalID', 'distalID'};
 
 
 %Layer 23 
 %Large Basket Cell
-disp(['modelpropL23LBC: ' num2str(modpropL23LBC)]);
 NeuronParams(3) = NeuronParams(2);
 NeuronParams(3).modelProportion = modpropL23LBC;
 %Layer 23 
 %Small Basket Cell
-disp(['modelpropL23SBC: ' num2str(modpropL23SBC)]);
 NeuronParams(4) = NeuronParams(2);
 NeuronParams(4).modelProportion = modpropL23SBC;
 NeuronParams(4).numCompartments = 7;
@@ -234,7 +229,6 @@ NeuronParams(4).distalID = [3 4 6 7];
 
 %Layer 23
 %Martinotti Cell
-disp(['modelpropL23MC: ' num2str(modpropL23MC)]);
 NeuronParams(5) = NeuronParams(2);
 NeuronParams(5).V_t = -55;
 NeuronParams(5).v_cutoff = -50;
@@ -261,7 +255,6 @@ modpropL4SP = double(neuronnumbers.L4_SP)/totalneurons;
 %Layer4
 %Spiny Stellate
 
-disp(['modelpropL4SS: ' num2str(modpropL4SS)]);
 
 NeuronParams(6) = NeuronParams(2);% spiny stellates same morphology as basket
 
@@ -278,7 +271,6 @@ NeuronParams(6).v_reset = -70;
 %Layer 4
 %Star Pyramidal
 
-disp(['modelpropL4SP: ' num2str(modpropL4SP)]);
 
 NeuronParams(7) = NeuronParams(1);%use same morph as pyramidal cells
 NeuronParams(7).somaLayer = 3;     % but in layer 4
@@ -288,7 +280,6 @@ NeuronParams(7).modelProportion = modpropL4SP;
 %Layer 4
 %Pyramical Cell
 
-disp(['modelpropL4PC: ' num2str(modpropL4PC)]);
 
 NeuronParams(8) = NeuronParams(1);
 NeuronParams(8).somaLayer = 3;     % but in layer 4
@@ -342,7 +333,6 @@ NeuronParams(8).E_leak = -70;
 
 %Layer 4 
 %Nest Basket Cell
-disp(['modelpropL4NBC: ' num2str(modpropL4NBC)]);
 NeuronParams(9) = NeuronParams(2);
 NeuronParams(9).somaLayer = 3;     % but in layer 4
 NeuronParams(9).modelProportion = modpropL4NBC;
@@ -350,7 +340,6 @@ NeuronParams(9).modelProportion = modpropL4NBC;
 %Layer 4
 %Large Basket Cell
 
-disp(['modelpropL4LBC: ' num2str(modpropL4LBC)]);
 NeuronParams(10) = NeuronParams(2);
 NeuronParams(10).somaLayer = 3;     % but in layer 4
 NeuronParams(10).modelProportion = modpropL4LBC;
@@ -358,7 +347,6 @@ NeuronParams(10).modelProportion = modpropL4LBC;
 %Layer 4 
 %Small Basket Cell
 
-disp(['modelpropL4SBC: ' num2str(modpropL4SBC)]);
 
 NeuronParams(11) = NeuronParams(4);
 NeuronParams(11).somaLayer = 3;     % but in layer 4
@@ -367,7 +355,6 @@ NeuronParams(11).modelProportion = modpropL4SBC;
 
 %Layer 4
 %Martinotti Cell
-disp(['modelpropL4MC: ' num2str(modpropL4MC)]);
 NeuronParams(12) = NeuronParams(5);
 NeuronParams(12).somaLayer = 3;     % but in layer 4
 NeuronParams(12).modelProportion = modpropL4MC;
@@ -391,7 +378,6 @@ modpropL5MC = double(neuronnumbers.L5_MC)/totalneurons;
 
 %Layer 5
 %Thick tufted pyramidal cell 2
-disp(['modelpropL5TTPC2: ' num2str(modpropL5TTPC2)]);
 NeuronParams(13) = NeuronParams(1);
 NeuronParams(13).somaLayer = 4; % Pyramidal cells in layer 5
 NeuronParams(13).modelProportion = modpropL5TTPC2;
@@ -456,13 +442,12 @@ NeuronParams(13).apicalID = [4 5];
 NeuronParams(13).trunkID = 2;
 NeuronParams(13).tuftID = [6 7];
 
+
 %Layer 5 Thick tufted pyramidal 1
-disp(['modelpropL5TTPC1: ' num2str(modpropL5TTPC1)]);
 NeuronParams(14) = NeuronParams(13);
 NeuronParams(14).modelProportion = modpropL5TTPC1;
 
 %Layer 5 Untufted pyramidal cell
-disp(['modelpropL5UTPC: ' num2str(modpropL5UTPC)]);
 NeuronParams(15)=NeuronParams(13);
 NeuronParams(15).modelProportion = modpropL5UTPC;
 
@@ -525,7 +510,6 @@ NeuronParams(15).trunkID = 2;
 NeuronParams(15).tuftID = 6;
 
 %Layer 5 Slender tufted pyramidal cell
-disp(['modelpropL5STPC: ' num2str(modpropL5STPC)]);
 NeuronParams(16)=NeuronParams(13);
 NeuronParams(16).modelProportion = modpropL5STPC;
 NeuronParams(16).modelProportion = modpropL5TTPC2;
@@ -591,27 +575,23 @@ NeuronParams(16).trunkID = 2;
 NeuronParams(16).tuftID = [6 7];
 
 %Layer 5 Nest Basket Cell
-disp(['modelpropL5NBC: ' num2str(modpropL5NBC)]);
 NeuronParams(17)=NeuronParams(2);
 NeuronParams(17).somaLayer = 4;
 NeuronParams(17).modelProportion = modpropL5NBC;
 
 
 %Layer 5 Large Basket Cell
-disp(['modelpropL5LBC: ' num2str(modpropL5LBC)]);
 NeuronParams(18)=NeuronParams(2);
 NeuronParams(18).somaLayer = 4;
 NeuronParams(18).modelProportion = modpropL5LBC;
 
 %Layer 5 Small Basket Cell
-disp(['modelpropL5SBC: ' num2str(modpropL5SBC)]);
 NeuronParams(19)=NeuronParams(4);
 NeuronParams(19).somaLayer = 4;
 NeuronParams(19).modelProportion = modpropL5SBC;
 
 
 %Layer 5 Martinotti Cell
-disp(['modelpropL5MC: ' num2str(modpropL5MC)]);
 NeuronParams(20)=NeuronParams(5);
 NeuronParams(20).somaLayer = 4;
 NeuronParams(20).modelProportion = modpropL5MC;
@@ -690,7 +670,7 @@ NeuronParams(24).compartmentZPositionMat = ...
 NeuronParams(24).axisAligned = 'z';
 NeuronParams(24).C = 1.0*2.96;
 NeuronParams(24).R_M = 20000/2.96;
-NeuronParams(24).R_A = 600;
+NeuronParams(24).R_A = 150;
 NeuronParams(24).E_leak = -70;
 NeuronParams(24).somaID = 1;
 NeuronParams(24).basalID = [6 7 8];
@@ -775,26 +755,22 @@ NeuronParams(25).trunkID = 2;
 NeuronParams(25).tuftID = 13;
 
 %Layer 6 Nest Basket Cell
-disp(['modelpropL6NBC: ' num2str(modpropL6NBC)]);
 NeuronParams(26)=NeuronParams(2);
 NeuronParams(26).somaLayer = 5;
 NeuronParams(26).modelProportion = modpropL6NBC;
 
 
 %Layer 6 Large Basket Cell
-disp(['modelpropL6LBC: ' num2str(modpropL6LBC)]);
 NeuronParams(27)=NeuronParams(2);
 NeuronParams(27).somaLayer = 5;
 NeuronParams(27).modelProportion = modpropL6LBC;
 
 %Layer 6 Small Basket Cell
-disp(['modelpropL6SBC: ' num2str(modpropL6SBC)]);
 NeuronParams(28)=NeuronParams(4);
 NeuronParams(28).somaLayer = 5;
 NeuronParams(28).modelProportion = modpropL6SBC;
 
 %Layer 6 Martinotti Cell
-disp(['modelpropL6MC: ' num2str(modpropL6MC)]);
 NeuronParams(29)=NeuronParams(5);
 NeuronParams(29).somaLayer = 5;
 NeuronParams(29).modelProportion = modpropL6MC;
@@ -806,21 +782,21 @@ NeuronParams(29).modelProportion = modpropL6MC;
 
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput =230;
-NeuronParams(1).Input(1).stdInput = 50;
+NeuronParams(1).Input(1).meanInput =270;
+NeuronParams(1).Input(1).stdInput = 80;
 NeuronParams(1).Input(1).tau = 2;
 
 
 %For layer 2/3 Inhibitory cells
-for i = 2:4
+for i = 2:3
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).meanInput = 190;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 0.8;
 end
-for i = 5
+for i = 4:5
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 160;
+    NeuronParams(i).Input(1).meanInput = 180;
     NeuronParams(i).Input(1).stdInput = 40;
     NeuronParams(i).Input(1).tau = 0.8;
 end
@@ -834,26 +810,26 @@ for i = 6
 end
 for i = 7
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =230;
+    NeuronParams(i).Input(1).meanInput =250;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 2;
 end
 
 for i = 8
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =300;
+    NeuronParams(i).Input(1).meanInput =320;
     NeuronParams(i).Input(1).stdInput = 90;
     NeuronParams(i).Input(1).tau = 2;
 end
 
 % %For layer 4 Inhibitory cells
-for i = 9:11
+for i = 9:10
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).meanInput = 190;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 1;
 end
-for i = 12
+for i = 11:12
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 160;
     NeuronParams(i).Input(1).stdInput = 40;
@@ -880,13 +856,13 @@ for i = 16
 end
 
 % %For layer 5 Inhibitory cells
-for i = 17:19
+for i = 17:18
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).meanInput = 190;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 1;
 end
-for i = 20
+for i = 19:20
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 160;
     NeuronParams(i).Input(1).stdInput = 40;
@@ -919,13 +895,13 @@ for i = 25
 end
 
 % %For layer 6 Inhibitory cells
-for i = 26:28
+for i = 26:27
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 200;
+    NeuronParams(i).Input(1).meanInput = 180;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 1;
 end
-for i = 29
+for i = 28:29
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 160;
     NeuronParams(i).Input(1).stdInput = 40;
