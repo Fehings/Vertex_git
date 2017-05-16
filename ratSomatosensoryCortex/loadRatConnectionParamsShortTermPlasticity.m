@@ -30,8 +30,8 @@ for i = 1:length(ConnectivityNames)
             ConnectionParams(i).synapseType{j} = 'g_stp';
             ConnectionParams(i).tF{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
             ConnectionParams(i).tD{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){6});
-            ConnectionParams(i).facilitation{j} = 0.5+rand()/100;
-            ConnectionParams(i).depression{j} = 0.5+rand()/100;
+            ConnectionParams(i).facilitation{j} = 0.5;
+            ConnectionParams(i).depression{j} = 0.5;
         catch %if there is no description in the file then set zero connections
             ConnectionParams(i).numConnectionsToAllFromOne{j} = [0,0,0,0,0];
             ConnectionParams(i).synapseType{j} = 'g_exp';

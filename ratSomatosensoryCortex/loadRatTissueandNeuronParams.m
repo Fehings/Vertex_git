@@ -16,7 +16,7 @@ lThick = load('ratlayerthickness.mat');
 TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 2082;
-TissueParams.neuronDensity = 15000;
+TissueParams.neuronDensity = 20000;
 %TissueParams.neuronDensity = 103730;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
@@ -782,8 +782,8 @@ NeuronParams(29).modelProportion = modpropL6MC;
 
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput =270;
-NeuronParams(1).Input(1).stdInput = 80;
+NeuronParams(1).Input(1).meanInput =250;
+NeuronParams(1).Input(1).stdInput = 60;
 NeuronParams(1).Input(1).tau = 2;
 
 
@@ -796,7 +796,7 @@ for i = 2:3
 end
 for i = 4:5
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 180;
+    NeuronParams(i).Input(1).meanInput = 160;
     NeuronParams(i).Input(1).stdInput = 40;
     NeuronParams(i).Input(1).tau = 0.8;
 end
@@ -850,7 +850,7 @@ for i = 15
 end
 for i = 16
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 680;
+    NeuronParams(i).Input(1).meanInput = 580;
     NeuronParams(i).Input(1).stdInput =280;
     NeuronParams(i).Input(1).tau = 2;
 end
@@ -871,7 +871,7 @@ end
 % %For layer 6 Excitatory cells
 for i = 21:22
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 680;
+    NeuronParams(i).Input(1).meanInput = 580;
     NeuronParams(i).Input(1).stdInput = 280;
     NeuronParams(i).Input(1).tau = 2;
 end

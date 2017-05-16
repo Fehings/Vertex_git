@@ -89,7 +89,7 @@ classdef SynapseModel_g_stp < SynapseModel
       
     end
 
-    function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd)
+    function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd,groupID)
         
         
         %In stp the changes to facilitation and depression depend only on
@@ -98,7 +98,7 @@ classdef SynapseModel_g_stp < SynapseModel
         %preInd, an index then made relative to each synapse group by
         %subtracting the presynaptic group boundary.
         %update the facilitation variable by adding the facilitation rate
-
+        preInd = preInd + SM.preBoundaryArr(SM.preGroupIDs==groupID);
         SM.F(preInd) = SM.facilitation + SM.F(preInd);
         SM.D(preInd) = SM.depression * SM.D(preInd);
         SM.g_expEventBuffer(synIndeces) = ...

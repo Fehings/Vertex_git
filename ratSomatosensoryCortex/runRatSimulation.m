@@ -17,6 +17,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 1:100:1000;
 RecordingSettings.maxRecTime = 5000;
 RecordingSettings.sampleRate = 5000;
+RecordingSettings.weights_preN_IDs = 1:1:100;
 
 %Simulation settings:
 %Keep max delay steps at 80, 
@@ -27,9 +28,10 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 200;
+SimulationSettings.simulationTime = 100;
 SimulationSettings.timeStep = 0.025;
-SimulationSettings.parallelSim =false;
+SimulationSettings.parallelSim =true;
+
 %%
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...

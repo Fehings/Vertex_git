@@ -7,7 +7,7 @@ function [ v_ext ] = get_V_ext(locations,field,t)
 % by a function (passed as a function handle string) or
 % whether it is specified as a gridded interpolant.
 
-v_ext = zeros(size(squeeze(locations(1,:,:))));
+v_ext = zeros(size(squeeze(locations(1,:,:))))';
 for iComp = 1:length(locations(1,:,1))
     if isa(field, 'pde.TimeDependentResults')
         v_ext(:,iComp) = interpolateSolution(field,squeeze(locations(:,iComp,:)),t);

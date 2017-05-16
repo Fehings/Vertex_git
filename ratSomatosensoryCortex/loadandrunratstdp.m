@@ -1,4 +1,4 @@
-loadRatTissueandNeuronParams
+loadRatTissueandNeuronParamsSTDP
 loadRatConnectionParamsSTDP
 %setUpBipolarElectrodeStimulation
 loadSimulationSettings
