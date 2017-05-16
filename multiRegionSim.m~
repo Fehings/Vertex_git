@@ -1,0 +1,41 @@
+
+% set up the two identical layers by calling setup_multilayer and cloning
+% the parameters for the second region.
+
+setup_multiregion;
+
+RecordingSettings.saveDir = '~/VERTEX_results_multiregion';
+SimulationSettings.simulationTime = 500;
+SimulationSettings.timeStep = 0.03125;
+SimulationSettings.parallelSim = false;
+
+[params, connections, electrodes] = ...
+  initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
+              RecordingSettings, SimulationSettings);
+
+ % clone the slice to create an identical second region.\
+ % (if wanting two differing regions you will need to call a second version
+ % of setup_multilayer with mofified parameters and then initialise this
+ % new network with another call of initNetwork. As commented out below:
+ 
+ setup_multiregion_withinboundconnection;
+ %this should overwrite the parameters used to initialise the first region
+ %with the parameters for the new region, which can then be initialised:
+  [params2, connections2, electrodes2] = ...
+  initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
+              RecordingSettings, SimulationSettings);
+ 
+ 
+ % do I need to define the connectivity between the regions here? 
+ 
+ regionConnect = [1,1;
+ 
+ %stack the parameters for params, connections and electrodes into cell
+ %arrrays which can then be fed into runSimulationMultiregional
+ paramStacked = {params,params2};
+ connectionStacked = {connections,connections2};
+ electrodeStacked = {electrodes,electrodes2};
+ 
+runSimulationMultiregional(paramStacked,connectionStacked,electrodeStacked);
+
+Results = loadResultsMultiregions(RecordingSettings.saveDir);

@@ -20,6 +20,7 @@ TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 TissueParams.numLayers = 3;
 TissueParams.layerBoundaryArr = [1217, 715, 525, 0];
+
 %%
 %Calculating neuron proportions. 
 
@@ -617,7 +618,7 @@ end
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '~/VERTEX_somatosensory_slice_Oscillations/';
+RecordingSettings.saveDir = '/Users/a6028564/Documents/MATLAB/Vertex_Results/somatosensory_slice_STDP/dc40mvstimstdp_cathodal';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1000, 300, 0:100:1200);
 RecordingSettings.meaXpositions = meaX;
@@ -631,6 +632,12 @@ RecordingSettings.weights_arr = [1:1000:16000];
 %RecordingSettings.I_syn = 1:2:5000;
 
 RecordingSettings.weights_preN_IDs = 1:1:100;
+RecordingSettings.weights_arr = 1:500:2000;
+
+
+
+
+
 %%
 %Simulation settings:
 %Keep max delay steps at 80, 
@@ -641,14 +648,19 @@ RecordingSettings.weights_preN_IDs = 1:1:100;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 300;
+SimulationSettings.simulationTime = 100;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
 
+%% stimulation
+TissueParams.StimulationField = invitroSliceStim('catvisblend1.stl',40);
+TissueParams.StimulationOn = 0;
+TissueParams.StimulationOff = SimulationSettings.simulationTime;
 %These are flags used for simulating electric field or focussed ultrasound
 %stimulation of the slice, these are currently in development and not used
 %for this project. '
 
+%%
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
@@ -660,7 +672,6 @@ runSimulation(params, connections, electrodes);
 
 %%
 %The results of the simulation can be loaded from file.
-RecordingSettings.saveDir = '~/VERTEX_somatosensory_slice_Oscillations/';
 
 Results = loadResults(RecordingSettings.saveDir);
 

@@ -38,9 +38,12 @@ for i = bigcompartments
     end
     for label = NP.labelNames
          %if parent is member, so is child
-         
-        if max(ismember(NP.(label{1}), i))
-            NP.(label{1}) = [NP.(label{1}) length(NP.compartmentParentArr)]
+        if iscell(label)
+            if max(ismember(NP.(label{1}), i))
+                NP.(label{1}) = [NP.(label{1}) length(NP.compartmentParentArr)];
+            end
+        else
+            NP.(NP.labelNames) = [NP.(NP.labelNames) length(NP.compartmentParentArr)]; %catch the instance when 
         end
     end
 end

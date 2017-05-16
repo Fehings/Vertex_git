@@ -114,4 +114,14 @@ maxZOverlap = TissueProperties.maxZOverlap;
 end
 
 TissueProperties.somaPositionMat = somaPositionMat;
-TissueProperties.rotationAngleMat = 2 * pi * rand(N, 3);
+rotangleassign = rand(N,1)<0.5; % a logical vector to determine which neurons will be rotated between 0:pi/4 and which between 7*pi/4:2pi.
+TissueProperties.rotationAngleMat = (pi/4)*rand(N,3);
+TissueProperties.rotationAngleMat(rotangleassign,:)=TissueProperties.rotationAngleMat(rotangleassign,:)+(7*pi/4); 
+end
+%NB this rotates the neurons (used in LFP calculations and in calculating the electric field impact).
+%this was set as default to TissueProperties.rotationAngleMat = 2 * pi *
+%rand(N, 3); which gives a random orientation for each neuron from 0:2pi
+%radions. This is probably fine for interneurons, which are quite
+%symmetric, but for py cells this is going to impact the response to
+%electric fields and they should be more closely orientated, so this is
+%changes here to pi/4

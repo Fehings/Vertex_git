@@ -29,7 +29,7 @@ RecordingSettings.sampleRate = 5000;
 SimulationSettings.maxDelaySteps = 80;
 SimulationSettings.simulationTime = 200;
 SimulationSettings.timeStep = 0.025;
-SimulationSettings.parallelSim =true;
+SimulationSettings.parallelSim =false;
 %%
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...

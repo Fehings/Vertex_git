@@ -10,10 +10,15 @@ for iPost = 1:TP.numGroups
     if ~isempty(model)
       params = eval(['SynapseModel_' model '.getRequiredParams();']);
       for iP = 1:length(params)
-        model = [model, num2str(CP(iPre).(params{iP}){iPost})];
+          if iscell(CP(iPre).(params{iP}))
+              model = [model, num2str(CP(iPre).(params{iP}){iPost})];
+          else
+              CP(iPre).(params{iP}) = num2cell(CP(iPre).(params{iP}));
+              model = [model, num2str(CP(iPre).(params{iP}){iPost})];
+          end
       end
       postSynDetails{iPre} = model;
-    else
+   else
       postSynDetails{iPre} = '';
     end
   end
