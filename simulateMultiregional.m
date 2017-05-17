@@ -162,7 +162,7 @@ if iterator.comCount == 1
                         %process spike as presynaptic spike, updating weights for
                         %post synaptic neurons in this synapse group.
                         %passing weights and group relative ids of post synaptic neurons.
-                        processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+                        processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))),neuronInGroup(allSpike(iSpk)));
                         postneurons = synArr{allSpike(iSpk),1}(inGroup);
                         
                         wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),postneurons -...
@@ -213,7 +213,7 @@ if iterator.comCount == 1
                       end
                       wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
                                wMat, presyningroup...
-                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                              -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))),neuronInGroup(presyningroup(synInd)) );
                           
                       for synInd = 1:length(presyningroup)
                             wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
