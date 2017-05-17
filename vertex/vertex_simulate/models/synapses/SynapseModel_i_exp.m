@@ -12,7 +12,7 @@ classdef SynapseModel_i_exp < SynapseModel
   
   methods
     function SM = SynapseModel_i_exp(Neuron, CP, SimulationSettings, ...
-                                     postID, number,~)
+                                     postID, number,~,~)
       SM = SM@SynapseModel(Neuron, number);
       SM.tau = CP.tau{postID};
       SM.bufferCount = 1;

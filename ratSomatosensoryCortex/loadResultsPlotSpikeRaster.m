@@ -1,6 +1,6 @@
 %The results of the simulation can be loaded from file.
 RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice/';
-
+%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/fullmodel/VERTEX_rat_somatosensory_slice';
 Results = loadResults(RecordingSettings.saveDir);
 
 %make sure no figures are open to keep things tidy
@@ -13,6 +13,7 @@ rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
+
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 %%
@@ -25,6 +26,7 @@ pars.markers = {'^','x','x','x','s', ...
     'd','*','^','x','x','x','m',...
     '^','^','^','*','x','x','x','s'...
     '^','^','^','v','p','x','x','x','s'};
+pars.figureID =2;
 N = Results.params.TissueParams.N;
 pars.toPlot = 1:5:N;
 plotSomaPositions(Results.params.TissueParams,pars);

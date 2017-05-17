@@ -56,14 +56,8 @@ timeStimStep = 1;
 
 % simulation loop
 %disp(['max: ' num2str(max(StimParams.activation))]);
-stdp = false;
-for iPostGroup = 1:length(SynModel(:,1))
-    for iSpkSynGroup = 1:length(SynModel(iPostGroup,:))
-        if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
-            stdp = true;
-        end
-    end
-end
+
+stdp = SS.stdp;
 
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
@@ -146,6 +140,7 @@ for simStep = 1:simulationSteps
         end
     end
     
+    
     for iGroup = 1:TP.numGroups
         
         
@@ -184,7 +179,6 @@ for simStep = 1:simulationSteps
         end
         
     end % for each group
-    
     % increment the recording sample counter
     if simStep == RS.samplingSteps(sampleStepCounter)
         recTimeCounter = recTimeCounter + 1;
@@ -195,7 +189,6 @@ for simStep = 1:simulationSteps
             sampleStepCounter = sampleStepCounter + 1;
         end
     end
-    
     % communicate spikes
     if comCount == 1
         % update neuron event queues
@@ -225,9 +218,6 @@ for simStep = 1:simulationSteps
             end
         end
         
-        % Record the spikes
-        RecVar.spikeRecording{spikeRecCounter} = {allSpike, allSpikeTimes};
-        spikeRecCounter = spikeRecCounter + 1;
         
         % Go through spikes and insert events into relevant buffers
         % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
@@ -273,17 +263,18 @@ for simStep = 1:simulationSteps
                             
                             bufferIncomingSpikes( ...
                                 SynModel{iPostGroup, iSpkSynGroup}, ...
-                                ind, wArr{allSpike(iSpk)}(inGroup),relative_preID);
+                                ind, wArr{allSpike(iSpk)}(inGroup),relative_preID,neuronInGroup(allSpike(iSpk)));
                         else
                             bufferIncomingSpikes( ...
                                 SynModel{iPostGroup, iSpkSynGroup}, ...
                                 ind, wArr{allSpike(iSpk)}(inGroup));
                         end
+                        
                         if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
                             %process spike as presynaptic spike, updating weights for
                             %post synaptic neurons in this synapse group.
                             %passing weights and group relative ids of post synaptic neurons.
-                            processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))));
+                            processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))),neuronInGroup(allSpike(iSpk)));
                             relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
                             wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs);
                         end
@@ -331,7 +322,7 @@ for simStep = 1:simulationSteps
                             end
                             wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
                                 wMat, presyningroup...
-                                -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))) );
+                                -TP.groupBoundaryIDArr(neuronInGroup(presyningroup(synInd))),neuronInGroup(presyningroup(synInd)) );
                             
                             for synInd = 1:length(presyningroup)
                                 wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
@@ -360,6 +351,9 @@ for simStep = 1:simulationSteps
         comCount = comCount - 1;
     end
     
+    
+    
+    
     % write recorded variables to disk
     if mod(simStep * SS.timeStep, 5) == 0
         disp(num2str(simStep * SS.timeStep));
@@ -367,30 +361,42 @@ for simStep = 1:simulationSteps
     if simStep == RS.dataWriteSteps(numSaves)
         if spikeRecCounter-1 ~= length(RecVar.spikeRecording)
             RecVar.spikeRecording{end} = {[], []};
-        end
-        recTimeCounter = 1;
-        fName = sprintf('%sRecordings%d.mat', outputDirectory, numSaves+nsaves);
-        save(fName, 'RecVar','-v7.3');
-        
-        % Only imcrement numSaves if this isn't the last scheduled save point.
-        if numSaves < length(RS.dataWriteSteps)
-            numSaves = numSaves + 1;
+            
         end
         
-        spikeRecCounter = 1;
-        
-        if S.spikeLoad
-            if numSaves <= length(RS.dataWriteSteps)
-                fName = sprintf('%sRecordings%d.mat',inputDirectory,numSaves+nsaves);
-                loadedSpikes = load(fName);
-                dataFieldName = fields(loadedSpikes);
-                disp(size(loadedSpikes.(dataFieldName{1}).spikeRecording));
+        % write recorded variables to disk
+        if mod(simStep * SS.timeStep, 5) == 0
+            disp(num2str(simStep * SS.timeStep));
+        end
+        if simStep == RS.dataWriteSteps(numSaves)
+            if spikeRecCounter-1 ~= length(RecVar.spikeRecording)
+                RecVar.spikeRecording{end} = {[], []};
+            end
+            recTimeCounter = 1;
+            fName = sprintf('%sRecordings%d.mat', outputDirectory, numSaves+nsaves);
+            save(fName, 'RecVar','-v7.3');
+            
+            % Only imcrement numSaves if this isn't the last scheduled save point.
+            if numSaves < length(RS.dataWriteSteps)
+                numSaves = numSaves + 1;
+            end
+            
+            spikeRecCounter = 1;
+            
+            if S.spikeLoad
+                if numSaves <= length(RS.dataWriteSteps)
+                    fName = sprintf('%sRecordings%d.mat',inputDirectory,numSaves+nsaves);
+                    loadedSpikes = load(fName);
+                    dataFieldName = fields(loadedSpikes);
+                    disp(size(loadedSpikes.(dataFieldName{1}).spikeRecording));
+                end
             end
         end
     end
 end % end of simulation time loop
 if isfield(RS,'LFPoffline') && RS.LFPoffline
     save(outputDirectory, 'LineSourceConsts.mat', lineSourceModCell);
+end
 end
 %numSaves = numSaves - 1; % - no longer need this as numSaves is not
 %updated beyond the final scheduled save point

@@ -106,7 +106,6 @@ for iGroup = 1:length(NP)
         % electric field calculations remain valid. Caution should be advised
         % that this can drastically increase the size of the simulation.
         if ~isempty(NP(iGroup).minCompartmentSize)
-            disp(['Adjusting group ' num2str(iGroup)]);
             Nparams(iGroup) = adjustCompartments(NP(iGroup), TP);
            
         else

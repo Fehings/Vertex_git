@@ -15,7 +15,7 @@ classdef SynapseModel_g_exp < SynapseModel
   
   methods
     function SM = SynapseModel_g_exp(Neuron, CP, SimulationSettings, ...
-                                     postID, number,~)
+                                     postID, number,~,~)
       SM = SM@SynapseModel(Neuron, number);
       SM.E_reversal = CP.E_reversal{postID};
       SM.tau = CP.tau{postID};
