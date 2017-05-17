@@ -6,10 +6,10 @@ tutorial_3_params;
 
 RecordingSettings.saveDir = '~/VERTEX_results_multiregion';
 RecordingSettings.weights_arr = 1:5000:100000;
-SimulationSettings.simulationTime = 300;
+SimulationSettings.simulationTime = 50;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = true;
-SimulationSettings.poolSize =2;
+
 
 % optional - step current stimulation to neurons to see spread of activity
 % through region to region connections

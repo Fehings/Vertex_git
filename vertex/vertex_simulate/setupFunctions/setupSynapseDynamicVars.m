@@ -1,4 +1,4 @@
-function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS,connections)
+function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS)
 
 paramsMapCell = cell(TP.numGroups,1);
 synMapCell = cell(TP.numGroups,1);
@@ -22,7 +22,7 @@ for iPost = 1:TP.numGroups
       postSynDetails{iPre} = '';
     end
   end
-  length(postSynDetails)
+  %length(postSynDetails)
  % [~, paramsMap, synMap] = unique(postSynDetails);
  [~, paramsMap, synMap] = unique(postSynDetails);
   paramsMapCell{iPost, 1} = paramsMap;
