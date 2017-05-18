@@ -1,4 +1,4 @@
-volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.45;
+volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.7;
 %volumemultiplier = 1;
 
 %%
@@ -27,7 +27,7 @@ for i = 1:length(ConnectivityNames)
             ConnectionParams(i).synapseType{j} = 'g_stdp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
-            ConnectionParams(i).rate{j} = 0.01;
+            ConnectionParams(i).rate{j} = 0.0001;
             ConnectionParams(i).tPre{j} = 2;
             ConnectionParams(i).tPost{j} = 1;
             ConnectionParams(i).wmin{j} = 0;
