@@ -347,7 +347,7 @@ for simStep = 1:simulationSteps
                 %update the spikes by putting these into the recieving region.
                 nlab=pS{rgn}.SimulationSettings.neuronInLab;
                 neuronIDs=1:length(nlab);
-                exportingNeuronSpikes = 0; % initialise exporting neuron spikes
+                exportingNeuronSpikes = []; % initialise exporting neuron spikes
                 for lb = 1:length(NeuronModelArr{rgn}) % for each lab
                     NMA=NeuronModelArr{rgn}{lb}; % cloning the current region and lab neuron model to a placeholder so it can be accessed and edited
                     IDsinLab=neuronIDs(nlab==lb);
@@ -362,16 +362,16 @@ for simStep = 1:simulationSteps
                 for rr = find(regionConnect.map(rgn,:)) % for all regions recieving connections from the current region
                     nlab_rr=pS{rr}.SimulationSettings.neuronInLab;
                     neuronIDs=1:length(nlab_rr);
-                    for lb=1:length(
+                    for lb=1:length(NeuronModelArr{rgn})
                         NMA_rr = NeuronModelArr{rr}{lb}; % cloning the connected region and lab neuron model to a placeholder so it can be accessed and edited
                         IDsinLab=neuronIDs(nlab_rr==lb);
                         numDummyNeuronsInLab=sum(ismember(dummyNeuronIDs{rr},IDsinLab));
                         if lb==1
                             assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes(1:numDummyNeuronsInLab));
                             NeuronModelArr{rr}{lb}=NMA_rr;
-                            labDummyCount=numDummyNeuronsInLab;
+                            labDummyCount=labDummyCountnumDummyNeuronsInLab;
                         else                     
-                            assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes(labDummyCount:labDummyCount+numDummyNeuronsInLab));
+                            assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes(labDummyCount:labDummyCount+numDummyNeuronsInLab-1));
                             labDummyCount=labDummyCount+numDummyNeuronsInLab;
                             NeuronModelArr{rr}{lb}=NMA_rr;
                         end

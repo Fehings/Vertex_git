@@ -56,7 +56,6 @@ end
 
 if SS.parallelSim
   spmd
-      numdoubles = 0;
     SynapseModelArr = cell(TP.numGroups, numSynTypes);
     numInGroup = diff(TP.groupBoundaryIDArr);
     for iPost = 1:TP.numGroups

@@ -3,6 +3,12 @@ function [S] = addGroupSpikesToSpikeList(NeuronModel,IDMap,S,iGroup,comCount)
 groupSpikes = NeuronModel{iGroup}.spikes();
 numSpikes = sum(groupSpikes);
 if numSpikes ~= 0
+    if length(IDMap.cellIDToModelIDMap{iGroup}) ~= length(groupSpikes)
+        length(IDMap.cellIDToModelIDMap{iGroup})
+        length(groupSpikes)
+        iGroup
+        IDMap.cellIDToModelIDMap{iGroup}(logical(groupSpikes))
+    end
   S.spikes(S.spikeCount+1:S.spikeCount+numSpikes) = ...
     IDMap.cellIDToModelIDMap{iGroup}(logical(groupSpikes));
   S.spikeStep(S.spikeCount+1:S.spikeCount+numSpikes) = comCount;
