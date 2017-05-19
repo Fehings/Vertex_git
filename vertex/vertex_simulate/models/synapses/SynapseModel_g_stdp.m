@@ -166,6 +166,14 @@ classdef SynapseModel_g_stdp < SynapseModel
     function g = get.g_exp(SM)
       g = SM.g_exp;
     end
+    function set.postRate(SM,postRate)
+        SM.postRate=postRate;
+    end
+    
+    function set.preRate(SM,preRate)
+        SM.preRate=preRate;
+    end
+    
 
   end % methods
   

@@ -137,7 +137,7 @@ spmd
     timeStimStep = 1;
     
     for simStep = 1:simulationSteps
-        
+            
         %%%%
         % Stimulation code block
         % Turns stimulation dynamics on or off for neuron groups
