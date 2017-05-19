@@ -137,6 +137,19 @@ spmd
     timeStimStep = 1;
     
     for simStep = 1:simulationSteps
+        
+%     if simStep * SS.timeStep > 960000
+%         disp(simStep * SS.timeStep)
+%         for iGroup = 1:TP.numGroups
+%             for synGroup = 1:length(SynModel(iGroup,:))
+%                 if isa(SynModel{iGroup,synGroup}, 'SynapseModel_g_stdp')
+%                     SynModel{iGroup,synGroup}.postRate = 0;
+%                     SynModel{iGroup,synGroup}.preRate = 0;
+%                 end
+%             end
+%         end
+%     end
+                        
             
         %%%%
         % Stimulation code block
