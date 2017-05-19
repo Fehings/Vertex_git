@@ -782,8 +782,8 @@ NeuronParams(29).modelProportion = modpropL6MC;
 
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput =360;
-NeuronParams(1).Input(1).stdInput = 110;
+NeuronParams(1).Input(1).meanInput =320;
+NeuronParams(1).Input(1).stdInput = 90;
 NeuronParams(1).Input(1).tau = 2;
 
 
@@ -804,21 +804,21 @@ end
 
 for i = 6
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =205;
+    NeuronParams(i).Input(1).meanInput =255;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 7
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =250;
-    NeuronParams(i).Input(1).stdInput = 70;
+    NeuronParams(i).Input(1).meanInput =330;
+    NeuronParams(i).Input(1).stdInput = 110;
     NeuronParams(i).Input(1).tau = 2;
 end
 
 for i = 8
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =330;
-    NeuronParams(i).Input(1).stdInput = 110;
+    NeuronParams(i).Input(1).meanInput =380;
+    NeuronParams(i).Input(1).stdInput = 130;
     NeuronParams(i).Input(1).tau = 2;
 end
 
@@ -838,8 +838,8 @@ end
 % %For layer 5 Excitatory cells
 for i = 13:14
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 860;
-    NeuronParams(i).Input(1).stdInput = 260;
+    NeuronParams(i).Input(1).meanInput = 920;
+    NeuronParams(i).Input(1).stdInput = 300;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 15
