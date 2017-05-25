@@ -10,15 +10,15 @@ if isempty(postlocation)
     return
 end
 
-ax1 = subplot(3,1,1)
-plot(Results.v_m(preRecID,:))
-title('Presynaptic membrane potential')
-ax2 = subplot(3,1,2)
-plot(Results.v_m(postRecID,:))
-title('Postsynaptic membrane potential')
-ax3 = subplot(3,1,3)
+ax1 = subplot(3,1,1);
+plot(Results.v_m(preRecID,:));
+title('Presynaptic membrane potential');
+ax2 = subplot(3,1,2);
+plot(Results.v_m(postRecID,:));
+title('Postsynaptic membrane potential');
+ax3 = subplot(3,1,3);
 plot(Results.weights{preRecID}(postlocation,:));
 
-linkaxes([ax1,ax2,ax3],'x')
+linkaxes([ax1,ax2,ax3],'x');
 end
 

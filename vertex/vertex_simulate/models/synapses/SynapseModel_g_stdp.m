@@ -7,8 +7,7 @@ classdef SynapseModel_g_stdp < SynapseModel
   properties (SetAccess = protected)
 
     tPre
-    preRate
-    postRate
+
     tPost
     wmin
     wmax
@@ -22,6 +21,11 @@ classdef SynapseModel_g_stdp < SynapseModel
     bufferMax
     ApreBoundaryArr
     ApreGroupIDs
+  end
+  
+  properties (SetAccess=public)
+    preRate
+    postRate
   end
   
   methods
@@ -167,6 +171,8 @@ classdef SynapseModel_g_stdp < SynapseModel
     function g = get.g_exp(SM)
       g = SM.g_exp;
     end
+
+    
 
   end % methods
   

@@ -68,6 +68,7 @@ if stdp
 end
 
 for simStep = 1:simulationSteps
+
     if isfield(TP, 'StimulationField')
         current_time = simStep * SS.timeStep;
         

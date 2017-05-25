@@ -3,5 +3,5 @@ loadRatConnectionParamsSTDP
 %setUpBipolarElectrodeStimulation
 loadSimulationSettings
 tic;
-runRatSimulation
+runRatSimulationSTDP
 toc

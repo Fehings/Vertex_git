@@ -64,10 +64,6 @@ if SS.parallelSim
           preID = paramsMapCell{iPost}(iSynType);
           constructor = constructorCell{iPost, iSynType};
           preID_N = find(synMapCell{iPost}==iSynType);
-%           disp(['creating syn from ' num2str(preID) ' to ' num2str(iPost) ' with ' ...
-%                 num2str(numInGroup(preID)) ' presynaptic variables and ' ...
-%                 num2str(TP.numInGroupInLab(iPost, labindex())) ' postsynaptic variables.']);
-%             numdoubles = numdoubles+TP.numInGroupInLab(iPost, labindex()) + numInGroup(preID);
               SynapseModelArr{iPost, iSynType} = ...
             constructor(NP(iPost),CP(preID), ...
             SS,iPost, TP.numInGroupInLab(iPost, labindex()),numInGroup(preID_N), preID_N);
@@ -77,7 +73,6 @@ if SS.parallelSim
       end
     end
     
-   % disp(['number of doubles: ' num2str(numdoubles)]);
   end
 else
   numInGroup = diff(TP.groupBoundaryIDArr);
