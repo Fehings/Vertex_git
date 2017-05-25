@@ -63,8 +63,8 @@ end
 
 if isfield(pars, 'figureID')
   figureHandle = figure(pars.figureID);
-else
-  figureHandle = figure();
+% else
+%   figureHandle = figure();
 end
 hold on;
 

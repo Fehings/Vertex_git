@@ -1,6 +1,7 @@
 function [NeuronModel, SynModel, InModel] = ...
   groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup)
 
+
 % update synaptic conductances/currents according to buffers
 for iSyn = 1:size(SynModel, 2)
   if ~isempty(SynModel{iGroup, iSyn})

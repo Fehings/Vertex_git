@@ -2,11 +2,21 @@
 % set up the two identical layers by calling setup_multilayer and cloning
 % the parameters for the second region.
 
-tutorial_3_params;
+%tutorial_3_params;
+setup_multiregion_withinboundconnection;
 
 RecordingSettings.saveDir = '~/VERTEX_results_multiregion';
 RecordingSettings.weights_arr = 1:5000:100000;
-SimulationSettings.simulationTime = 50;
+RecordingSettings.LFP = true;
+[meaX, meaY, meaZ] = meshgrid(0:100:2000, 5:95:395, 195:-95:5);
+RecordingSettings.meaXpositions = meaX;
+RecordingSettings.meaYpositions = meaY;
+RecordingSettings.meaZpositions = meaZ;
+RecordingSettings.minDistToElectrodeTip = 20;
+RecordingSettings.v_m = 250:250:4750;
+RecordingSettings.maxRecTime = 100;
+RecordingSettings.sampleRate = 1000;
+SimulationSettings.simulationTime = 300;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = true;
 
@@ -18,6 +28,12 @@ SimulationSettings.parallelSim = true;
 % NeuronParams(1).Input(2).timeOn = 50;
 % NeuronParams(1).Input(2).timeOff = 100;
 % NeuronParams(1).Input(2).amplitude = 1000; 
+
+% 
+[TissueParams.StimulationField,model] = invitroSliceStim('tutorial2_3.stl',100);
+TissueParams.StimulationOn = 150;
+TissueParams.StimulationOff = 200;%SimulationSettings.simulationTime;
+
 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
@@ -46,7 +62,7 @@ SimulationSettings.parallelSim = true;
          
 %%  
  % defining the between region connectivity here:
- regionConnect.map = [0,1,1; 0,0,1; 0,0,0];%[0,1;0,0];
+ regionConnect.map = [0,400,400; 0,0,400; 0,0,0];%[0,1;0,0];
  % for example [1,1;0,1] there are two regions and there is only an
  % external connection from region 1 to region 2, it is not returned, and
  % while they do connect to themselves internally for the sake of incoming external
@@ -77,3 +93,15 @@ runSimulationMultiregional(paramStacked,connectionStacked,electrodeStacked,regio
 % need to use a Multiregions variant of loadResults to load the results for
 % every region in one structure. 
 Results = loadResultsMultiregions(RecordingSettings.saveDir);
+
+plotSpikeRaster(Results(1))
+title('Region 1')
+plotSpikeRaster(Results(2))
+title('Region 2')
+plotSpikeRaster(Results(3))
+title('Region 3')
+figure
+plot(mean(Results(1).LFP,2))
+hold on
+plot(mean(Results(2).LFP,2))
+plot(mean(Results(3).LFP,2))

@@ -31,6 +31,7 @@ classdef NeuronModel_adex < NeuronModel
       if min(NM.v > 50)
           disp('more than 50')
       end
+      
       kv = bsxfun(@rdivide, (-bsxfun(@times, N.g_l, (NM.v - N.E_leak)) -...
         I_syn - NM.I_ax + I_input), N.C_m);
       kv(:, 1) = kv(:, 1) + ...

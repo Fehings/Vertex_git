@@ -77,7 +77,7 @@ if SS.parallelSim
       end
     end
     
-    disp(['number of doubles: ' num2str(numdoubles)]);
+   % disp(['number of doubles: ' num2str(numdoubles)]);
   end
 else
   numInGroup = diff(TP.groupBoundaryIDArr);

@@ -35,6 +35,7 @@ if SS.parallelSim
       end % if loadedspiketimes
     end % for each group
   end % spmd
+  disp(NeuronModelArr)
 else
   NeuronModelArr = cell(TP.numGroups, 1);
   for iGroup = 1:TP.numGroups
@@ -53,4 +54,5 @@ else
         constructorCell{iGroup}(NP(iGroup), numInGroup(iGroup));
     end
   end
+
 end
