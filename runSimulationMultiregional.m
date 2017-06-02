@@ -471,14 +471,20 @@ for simStep = 1:simulationSteps
             %extendible I will need some kind of matrix to hold which
             %regions connect to which other regions, and then only send
             %spikes to the recieving regions.
-            if sum(regionConnect.map(rgn,:)>0) %check if the current region has an outbound connection and any spikes to send
+            if sum(regionConnect.map(rgn,:)>0) %check if the current region has an outbound connection
                 %update the spikes by putting these into the recieving region.
+               
                 currentSpikes=NeuronModelArr{rgn}{regionConnect.exportingNeuronPops{rgn}}.spikes(exportingNeuronIDs{rgn}); % find spikes from neurons which can export to the other region
+                
                 for rr = find(regionConnect.map(rgn,:)) % for all regions recieving connections from the current region
                     exportingNeuronSpikes{rgn}{rr}(:,delayCounter{rgn,rr})=currentSpikes;
                     
+                    if sum(sum(exportingNeuronSpikes{rgn}{rr}))>0 % don't bother assigning spikes unless there are some to assign!
+                      
                     assignSpikes(NeuronModelArr{rr}{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes{rgn}{rr}(:,delayAccess{rgn,rr}));
                     
+
+                    end
                     % NB: the assignSpikes method is unique to passive
                     % neurons, so the dummy neurons must have passive
                     % dynamics for this to work.

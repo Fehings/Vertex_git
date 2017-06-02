@@ -28,6 +28,17 @@ runSimulation(params, connections, electrodes);
 toc
 % Load the simulation results
 Results = loadResults(RS.saveDir);
+
+%% Plotting
+
+rasterParams.colors = {'k','m','b','g','r','y','c','k','m','b','g','r','y','c','k'};
+pars.colors = rasterParams.colors;
+pars.markers = {'^','o','x','+','s','d','p','^','o','x','+','s','v','^','p'};
+N = Results.params.TissueParams.N;
+pars.toPlot = 1:5:N;
+plotSomaPositions(Results.params.TissueParams,pars);
+
+
 %%
 % If you have experienced any problems when trying to run this code, please
 % email Richard Tomsett: r _at_ autap _dot_ se

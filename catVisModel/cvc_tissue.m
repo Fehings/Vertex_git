@@ -1,4 +1,4 @@
-TP.X = 600;%2200; % was 2000
+TP.X = 2200; % was 2000 %600
 TP.Y = 400; % the thickness of the slice
 TP.Z = 1240; % the total depth, taken from Beaulieu and Colonnier (1983)
 TP.neuronDensity = 38335; %50000;

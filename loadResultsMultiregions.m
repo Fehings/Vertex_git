@@ -320,6 +320,7 @@ for r = 1:length(params.parameterCell{1})
                     
                 else
                     weightsRec = RecordingVars.weightsRecording;
+                    synapseIDs = RecordingVars.synapsepostIDs;
                     for preID = 1:length(weightsRec)
                         weights_recording{preID}(sampleCount+1:sampleCount+size(weightsRec{preID}, 1),:) = ...
                             weightsRec{preID};
@@ -331,7 +332,7 @@ for r = 1:length(params.parameterCell{1})
             if weightsarr
                 if SS.parallelSim
                     if isfield(RecordingVars, 'WeightArrRec')
-                        weightRecArr = RecordingVars.WeightArrRec;
+                        %weightRecArr = RecordingVars.WeightArrRec;
                         for iRec = 1:length(RecordingVars.WeightArrRec)
                             
                             for iN = 1:length(RecordingVars.WeightArrRec{iRec})
@@ -351,7 +352,7 @@ for r = 1:length(params.parameterCell{1})
                     
                 else
                     if isfield(RecordingVars, 'WeightArrRec')
-                        weightRecArr = RecordingVars.WeightArrRec;
+                        weights_arr = RecordingVars.WeightArrRec;
                         synArr = RecordingVars.synArr;
                     end
                 end
@@ -434,7 +435,7 @@ for r = 1:length(params.parameterCell{1})
     Results(r).fac_syn = fac_syn_recording;
     Results(r).weights = weights_recording;
     Results(r).synapsePostIDs = postNIDs;
-    Results(r).weights_arr = weightsarr;
+    Results(r).weights_arr = weights_arr;
     Results(r).syn_arr = synArr;
     Results(r).params.TissueParams = TP;
     Results(r).params.NeuronParams = NP;

@@ -269,10 +269,10 @@ ConnectionParams(3).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(3).synapseType{1} = 'g_stdp'; %using plasticity on these synapses so the connection can change weight
 ConnectionParams(3).targetCompartments{1} = {'basalID', ...
                                              'apicalID'};
-ConnectionParams(3).weights{1} = 1;
+ConnectionParams(3).weights{1} = 0.5;
 ConnectionParams(3).tau{1} = 2;
 % include a few additional parameters for the stdp to work:
-ConnectionParams(3).rate{1} = 0.01;
+ConnectionParams(3).rate{1} = 2;%0.01;
 ConnectionParams(3).tPre{1} = 2;
 ConnectionParams(3).tPost{1} = 1+rand();
 ConnectionParams(3).wmin{1} = 0;
@@ -301,15 +301,3 @@ ConnectionParams(3).axonArborLimit = 5000;
 ConnectionParams(3).axonConductionSpeed = 0.3;
 ConnectionParams(3).synapseReleaseDelay = 0.5;
 
-%% 
-% recording settings
-
-RecordingSettings.LFP = true;
-[meaX, meaY, meaZ] = meshgrid(0:100:2000, 100, 195:-95:5);
-RecordingSettings.meaXpositions = meaX;
-RecordingSettings.meaYpositions = meaY;
-RecordingSettings.meaZpositions = meaZ;
-RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 250:250:4750;
-RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 1000;

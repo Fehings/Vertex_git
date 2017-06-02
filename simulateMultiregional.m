@@ -12,7 +12,7 @@ outputDirectory = RS.saveDir;
 
 %Update weight recording
 if recordWeights
-    if simStep == RS.samplingSteps(sampleStepCounter)
+    if simStep == RS.samplingSteps(iterator.sampleStepCounter)
         RecVar = updateWeightsRecording(RecVar,iterator.recTimeCounter,wArr,SS);
     end
 end
