@@ -1,4 +1,4 @@
-function figureHandle = plotSomaPositions(TP, pars)
+function [figureHandle, p] = plotSomaPositions(TP, pars)
 %PLOTSOMAPOSITIONS Plots the positions of the neurons' soma compartments.
 %   PLOTSOMAPOSITIONS(TP) creates a 3D plot of the soma positions of all
 %   neurons in the simulation. TP is the TissueParams structure in the
@@ -73,12 +73,16 @@ neuronInGroup = createGroupsFromBoundaries(TP.groupBoundaryIDArr);
 for iGroup=1:TP.numGroups
   inGroup = neuronInGroup == iGroup & ...
             ismember(TP.somaPositionMat(:,4), pars.toPlot);
-  plot3(TP.somaPositionMat(inGroup, 1), ...
+  p = plot3(TP.somaPositionMat(inGroup, 1), ...
         TP.somaPositionMat(inGroup, 2), ...
         TP.somaPositionMat(inGroup, 3), ...
         pars.markers{iGroup},'MarkerSize', 8, ...
         'MarkerEdgeColor', pars.colors{iGroup}, ...
         'MarkerFaceColor', pars.colors{iGroup});
+    if ~isempty(p)
+        disp(['setting opacity for group: ' num2str(iGroup)]);
+        p.Color(4)= pars.opacity;
+    end
 end
 
 hold off

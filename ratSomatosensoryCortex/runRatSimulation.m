@@ -7,17 +7,18 @@
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice/';
+RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice2/';
 RecordingSettings.LFP = true;
-[meaX, meaY, meaZ] = meshgrid(500, 200, 0:100:2000);
+[meaX, meaY, meaZ] = meshgrid(1500:-100:800, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:100:1000;
-RecordingSettings.maxRecTime = 5000;
+RecordingSettings.v_m = 1:50:49968;
+%RecordingSettings.v_m = 1:1000:172773;
+
+RecordingSettings.maxRecTime = 1000;
 RecordingSettings.sampleRate = 5000;
-%RecordingSettings.weights_preN_IDs = 1:1:100;
 
 %Simulation settings:
 %Keep max delay steps at 80, 
@@ -29,7 +30,7 @@ RecordingSettings.sampleRate = 5000;
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
 SimulationSettings.simulationTime = 1000;
-SimulationSettings.timeStep = 0.025;
+SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 
 %%

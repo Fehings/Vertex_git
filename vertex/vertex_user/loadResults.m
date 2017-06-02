@@ -329,9 +329,8 @@ for iSaves = 1:numSaves
    if weightsarr
        if SS.parallelSim
            if isfield(RecordingVars, 'WeightArrRec')
-               weightRecArr = RecordingVars.WeightArrRec;
                for iRec = 1:length(RecordingVars.WeightArrRec)
-
+                    
                    for iN = 1:length(RecordingVars.WeightArrRec{iRec})
                        weights_arr{iRec}{iN}(wcount{iRec}(iN)+1:wcount{iRec}(iN)+length(RecordingVars.WeightArrRec{iRec}{iN})) = RecordingVars.WeightArrRec{iRec}{iN};
                        wcount{iRec}(iN) = wcount{iRec}(iN) + length(RecordingVars.WeightArrRec{iRec}{iN});
@@ -349,7 +348,7 @@ for iSaves = 1:numSaves
            
         else
            if isfield(RecordingVars, 'WeightArrRec')
-               weightRecArr = RecordingVars.WeightArrRec;
+               weights_arr = RecordingVars.WeightArrRec;
                synArr = RecordingVars.synArr;
            end
         end
@@ -432,7 +431,7 @@ Results.I_syn = I_syn_recording;
 Results.fac_syn = fac_syn_recording;
 Results.weights = weights_recording;
 Results.synapsePostIDs = postNIDs;
-Results.weights_arr = weightsarr;
+Results.weights_arr = weights_arr;
 Results.syn_arr = synArr;
 Results.params.TissueParams = TP;
 Results.params.NeuronParams = NP;

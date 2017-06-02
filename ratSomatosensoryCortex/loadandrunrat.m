@@ -1,4 +1,4 @@
-loadRatTissueandNeuronParams
+loadRatTissueandNeuronParamsSTP
 loadRatConnectionParamsShortTermPlasticity
 setUpBipolarElectrodeStimulation
 loadSimulationSettings

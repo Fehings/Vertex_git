@@ -21,7 +21,7 @@ pdegplot(model,'FaceLabels', 'off','FaceAlpha',0.3)
 
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',1:6,'g',0.0,'q',0.0); % for the
+applyBoundaryCondition(model,'face',1:12,'g',0.0,'q',0.0); % for the
 
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
@@ -60,6 +60,10 @@ elseif isequal(geometryloc, '6layermodelstiml4placedin.stl')
   applyBoundaryCondition(model,'face',5:12,'g',0.0,'q',0.0);
     applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
+elseif isequal(geometryloc, '6layermodelstiml4placedin3000.stl')
+  applyBoundaryCondition(model,'face',5:12,'g',0.0,'q',0.0);
+    applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
 else % boundaries for the default point stimulation geometry
     applyBoundaryCondition(model,'face',[2,11,12,1,16],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[4,14,3,13,15],'h',1.0,'r',-stimstrength);
@@ -69,7 +73,7 @@ disp(model.IsTimeDependent)
 
 %conductivity of brain tissue is around 0.3 S m^-1 
 %As vertex is in units of micrometers c --> 0.3/1000000
-specifyCoefficients(model,'m',0, 'd',0, 'c',0.3/1000000, 'a',0, 'f',0);
+specifyCoefficients(model,'m',0, 'd',0, 'c',0.3, 'a',0, 'f',0);
 
 
 
@@ -79,8 +83,8 @@ disp(model.IsTimeDependent)
 result = solvepde(model);
 
 %  u = result.NodalSolution;
- figure(2)
- pdeplot3D(model,'ColorMapData', result.NodalSolution, 'FaceAlpha', 0.2);
+ %figure(2)
+% pdeplot3D(model,'ColorMapData', result.NodalSolution);
 
 
 

@@ -1,5 +1,5 @@
-volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.31;
-%volumemultiplier = 1;
+volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000));
+volumemultiplier =1.5;
 
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 
@@ -24,7 +24,7 @@ for i = 1:length(ConnectivityNames)
     for j = 1:length(ConnectivityNames)
         try
             connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
-            ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
+            ConnectionParams(i).numConnectionsToAllFromOne{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier;
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
             ConnectionParams(i).synapseType{j} = 'g_stp';
@@ -50,8 +50,8 @@ end
 
 %Proporties of synapses from layer 23
 %%Synapses Between Neuron groups
-ConnectionParams(1).axonArborRadius = [200,300, 200, 100,100];
-ConnectionParams(1).axonArborLimit = [400,600, 400, 200,200];
+ConnectionParams(1).axonArborRadius = [200,300, 200, 200,200];
+ConnectionParams(1).axonArborLimit = [400,600, 400, 300,300];
 
 %for each post synaptic neuron group
 for j = 1:29
@@ -91,7 +91,7 @@ ConnectionParams(1).targetCompartments{29} = {'distalID'};
 %For each layer 23 interneuron group
 for i = 2:5
     ConnectionParams(i).axonArborRadius = [50,150, 100, 100,100];
-    ConnectionParams(i).axonArborLimit = [100,300, 100, 100,100];
+    ConnectionParams(i).axonArborLimit = [100,300, 200, 200,200];
 end
 
 %For each layer 23 basket cell
@@ -197,8 +197,9 @@ ConnectionParams(6).targetCompartments{26} = {'distalID'};
 ConnectionParams(6).targetCompartments{27} = {'distalID'};
 ConnectionParams(6).targetCompartments{28} = {'distalID'};
 ConnectionParams(6).targetCompartments{29} = {'distalID'};
-ConnectionParams(6).axonArborRadius = [50,200, 300, 200, 200];
+ConnectionParams(6).axonArborRadius = [50,250, 450, 250, 250];
 ConnectionParams(6).axonArborLimit = [100,400, 600, 400, 400];
+
 for j = 1:29
     ConnectionParams(6).tau{j} = 2;
     ConnectionParams(6).E_reversal{j} = 0;
@@ -206,7 +207,7 @@ end
 
 %For excitatory neurons
 for i = 7:8
-    ConnectionParams(i).axonArborRadius = [50,200, 300, 200, 200];
+    ConnectionParams(i).axonArborRadius = [50,250, 450, 250, 250];
     ConnectionParams(i).axonArborLimit = [100,400, 600, 400, 400];
     ConnectionParams(i).targetCompartments = ConnectionParams(1).targetCompartments;
     for j = 1:29
@@ -240,8 +241,8 @@ end
 
 %For excitatory neurons
 for i = 13:16
-    ConnectionParams(i).axonArborRadius = [50,100, 200, 300,400];
-    ConnectionParams(i).axonArborLimit = [100,200, 400, 600,500];
+    ConnectionParams(i).axonArborRadius = [50,200, 300, 300,400];
+    ConnectionParams(i).axonArborLimit = [100,300, 400, 600,500];
     
     ConnectionParams(i).targetCompartments{1} = {'apicalID', 'tuftID'};
     ConnectionParams(i).targetCompartments{2} = {'distalID'};
@@ -273,7 +274,6 @@ for i = 13:16
     ConnectionParams(i).targetCompartments{28} = {'distalID'};
     ConnectionParams(i).targetCompartments{29} = {'distalID'};
     for j = 1:29
-        ConnectionParams(i).targetCompartments{j} = NeuronParams(j).dendritesID;
         ConnectionParams(i).tau{j} = 2;
         ConnectionParams(i).E_reversal{j} = 0;
     end
@@ -281,8 +281,8 @@ end
 
 %For inhibitory neurons
 for i = 17:20
-    ConnectionParams(i).axonArborRadius = [50,50,50, 50, 150];
-    ConnectionParams(i).axonArborLimit = [100,100, 100, 300,100];
+    ConnectionParams(i).axonArborRadius = [50,50,50, 150, 150];
+    ConnectionParams(i).axonArborLimit = [100,100, 100, 300,300];
 end
 
 %For basket cells
@@ -337,15 +337,14 @@ for i = 21:25
     ConnectionParams(i).axonArborRadius = [50, 100, 200, 300, 400];
     ConnectionParams(i).axonArborLimit = [100,200, 300,300, 600];
     for j = 1:29
-        ConnectionParams(i).targetCompartments{j} = NeuronParams(j).dendritesID;
         ConnectionParams(i).tau{j} = 2;
         ConnectionParams(i).E_reversal{j} = 0;
     end
 end
 
 for i = 26:29
-    ConnectionParams(i).axonArborRadius = [50,50, 50, 50,150];
-    ConnectionParams(i).axonArborLimit = [100,100, 100,100, 300];
+    ConnectionParams(i).axonArborRadius = [50,100, 100, 100,150];
+    ConnectionParams(i).axonArborLimit = [100,150, 150,200, 300];
 end
 
 for i = 26:28
@@ -361,3 +360,9 @@ for j = 1:29
     ConnectionParams(29).tau{j} = 6;
     ConnectionParams(29).E_reversal{j} = -70;
 end
+excitatory = [1 6 7 8 13 14 15 16 21 22 23 24 25];
+% for i = excitatory
+%     for j = 1:length(ConnectionParams(i).weights)
+%     	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*2;
+%     end
+% end

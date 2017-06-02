@@ -1,6 +1,7 @@
 %The results of the simulation can be loaded from file.
 RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice/';
-%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/fullmodel/VERTEX_rat_somatosensory_slice';
+%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/fullmodel/VERTEX_rat_somatosensory_slice2/';
+%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/test2/VERTEX_rat_somatosensory_slice';
 Results = loadResults(RecordingSettings.saveDir);
 
 %make sure no figures are open to keep things tidy

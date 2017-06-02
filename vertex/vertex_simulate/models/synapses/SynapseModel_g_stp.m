@@ -47,7 +47,6 @@ classdef SynapseModel_g_stp < SynapseModel
       SM.F = ones(sum(number_in_pre), 1);
       SM.D = ones(sum(number_in_pre), 1);
       
-      size(SM.F)
       
       %for each connection group an event buffer stores the spike accumulation at
       %each compartment for each time step of each post synaptic neuron. 

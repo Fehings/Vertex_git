@@ -14,11 +14,13 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:100:33312;
+%RecordingSettings.v_m = 1:100:33312;
 RecordingSettings.maxRecTime = 60000;
 RecordingSettings.sampleRate = 2500;
 %RecordingSettings.weights_preN_IDs = 1:1:100;
-RecordingSettings.weights_arr = 1:160000:1920000;
+RecordingSettings.weights_arr = 1:400:1600;
+RecordingSettings.v_m = 1:1:5000;
+RecordingSettings.weights_preN_IDs = 1:1:50;
 %Simulation settings:
 %Keep max delay steps at 80, 
 %Simulation time can be varied, it is in milliseconds, currently running
@@ -28,9 +30,9 @@ RecordingSettings.weights_arr = 1:160000:1920000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 60000;
+SimulationSettings.simulationTime = 50;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim =true;
+SimulationSettings.parallelSim =false;
 
 %%
 %This initialises the network and sets up other variables. 
@@ -39,4 +41,4 @@ SimulationSettings.parallelSim =true;
               RecordingSettings, SimulationSettings);
 
 %%
-runSimulation(params, connections, electrodes);
+wates = runSimulation(params, connections, electrodes);
