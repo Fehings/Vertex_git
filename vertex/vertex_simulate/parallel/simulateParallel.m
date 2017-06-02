@@ -215,6 +215,10 @@ spmd
                 disp('recording weights')
                 disp(['simstep: ' num2str(simStep)]);
                 disp(['rectime: ' num2str(RS.weights_arr(weightsArrcount))]);
+                if sum(synArr{3}==4669) >0 
+                    disp(['synapse strength between 3 and 4669  is: ' num2str(wArr{3}(synArr{3}==4669))]);
+                end
+                
                 RecVar.WeightArrRec{weightsArrcount} = wArr;
                 weightsArrcount = weightsArrcount+1;
             end

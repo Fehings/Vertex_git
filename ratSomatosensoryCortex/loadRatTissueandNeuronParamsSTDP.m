@@ -16,7 +16,7 @@ lThick = load('ratlayerthickness.mat');
 TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 2082;
-TissueParams.neuronDensity = 20000;
+TissueParams.neuronDensity = 15000;
 %TissueParams.neuronDensity = 103730;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
@@ -910,4 +910,7 @@ end
 
 %%
 
-
+for i = 1:29
+    NeuronParams(i).Input(1).meanInput = NeuronParams(i).Input(1).meanInput *1;
+    NeuronParams(i).Input(1).stdInput = NeuronParams(i).Input(1).stdInput * 1;
+end

@@ -33,6 +33,8 @@ for iPostGroup = 1:TP.numGroups
     for iLayer = 1:TP.numLayers
       %find the number of synapses made with the postsynaptic group in
       %the current layer
+
+      
       synapsesInLayer = iPreNumSyn(iLayer, iPostGroup);
       % only go further if this number is > 0
       if synapsesInLayer ~= 0

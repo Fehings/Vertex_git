@@ -50,7 +50,7 @@ recordI_syn = RecVar.recordI_syn;
 recordFac_syn = RecVar.recordFac_syn;
 recordWeights = RecVar.recordWeights;
 recordWeightsArr = RecVar.recordWeightsArr;
-
+weightsArrcount = 1;
 stimcount = 1;
 timeStimStep = 1;
 
@@ -135,9 +135,10 @@ for simStep = 1:simulationSteps
         end
     end
     if recordWeightsArr
-        rec_time = ismember(simStep,RS.weights_arr);
-        if rec_time
-            RecVar.weightsArrRec{rec_time} = wArr;
+        if weightsArrcount <= length(RS.weights_arr) && simStep == RS.weights_arr(weightsArrcount)
+            RecVar.WeightArrRec{weightsArrcount} = wArr;
+            weightsArrcount = weightsArrcount+1;
+
         end
     end
     

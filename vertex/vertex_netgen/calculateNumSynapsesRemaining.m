@@ -27,8 +27,11 @@ for iPreGroup = 1:TP.numGroups
   end
   
   preC = cell2mat(CP(iPreGroup).numConnectionsToAllFromOne')';
+  
   for iLayer = 1:TP.numLayers
     numSynapses(inGroup, iLayer, :) = ...
       bsxfun(@times, ratioRemaining(inGroup, iLayer), preC(iLayer, :));
   end
+  
+end
 end

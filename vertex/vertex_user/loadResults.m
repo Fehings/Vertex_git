@@ -329,9 +329,8 @@ for iSaves = 1:numSaves
    if weightsarr
        if SS.parallelSim
            if isfield(RecordingVars, 'WeightArrRec')
-               weightRecArr = RecordingVars.WeightArrRec;
                for iRec = 1:length(RecordingVars.WeightArrRec)
-
+                    
                    for iN = 1:length(RecordingVars.WeightArrRec{iRec})
                        weights_arr{iRec}{iN}(wcount{iRec}(iN)+1:wcount{iRec}(iN)+length(RecordingVars.WeightArrRec{iRec}{iN})) = RecordingVars.WeightArrRec{iRec}{iN};
                        wcount{iRec}(iN) = wcount{iRec}(iN) + length(RecordingVars.WeightArrRec{iRec}{iN});

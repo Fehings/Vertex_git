@@ -135,7 +135,7 @@ for iGroup = 1:length(NP)
                 locations = [locations NP(iTC).(location)];
             end
             CP(iGroup).targetCompartments{iTC} = unique(locations);
-        else
+        elseif ~isempty(CP(iGroup).targetCompartments{iTC})
             if adjustedcompartments
                 disp(['For Neuron group: ' num2str(iGroup) ' connecting to : ' num2str(iTC)] ); 
                 disp('You have specified synapse locations manually but selected to automatically adjust compartment numbers.')
