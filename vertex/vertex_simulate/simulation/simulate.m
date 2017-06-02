@@ -138,9 +138,9 @@ for simStep = 1:simulationSteps
         if weightsArrcount <= length(RS.weights_arr) && simStep == RS.weights_arr(weightsArrcount)
             RecVar.WeightArrRec{weightsArrcount} = wArr;
             weightsArrcount = weightsArrcount+1;
+
         end
     end
-    
     
     for iGroup = 1:TP.numGroups
         
@@ -149,7 +149,6 @@ for simStep = 1:simulationSteps
             groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup);
         
         S = addGroupSpikesToSpikeList(NeuronModel,IDMap,S,iGroup,comCount);
-        
         % store group-collected recorded variables for membrane potential:
         if simStep == RS.samplingSteps(sampleStepCounter)
             
@@ -219,7 +218,9 @@ for simStep = 1:simulationSteps
             end
         end
         
-        
+         % Record the spikes                                     
+        RecVar.spikeRecording{spikeRecCounter} = {allSpike, allSpikeTimes};
+        spikeRecCounter = spikeRecCounter + 1;  
         % Go through spikes and insert events into relevant buffers
         % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
         for iSpk = 1:length(allSpike)
@@ -364,36 +365,27 @@ for simStep = 1:simulationSteps
             RecVar.spikeRecording{end} = {[], []};
             
         end
-        
-        % write recorded variables to disk
-        if mod(simStep * SS.timeStep, 5) == 0
-            disp(num2str(simStep * SS.timeStep));
+        recTimeCounter = 1;
+        fName = sprintf('%sRecordings%d.mat', outputDirectory, numSaves+nsaves);
+        save(fName, 'RecVar','-v7.3');
+        disp('saving')
+        % Only imcrement numSaves if this isn't the last scheduled save point.
+        if numSaves < length(RS.dataWriteSteps)
+            numSaves = numSaves + 1;
         end
-        if simStep == RS.dataWriteSteps(numSaves)
-            if spikeRecCounter-1 ~= length(RecVar.spikeRecording)
-                RecVar.spikeRecording{end} = {[], []};
-            end
-            recTimeCounter = 1;
-            fName = sprintf('%sRecordings%d.mat', outputDirectory, numSaves+nsaves);
-            save(fName, 'RecVar','-v7.3');
-            
-            % Only imcrement numSaves if this isn't the last scheduled save point.
-            if numSaves < length(RS.dataWriteSteps)
-                numSaves = numSaves + 1;
-            end
-            
-            spikeRecCounter = 1;
-            
-            if S.spikeLoad
-                if numSaves <= length(RS.dataWriteSteps)
-                    fName = sprintf('%sRecordings%d.mat',inputDirectory,numSaves+nsaves);
-                    loadedSpikes = load(fName);
-                    dataFieldName = fields(loadedSpikes);
-                    disp(size(loadedSpikes.(dataFieldName{1}).spikeRecording));
-                end
+        
+        spikeRecCounter = 1;
+        
+        if S.spikeLoad
+            if numSaves <= length(RS.dataWriteSteps)
+                fName = sprintf('%sRecordings%d.mat',inputDirectory,numSaves+nsaves);
+                loadedSpikes = load(fName);
+                dataFieldName = fields(loadedSpikes);
+                disp(size(loadedSpikes.(dataFieldName{1}).spikeRecording));
             end
         end
     end
+    
 end % end of simulation time loop
 if isfield(RS,'LFPoffline') && RS.LFPoffline
     save(outputDirectory, 'LineSourceConsts.mat', lineSourceModCell);

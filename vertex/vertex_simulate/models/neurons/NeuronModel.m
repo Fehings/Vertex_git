@@ -14,6 +14,7 @@ classdef NeuronModel < handle
       NM.v = zeros(number, Neuron.numCompartments);
       NM.I_ax = zeros(number, Neuron.numCompartments);
       NM.treeChildren = length(Neuron.adjCompart);
+      
       if isfield(Neuron, 'v_ext')
         NM.v_ext = Neuron.v_ext;
       end
@@ -55,8 +56,8 @@ classdef NeuronModel < handle
                          (NM.v(:, N.adjCompart{iTree}(1, :)) - ...
                          NM.v(:, N.adjCompart{iTree}(2, :))));
       end
-%     disp('initial axial current')
-%     max(max(NM.I_ax))
+     %disp('initial axial current')
+     %max(max(NM.I_ax))
       
       if NM.incorporate_vext
           for iTree = 1:NM.treeChildren %3

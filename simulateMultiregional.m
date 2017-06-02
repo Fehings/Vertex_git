@@ -252,7 +252,7 @@ if simStep == RS.dataWriteSteps(iterator.numSaves)
     iterator.recTimeCounter = 1;
     fName = sprintf('%sRecordings%d_%d.mat', outputDirectory, iterator.numSaves+iterator.nsaves,rgn);
     save(fName, 'RecVar','-v7.3');
-    
+    disp('saving')
     % Only imcrement numSaves if this isn't the last scheduled save point.
     if iterator.numSaves < length(RS.dataWriteSteps)
         iterator.numSaves = iterator.numSaves + 1;

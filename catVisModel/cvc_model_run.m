@@ -1,10 +1,10 @@
 %% Neocortical slice model from Tomsett et al. 2014
 
 cvc_tissue;
-cvc_neurons;
-cvc_connectivity;
-%cvc_neurons_gamma;
-%cvc_connectivity_gamma_update;
+%cvc_neurons;
+%cvc_connectivity;
+cvc_neurons_gamma;
+cvc_connectivity_gamma_update;
 cvc_recording;
 cvc_simulation;
 cvc_field_stimulation;

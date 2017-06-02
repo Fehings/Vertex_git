@@ -86,6 +86,7 @@ classdef SynapseModel_g_stdp < SynapseModel
     function SM = updateSynapses(SM, NM, dt)
         
       % update synaptic currents
+      
       SM.I_syn = SM.g_exp .* (NM.v() - SM.E_reversal);
       
       % update synaptic conductances

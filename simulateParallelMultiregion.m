@@ -1,4 +1,4 @@
-function [NeuronModel, SynModel, InModel, numSaves] = ...
+function [NeuronModel, SynModel, InModel, S] = ...
     simulateParallelMultiregion(TP, NP, SS, RS, ...
     IDMap, NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, iterator, simStep, S, revSynArr, neuronInGroup)
 %Parallel version of simulate.
@@ -125,7 +125,8 @@ spmd
                         zeros(0, tIntSize)};
                 end
             else
-                tt = loadedSpikes.data.spikeRecording{spikeRecCounter};
+                S.spikeLoad
+                tt = loadedSpikes.data.spikeRecording{iterator.spikeRecCounter};
                 toKeep = ismember(tt{1}, S.spikeLoad);
                 tt{1} = tt{1}(toKeep);
                 tt{2} = tt{2}(toKeep);
@@ -336,7 +337,7 @@ spmd
         
         % write recorded variables to disk
         if simStep == RS.dataWriteSteps(iterator.numSaves)
-            if spikeRecCounter-1 ~= length(RecVar.spikeRecording)
+            if iterator.spikeRecCounter-1 ~= length(RecVar.spikeRecording)
                 RecVar.spikeRecording{end} = {[], []};
             end
             iterator.recTimeCounter = 1;
@@ -365,4 +366,5 @@ spmd
     end
     %numSaves = numSaves - 1; % - no longer need this as numSaves is not
     %updated beyond the final scheduled save point
+
 end % spmd
