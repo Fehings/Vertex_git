@@ -118,9 +118,6 @@ classdef SynapseModel_g_stdp < SynapseModel
         
         preInd = preInd + SM.ApreBoundaryArr(SM.ApreGroupIDs==groupID);
 
-        if length(SM.Apre) < max(preInd)
-            disp(SM.Apre)
-        end
         
         weightsArr = weightsArr +SM.Apre(preInd)';
         weightsArr(weightsArr<SM.wmin) = SM.wmin;

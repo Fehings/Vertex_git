@@ -1,20 +1,30 @@
 %The results of the simulation can be loaded from file.
-RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice/';
-%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/fullmodel/VERTEX_rat_somatosensory_slice2/';
-%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/test2/VERTEX_rat_somatosensory_slice';
+RecordingSettings.saveDir = '~/VERTEXResults/VERTEX_rat_somatosensory_slice2/';
+RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDP/';
+%RecordingSettings.saveDir = '~/VERTEXResults/VERTEX_rat_somatosensory_slice_0MG_Spontaneous3/';
+RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice_0MG_PP300ms/';
+
+%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/VERTEX_rat_somatosensory_slice_0MG_Spontaneous3/';
+%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/RATSOM_0MG/VERTEX_rat_somatosensory_slice_0MG5';
 Results = loadResults(RecordingSettings.saveDir);
 
 %make sure no figures are open to keep things tidy
 close all;
 rasterParams.colors = {'k','m','b','g','r','y','c','k','m','b','g','r','k','k','k','c','m','b','g','r','k','k','k','k','c','m','b','g','r'};
+rasterParams.colors = {'k','m','m','m','m','k','k','k','m','m','m','m','k','k','k','k','m','m','m','m','k','k','k','k','k','m','m','m','m'};
+
 %%
+rasterParams.colors = {'k','m','m','m','m','k','k','k','m','m','m','m','k','k','k','k','m','m','m','m','k','k','k','k','k','m','m','m','m'};
+
 %plot the slice simulation spike raster, each dot represents the time(on the x axis) at
 %which the neuron of a particular id (on the y axis) fired. 
 rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
+N = Results.params.TissueParams.N;
 
+rasterParams.neuronsToPlot = 1:N;
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 %%
@@ -28,6 +38,5 @@ pars.markers = {'^','x','x','x','s', ...
     '^','^','^','*','x','x','x','s'...
     '^','^','^','v','p','x','x','x','s'};
 pars.figureID =2;
-N = Results.params.TissueParams.N;
 pars.toPlot = 1:5:N;
 plotSomaPositions(Results.params.TissueParams,pars);

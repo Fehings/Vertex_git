@@ -159,7 +159,9 @@ spmd
             current_time = simStep * SS.timeStep; % Get current time in ms
             %if the current time is greater than the current stimulation
             %time start time then turn on.
+            
             if current_time > TP.StimulationOn(stimcount) && current_time < TP.StimulationOff(stimcount)
+                
                 for iGroup = 1:TP.numGroups
                     if  ~NeuronModel{iGroup}.incorporate_vext
                         stimulationOn(NeuronModel{iGroup});
@@ -188,16 +190,19 @@ spmd
                 end
                 % otherwise if time is greater than current of time turn
                 % off
-            elseif current_time > TP.StimulationOff(stimcount)
+           elseif current_time >= TP.StimulationOff(stimcount)
+               disp('Stimulation done')
                 for iGroup = 1:TP.numGroups
                     if  NeuronModel{iGroup}.incorporate_vext
                         stimulationOff(NeuronModel{iGroup});
                     end
                     % and move stimulation times index on if we have not
                     % reached the final stimulation time window
-                    if stimcount < length(TP.StimulationOn)
-                        stimcount = stimcount+1;
-                    end
+
+                end
+                if stimcount < length(TP.StimulationOn)
+                    
+                    stimcount = stimcount+1;
                 end
             end % if current time is between time on and off do nothing.
             
