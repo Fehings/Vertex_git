@@ -804,7 +804,7 @@ end
 
 for i = 6
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =200;
+    NeuronParams(i).Input(1).meanInput =180;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 2;
 end
@@ -897,7 +897,7 @@ end
 % %For layer 6 Inhibitory cells
 for i = 26:27
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 180;
+    NeuronParams(i).Input(1).meanInput = 200;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 1;
 end

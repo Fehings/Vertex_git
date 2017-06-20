@@ -1,5 +1,5 @@
 volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000));
-volumemultiplier =1.5;
+volumemultiplier =1.7;
 
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 
@@ -361,8 +361,20 @@ for j = 1:29
     ConnectionParams(29).E_reversal{j} = -70;
 end
 excitatory = [1 6 7 8 13 14 15 16 21 22 23 24 25];
-% for i = excitatory
-%     for j = 1:length(ConnectionParams(i).weights)
-%     	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*2;
-%     end
-% end
+inhibitory = [2 3 4 5 9 10 11 12 17 18 19 20 26 27 28 29];
+for i = excitatory
+    for j = excitatory
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
+        ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j};
+    end
+    for j = inhibitory
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
+        ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j};
+    end
+end
+for i = inhibitory
+    for j = 1:length(ConnectionParams(i).weights)
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
+        ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j};
+    end
+end

@@ -28,8 +28,8 @@ for i = 1:length(ConnectivityNames)
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
             ConnectionParams(i).rate{j} = 0.01;
-            ConnectionParams(i).tPre{j} = 2;
-            ConnectionParams(i).tPost{j} = 1;
+            ConnectionParams(i).tPre{j} = 5;
+            ConnectionParams(i).tPost{j} = 5;
             ConnectionParams(i).wmin{j} = 0;
             ConnectionParams(i).wmax{j} = 100;
         catch %if there is no description in the file then set zero connections

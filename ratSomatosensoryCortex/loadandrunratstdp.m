@@ -1,7 +1,0 @@
-loadRatTissueandNeuronParamsSTDP
-loadRatConnectionParamsSTDP
-%setUpBipolarElectrodeStimulation
-loadSimulationSettings
-tic;
-runRatSimulationSTDP
-toc

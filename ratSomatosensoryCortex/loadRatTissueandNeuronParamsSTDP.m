@@ -780,9 +780,8 @@ NeuronParams(29).modelProportion = modpropL6MC;
 %Setting the random input currents (Ornstein–Uhlenbeck process)
 %For each group of neurons. 
 
-%For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput =320;
+NeuronParams(1).Input(1).meanInput =290;
 NeuronParams(1).Input(1).stdInput = 90;
 NeuronParams(1).Input(1).tau = 2;
 
@@ -804,21 +803,21 @@ end
 
 for i = 6
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =255;
-    NeuronParams(i).Input(1).stdInput = 60;
+    NeuronParams(i).Input(1).meanInput =275;
+    NeuronParams(i).Input(1).stdInput = 90;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 7
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =330;
-    NeuronParams(i).Input(1).stdInput = 110;
+    NeuronParams(i).Input(1).meanInput =310;
+    NeuronParams(i).Input(1).stdInput = 120;
     NeuronParams(i).Input(1).tau = 2;
 end
 
 for i = 8
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput =380;
-    NeuronParams(i).Input(1).stdInput = 130;
+    NeuronParams(i).Input(1).meanInput =390;
+    NeuronParams(i).Input(1).stdInput = 150;
     NeuronParams(i).Input(1).tau = 2;
 end
 
@@ -838,8 +837,8 @@ end
 % %For layer 5 Excitatory cells
 for i = 13:14
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 950;
-    NeuronParams(i).Input(1).stdInput = 310;
+    NeuronParams(i).Input(1).meanInput = 980;
+    NeuronParams(i).Input(1).stdInput = 350;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 15
@@ -850,8 +849,8 @@ for i = 15
 end
 for i = 16
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 850;
-    NeuronParams(i).Input(1).stdInput =260;
+    NeuronParams(i).Input(1).meanInput = 850+30;
+    NeuronParams(i).Input(1).stdInput =260+20;
     NeuronParams(i).Input(1).tau = 2;
 end
 
@@ -871,26 +870,26 @@ end
 % %For layer 6 Excitatory cells
 for i = 21:22
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 880;
-    NeuronParams(i).Input(1).stdInput = 280;
+    NeuronParams(i).Input(1).meanInput = 880+20;
+    NeuronParams(i).Input(1).stdInput = 280+5;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 23
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 720;
-    NeuronParams(i).Input(1).stdInput = 260;
+    NeuronParams(i).Input(1).meanInput = 720+10;
+    NeuronParams(i).Input(1).stdInput = 260+5;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 24
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 280;
-    NeuronParams(i).Input(1).stdInput = 90;
+    NeuronParams(i).Input(1).meanInput = 280+10;
+    NeuronParams(i).Input(1).stdInput = 90+2;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 25
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 600;
-    NeuronParams(i).Input(1).stdInput = 250;
+    NeuronParams(i).Input(1).meanInput = 600+20;
+    NeuronParams(i).Input(1).stdInput = 250+5;
     NeuronParams(i).Input(1).tau = 2;
 end
 
@@ -901,6 +900,7 @@ for i = 26:27
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 1;
 end
+
 for i = 28:29
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 160;
@@ -908,9 +908,7 @@ for i = 28:29
     NeuronParams(i).Input(1).tau = 1;
 end
 
-%%
-
 for i = 1:29
-    NeuronParams(i).Input(1).meanInput = NeuronParams(i).Input(1).meanInput *1;
-    NeuronParams(i).Input(1).stdInput = NeuronParams(i).Input(1).stdInput * 1;
+    NeuronParams(i).Input(1).meanInput = NeuronParams(i).Input(1).meanInput;
+    NeuronParams(i).Input(1).stdInput = NeuronParams(i).Input(1).stdInput;
 end
