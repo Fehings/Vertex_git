@@ -205,7 +205,8 @@ else
     weights_recording = [];
     postNIDs = [];
 end
-
+    synArr = [];
+    weights_arr= [];
 if weightsarr
     wcount = cell(length(RS.weights_arr),1);
     for i = 1:length(wcount)
@@ -216,11 +217,7 @@ if weightsarr
     allpost = cell(length(RS.weights_arr),1);
     allpre = cell(length(RS.weights_arr),1);
     allweight = cell(length(RS.weights_arr),1);
-  weightsarr_rec= cell(length(RS.weights_arr),1);
-
-else
-    synArr = [];
-    weights_arr= [];
+    weights_arr= cell(length(RS.weights_arr),1);
 
 end
 
@@ -351,7 +348,10 @@ for iSaves = 1:numSaves
                weights_arr = RecordingVars.WeightArrRec;
                synArr = RecordingVars.synArr;
            end
-        end
+       end
+   else
+       weights_arr=[];
+       synArr=[];
     end
 
     if RS.LFP

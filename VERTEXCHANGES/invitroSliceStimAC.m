@@ -46,7 +46,7 @@ applyBoundaryCondition(model,'face',3:6,'g',0.0,'q',0.0); % for the
 if isequal(geometryloc,'chrismodelmod9.stl') 
     applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',@myrfun); % r value is the input in mv. This is what to vary to change field strenght
     applyBoundaryCondition(model,'face',[7,10:13],'h',1.0,'r',@myrfun2); % also vary it for this one!
-elseif isequal(geometryloc,'catvisblend1.stl') || isequal(geometryloc,'largemod2.stl')
+elseif isequal(geometryloc,'catvisblend1.stl') || isequal(geometryloc,'largemod2.stl') || isequal(geometryloc,'tutorial2_3.stl')
     applyBoundaryCondition(model,'face',[2],'h',1.0,'r',@myrfun); % r value is the input in mv. This is what to vary to change field strenght
     applyBoundaryCondition(model,'face',[1],'h',1.0,'r',@myrfun2); % also vary it for this one!
 elseif isequal(geometryloc,'topbottomstim4.stl') 

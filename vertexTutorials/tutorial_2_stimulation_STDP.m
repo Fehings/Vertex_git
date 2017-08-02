@@ -284,11 +284,11 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = [1:1000, 4300:4500];
 RecordingSettings.maxRecTime = 500;
 RecordingSettings.sampleRate = 1000;
-RecordingSettings.weights_preN_IDs = 1;%[1:5:1000, 4300:4500];
-RecordingSettings.weights_arr = [0:10:6000];
-SimulationSettings.simulationTime = 200;
+RecordingSettings.weights_preN_IDs = 1:500:5000;%[1:5:1000, 4300:4500];
+RecordingSettings.weights_arr = 1:100:6000;
+SimulationSettings.simulationTime = 50;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim =true;
+SimulationSettings.parallelSim =false;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by

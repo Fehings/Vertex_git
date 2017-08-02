@@ -21,7 +21,7 @@ importGeometry(model,geometryloc);
 
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',1:12,'g',0.0,'q',0.0); % for the
+applyBoundaryCondition(model,'face',1:6,'g',0.0,'q',0.0); % 
 
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
@@ -84,7 +84,7 @@ result = solvepde(model);
 
 %  u = result.NodalSolution;
  %figure(2)
-% pdeplot3D(model,'ColorMapData', result.NodalSolution);
+ pdeplot3D(model,'ColorMapData', result.NodalSolution,'FaceAlpha',0.3);
 
 
 

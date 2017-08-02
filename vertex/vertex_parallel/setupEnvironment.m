@@ -2,7 +2,7 @@ function [SS] = setupEnvironment(SS)
 
 % Todo: get these values directly from installed version info
 minPoolSize = 1;
-maxPoolSize = 12;
+maxPoolSize = 24;
 
 %disp('Initialising simulation environment...');
 
@@ -41,14 +41,22 @@ if SS.parallelSim
   
   numLabs = getNumOpenLabs();
   parFunc = getParFunc();
-  
-  if numLabs == 0
-    if poolSize == -1
-      parFunc(profileName);
-    else
-      parFunc(profileName, poolSize);
-    end
+  if SS.onTopsy
+      cluster = parcluster(profileName);
+      tmpdirforpool = getenv('JOB_ID');
+    mkdir(tmpdirforpool);
+    cluster.JobStorageLocation = tmpdirforpool;
+    msg = sprintf('setting matlabpool to %s', getenv('NSLOTS'));
+    cluster.NumWorkers = str2num(getenv('NSLOTS'));
+    parpool(cluster)
+  else
+      if numLabs == 0
+        if poolSize == -1
+          parFunc(profileName);
+        else
+          parFunc(profileName, poolSize);
+        end
+      end
   end
-  
   SS.poolSize = getNumOpenLabs();
 end

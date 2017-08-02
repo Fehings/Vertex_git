@@ -11,10 +11,6 @@ for iPost = 1:TP.numGroups
       params = eval(['SynapseModel_' model '.getRequiredParams();']);
       for iP = 1:length(params)
           %if iscell(CP(iPre).(params{iP}))
-              iPost
-              iPre
-              iP
-              CP(iPre).(params{iP})
               model = [model, num2str(CP(iPre).(params{iP}){iPost})];
 
       end
