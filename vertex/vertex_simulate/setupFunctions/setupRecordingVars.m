@@ -26,12 +26,10 @@ if ~isfield(RS, 'dep_syn')
   RS.dep_syn = [];
 end
 
-if ~isfield(RS,'apre_syn')
-    RS.apre_syn = [];
+if ~isfield(RS,'stdpvars')
+    RS.stdpvars = [];
 end
-if ~isfield(RS,'apost_syn')
-    RS.apost_syn = [];
-end
+
 
 if ~isfield(RS, 'weights_preN_IDs')
     RS.weights_preN_IDs = [];
@@ -161,7 +159,8 @@ fac_SynRecLab = SS.neuronInLab(RS.fac_syn);
       p_fac_synRecCellIDArr = ...
         IDMap.modelIDToCellIDMap(p_fac_synRecModelIDArr, :);
       p_numToRecordfac_syn = size(p_fac_synRecModelIDArr, 1);
-      p_fac_synRecording = zeros(p_numToRecordfac_syn, TP.numGroups, round(RS.maxRecSamples));
+      p_fac_synRecording{1} = zeros(p_numToRecordfac_syn, TP.numGroups, round(RS.maxRecSamples));
+      p_fac_synRecording{2} = zeros(p_numToRecordfac_syn, TP.numGroups, round(RS.maxRecSamples));
       
       RecordingVars.fac_synRecCellIDArr = p_fac_synRecCellIDArr;
        RecordingVars.fac_synRecModelIDArr = p_fac_synRecModelIDArr;
@@ -188,72 +187,44 @@ else
   RecordingVars.recordFac_syn = recordFac_syn;
 end
 
-%STDP variables recording
 if SS.parallelSim
-apre_SynRecLab = SS.neuronInLab(RS.apre_syn);
+stdpvarsRecLab = SS.neuronInLab(RS.stdpvars);
   spmd
-    if ismember(labindex(), unique(apre_SynRecLab))
-      recordapre_syn = true;
-      p_apre_synRecModelIDArr = RS.apre_syn(apre_SynRecLab == labindex());
-      p_apre_synRecCellIDArr = ...
-        IDMap.modelIDToCellIDMap(p_apre_synRecModelIDArr, :);
-      p_numToRecordapre_syn = size(p_apre_synRecModelIDArr, 1);
-      p_apre_synRecording = cell(p_numToRecordapre_syn, TP.numGroups, RS.maxRecSamples);
+    if ismember(labindex(), unique(stdpvarsRecLab))
+      recordstdpvars = true;
+      p_stdpvarsRecModelIDArr = RS.stdpvars(stdpvarsRecLab == labindex());
+      p_stdpvarsRecCellIDArr = ...
+        IDMap.modelIDToCellIDMap(p_stdpvarsRecModelIDArr, :);
+      p_numToRecordstdpvars = size(p_stdpvarsRecModelIDArr, 1);
+      p_stdpvarsRecording{1} = zeros(p_numToRecordstdpvars, TP.numGroups, round(RS.maxRecSamples));
+      p_stdpvarsRecording{2} = zeros(p_numToRecordstdpvars, TP.numGroups, round(RS.maxRecSamples));
       
-      RecordingVars.apre_synRecCellIDArr = p_apre_synRecCellIDArr;
-      RecordingVars.apre_synRecording = p_apre_synRecording;
+      RecordingVars.stdpvarsRecCellIDArr = p_stdpvarsRecCellIDArr;
+       RecordingVars.stdpvarsRecModelIDArr = p_stdpvarsRecModelIDArr;
+      %stdpvarsGBA = groupBoundaryIDArr(neuronInGroup(p_stdpvarsRecModelIDArr))';
+      %RecordingVars.stdpvarsRecCellIDArr = [p_stdpvarsRecModelIDArr - stdpvarsGBA; uint16(neuronInGroup(p_stdpvarsRecModelIDArr))'];
+      
+      RecordingVars.stdpvarsRecording = p_stdpvarsRecording;
     else
-      recordapre_syn = false;
+      recordstdpvars = false;
     end
-    RecordingVars.recordapre_syn = recordapre_syn;
+    RecordingVars.recordstdpvars = recordstdpvars;
   end
 else
-  if ~isempty(RS.apre_syn)
-    recordapre_syn = true;
-   apre_synRecCellIDArr = IDMap.modelIDToCellIDMap(RS.apre_syn, :);
-    numToRecordapre_syn = size(apre_synRecCellIDArr, 1);
-    apre_synRecording = zeros(numToRecordapre_syn, TP.numGroups, RS.maxRecSamples);
-    
-    RecordingVars.apre_synRecCellIDArr = apre_synRecCellIDArr;
-    RecordingVars.apre_synRecording = apre_synRecording;
+  if ~isempty(RS.stdpvars)
+    recordstdpvars = true;
+   stdpvarsRecCellIDArr = IDMap.modelIDToCellIDMap(RS.stdpvars, :);
+    numToRecordstdpvars = size(stdpvarsRecCellIDArr, 1);
+    stdpvarsRecording = zeros(numToRecordstdpvars, 2, round(RS.maxRecSamples));
+    RecordingVars.stdpvarsRecCellIDArr = stdpvarsRecCellIDArr';
+    RecordingVars.stdpvarsRecording = stdpvarsRecording;
   else
-    recordapre_syn = false;
+    recordstdpvars = false;
   end
-  RecordingVars.recordapre_syn = recordapre_syn;
+  RecordingVars.recordstdpvars = recordstdpvars;
 end
 
-if SS.parallelSim
-apost_SynRecLab = SS.neuronInLab(RS.apost_syn);
-  spmd
-    if ismember(labindex(), unique(apost_SynRecLab))
-      recordapost_syn = true;
-      p_apost_synRecModelIDArr = RS.apre_syn(apost_SynRecLab == labindex());
-      p_apost_synRecCellIDArr = ...
-        IDMap.modelIDToCellIDMap(p_apost_synRecModelIDArr, :);
-      p_numToRecordapost_syn = size(p_apost_synRecModelIDArr, 1);
-      p_apost_synRecording = cell(p_numToRecordapost_syn, TP.numGroups, RS.maxRecSamples);
-      
-      RecordingVars.apost_synRecCellIDArr = p_apost_synRecCellIDArr;
-      RecordingVars.apost_synRecording = p_apost_synRecording;
-    else
-      recordapost_syn = false;
-    end
-    RecordingVars.recordapost_syn = recordapost_syn;
-  end
-else
-  if ~isempty(RS.apre_syn)
-    recordapost_syn = true;
-   apost_synRecCellIDArr = IDMap.modelIDToCellIDMap(RS.apost_syn, :);
-    numToRecordapost_syn = size(apost_synRecCellIDArr, 1);
-    apost_synRecording = zeros(numToRecordapost_syn, TP.numGroups, RS.maxRecSamples);
-    
-    RecordingVars.apost_synRecCellIDArr = apost_synRecCellIDArr;
-    RecordingVars.apost_synRecording = apost_synRecording;
-  else
-    recordapost_syn = false;
-  end
-  RecordingVars.recordapost_syn = recordapost_syn;
-end
+
 
 % Synaptic current recording:
 if SS.parallelSim

@@ -1,0 +1,9 @@
+#!/bin/bash
+#$ -cwd
+#$ -l h_vmem=16G
+#$ -pe smp 12
+echo Starting job
+echo pwd
+module add apps/Matlab/2015a
+matlab -nodesktop -nosplash -r tutorial_2_stim
+echo Finishing job

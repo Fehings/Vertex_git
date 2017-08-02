@@ -116,12 +116,10 @@ classdef NeuronModel < handle
   
   function stimulationOn(NM)
       NM.incorporate_vext = true;
-      disp('Stimulation on')
   end
     
   function stimulationOff(NM)
       NM.incorporate_vext = false;
-            disp('Stimulation off')
 
   end
   

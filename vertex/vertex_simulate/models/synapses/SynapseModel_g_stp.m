@@ -32,7 +32,8 @@ classdef SynapseModel_g_stp < SynapseModel
       SM.depression = CP.depression{postID};
       SM.tau = CP.tau{postID};
       SM.bufferCount = 1;
-      SM.preBoundaryArr = [0; number_in_pre];
+      SM.preBoundaryArr = [0; cumsum(number_in_pre)];
+      disp(number_in_pre)
       SM.preGroupIDs = pre_group_ids;
       maxDelaySteps = SimulationSettings.maxDelaySteps;
       numComparts = Neuron.numCompartments;
@@ -118,7 +119,12 @@ classdef SynapseModel_g_stp < SynapseModel
     function g = get.g_exp(SM)
       g = SM.g_exp;
     end
-
+    
+    function [F, D] = getSTPVars(SM, preInd, groupID)
+        preInd = preInd + SM.preBoundaryArr(SM.preGroupIDs==groupID);
+        F = SM.F(preInd);
+        D = SM.D(preInd);
+    end
   end % methods
   
   methods(Static)

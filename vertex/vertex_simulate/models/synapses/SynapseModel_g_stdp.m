@@ -31,9 +31,10 @@ classdef SynapseModel_g_stdp < SynapseModel
   methods
       % Synapse model will be a cell array containing a struct for each
       % connection type indexed by the post synaptic group then the
-      % presynaptic group. The struct contains variables for all
-      % neurons in the presynatpic group and all neurons in the post
-      % synaptic group.
+      % presynaptic synapse group(may contain multiple neuron groups). The struct contains variables for all
+      % neurons in the presynatpic synapse group and all neurons in the post
+      % synaptic group. Or all post synaptic neurons on the lab and all
+      % presynaptic neurons regardless of lab, if using parallel mode. 
     function SM = SynapseModel_g_stdp(Neuron, CP, SimulationSettings, ...
                                      postID, number_in_post,number_in_pre,pre_group_ids)
                                  
@@ -47,7 +48,7 @@ classdef SynapseModel_g_stdp < SynapseModel
       SM.wmax = CP.wmax{postID};
       SM.tau = CP.tau{postID};
       SM.bufferCount = 1;
-      SM.ApreBoundaryArr = [0; number_in_pre];
+      SM.ApreBoundaryArr = [0; cumsum(number_in_pre)];
       SM.ApreGroupIDs = pre_group_ids;
       maxDelaySteps = SimulationSettings.maxDelaySteps;
       numComparts = Neuron.numCompartments;
@@ -118,9 +119,6 @@ classdef SynapseModel_g_stdp < SynapseModel
         
         preInd = preInd + SM.ApreBoundaryArr(SM.ApreGroupIDs==groupID);
 
-        if length(SM.Apre) < max(preInd)
-            disp(SM.Apre)
-        end
         
         weightsArr = weightsArr +SM.Apre(preInd)';
         weightsArr(weightsArr<SM.wmin) = SM.wmin;
@@ -171,8 +169,13 @@ classdef SynapseModel_g_stdp < SynapseModel
     function g = get.g_exp(SM)
       g = SM.g_exp;
     end
-
-    
+    function [Apre] = getApre(SM, preInd, groupID)
+        preInd = preInd + SM.ApreBoundaryArr(SM.ApreGroupIDs==groupID);
+        Apre = SM.Apre(preInd);
+    end
+    function [Apost] = getApost(SM, postInd)
+        Apost = SM.Apost(postInd);
+    end
 
   end % methods
   

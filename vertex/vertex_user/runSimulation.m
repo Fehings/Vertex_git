@@ -156,6 +156,9 @@ if SS.parallelSim
   % dynamic variables at the end of simulateParallel()
   %[NeuronModelArr, SynapseModelArr, InputModelArr, numSaves] = ...
 
+parameterCell = {TP, NP, CP, RS, SS,SynapseModelArr};
+fname = [outputDirectory 'parameters.mat'];
+save(fname, 'parameterCell','-v7.3');
 
    if isfield(TP, 'StimulationField') && isa(TP.StimulationField,'pde.TimeDependentResults')  
        simulateParallel(TP, NP, SS, RS, NeuronIDMap, NeuronModelArr, ...

@@ -9,16 +9,21 @@
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
+addpath(genpath('~/Vertex_jun2017'))
+
 TissueParams.X = 2500;
 TissueParams.Y = 400;
-TissueParams.Z = 200;
-TissueParams.neuronDensity = 25000;
+TissueParams.Z = 1240;
+TissueParams.neuronDensity = 50000;
 TissueParams.numLayers = 1;
-TissueParams.layerBoundaryArr = [200, 0];
+TissueParams.layerBoundaryArr = [1240, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 
+%TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
+%TissueParams.StimulationOn = [10 40];
+%TissueParams.StimulationOff = [15 45];
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
 % use the neuron models described in (Tomsett et al. 2014) for layer 2/3
@@ -96,13 +101,12 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 150;
+NeuronParams(1).R_A = 1000;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
-NeuronParams(1).labelNames = {'somaID', 'basalID','apicalID'};
-NeuronParams(1).minCompartmentSize = 0.8;
+
 %%
 % In order to generate spikes, we need to provide the neurons with some
 % input. We set the inputs to our neuron group in another structure array,
@@ -116,11 +120,11 @@ NeuronParams(1).minCompartmentSize = 0.8;
 % to |'i_ou'| (we could also apply our input as a conductance |'g_ou'|, in
 % which case we would also need to set an |E_reversal| parameter to set the
 % reversal potential).
-
-NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330;
-NeuronParams(1).Input(1).stdInput = 90;
-NeuronParams(1).Input(1).tau = 2;
+% 
+% NeuronParams(1).Input(1).inputType = 'i_ou';
+% NeuronParams(1).Input(1).meanInput = 260;
+% NeuronParams(1).Input(1).stdInput = 90;
+% NeuronParams(1).Input(1).tau = 2;
 
 %%
 % Next we set the parameters for the 2nd neuron group, which represent
@@ -170,15 +174,13 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
 NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 150;
+NeuronParams(2).R_A = 1000;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
-NeuronParams(2).labelNames = {'dendritesID'};
-NeuronParams(2).minCompartmentSize = 0.8;
-NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 190;
-NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 50;
+% NeuronParams(2).Input(1).inputType = 'i_ou';
+% NeuronParams(2).Input(1).meanInput = 140;
+% NeuronParams(2).Input(1).tau = 0.8;
+% NeuronParams(2).Input(1).stdInput = 30;
 
 
 %% Connectivity parameters
@@ -189,9 +191,8 @@ NeuronParams(2).Input(1).stdInput = 50;
 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'i_exp';
-ConnectionParams(1).targetCompartments{1} = {'basalID', ...
-                                             'apicalID'};
-ConnectionParams(1).weights{1} = 1;
+ConnectionParams(1).targetCompartments{1} = {'basalID','apicalID'};
+ConnectionParams(1).weights{1} = 2.5;
 ConnectionParams(1).tau{1} = 2;
 
 %%
@@ -220,12 +221,12 @@ ConnectionParams(1).synapseReleaseDelay = 0.5;
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'i_exp';
 ConnectionParams(2).targetCompartments{1} = {'somaID'};
-ConnectionParams(2).weights{1} = -5;
+ConnectionParams(2).weights{1} = -0.5;
 ConnectionParams(2).tau{1} = 6;
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
 ConnectionParams(2).synapseType{2} = 'i_exp';
-ConnectionParams(2).targetCompartments{2} = {'dendritesID'};
+ConnectionParams(2).targetCompartments{2} ={'dendritesID'};
 ConnectionParams(2).weights{2} = -4;
 ConnectionParams(2).tau{2} = 3;
 
@@ -248,20 +249,22 @@ ConnectionParams(2).synapseReleaseDelay = 0.5;
 % tutorial. Note that the simulation will take longer to run than in
 % tutorial 1, as the AdEx dyamics add complexity to the calculations.
 
-RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/';
+RecordingSettings.saveDir = '~/VERTEX_Results/tut2nostim50kneuDen';
 RecordingSettings.LFP = true;
-[meaX, meaY, meaZ] = meshgrid(0:1000:2000, 200, 600:-300:0);
+[meaX, meaY, meaZ] = meshgrid(0:100:2000, 200, 600:-300:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 250:250:4750;
+RecordingSettings.v_m = 1:2:1000;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 500;
-SimulationSettings.timeStep = 0.03125;
+SimulationSettings.simulationTime = 5000;
+SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
+SimulationSettings.onTopsy = true;
+control.stim = true;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
@@ -269,14 +272,14 @@ SimulationSettings.parallelSim = true;
 
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
-              RecordingSettings, SimulationSettings);
+              RecordingSettings, SimulationSettings,control);
 
 %% Run the simulation
 % Now we can run the simulatio, and load the results:
 
-runSimulation(params, connections, electrodes);
+NeuronModelArr = runSimulation(params, connections, electrodes);
 %%
-Results = loadResults(RecordingSettings.saveDir);
+%Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results
 % Rather than manually plotting the spike raster, we will make use of
@@ -289,12 +292,12 @@ Results = loadResults(RecordingSettings.saveDir);
 % The minimal parameter structure simply contains a cell array of color
 % values that set the color of each neuron group:
 
-rasterParams.colors = {'k', 'm'};
+%rasterParams.colors = {'k', 'm'};
 
 %%
 % Using these parameters, we obtain the following figure:
 
-rasterFigure = plotSpikeRaster(Results, rasterParams);
+%rasterFigure = plotSpikeRaster(Results, rasterParams);
 
 %%
 % We can add some further fields to the parameter structure for enhanced
@@ -304,13 +307,13 @@ rasterFigure = plotSpikeRaster(Results, rasterParams);
 % specify which Matlab figure number to use. If we don't specify this,
 % a new figure window will be opened.
 
-rasterParams.groupBoundaryLines = [0.7, 0.7, 0.7];
-rasterParams.title = 'Tutorial 2 Spike Raster';
-rasterParams.xlabel = 'Time (ms)';
-rasterParams.ylabel = 'Neuron ID';
-rasterParams.figureID = 2;
-
-rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
+%rasterParams.groupBoundaryLines = [0.7, 0.7, 0.7];
+%rasterParams.title = 'Tutorial 2 Spike Raster';
+%rasterParams.xlabel = 'Time (ms)';
+%rasterParams.ylabel = 'Neuron ID';
+%rasterParams.figureID = 2;
+%
+%rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 %%
 % The spike raster shows a gamma oscillation occurring in the population
@@ -320,14 +323,14 @@ rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 % (seeding random numbers in VERTEX is covered in tutorial 5). The
 % oscillation can be seen in the LFP:
 
-figure(3)
-plot(Results.LFP', 'LineWidth', 2)
-set(gcf,'color','w');
-set(gca,'FontSize',16)
-title('Tutorial 2: LFP at all electrodes', 'FontSize', 16)
-xlabel('Time (ms)', 'FontSize', 16)
-ylabel('LFP (mV)', 'FontSize', 16)
-
+%figure(3)
+%plot(Results.LFP', 'LineWidth', 2)
+%set(gcf,'color','w');
+%set(gca,'FontSize',16)
+%title('Tutorial 2: LFP at all electrodes', 'FontSize', 16)
+%xlabel('Time (ms)', 'FontSize', 16)
+%ylabel('LFP (mV)', 'FontSize', 16)
+%
 %%
 % Plotting the LFP from all electrodes also reveals a phase inversion,
 % which depends on the location of the electrodes in relation to the

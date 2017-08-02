@@ -111,6 +111,11 @@ if isfield(RS, 'apost_syn')
 else
     apost_syn = false;
 end
+if isfield(RS, 'stdpvars')
+    stdpvars = RS.stdpvars;
+else
+    stdpvars = false;
+end
 if isfield(RS, 'weights_preN_IDs')
     weights = RS.weights_preN_IDs;
 else
@@ -182,9 +187,11 @@ else
 end
 
 if fac_syn
-  fac_syn_recording = cell(TP.numGroups, 1);
+  fac_syn_recording = cell(2, TP.numGroups);
   for iType=1:2
-      fac_syn_recording{iType} = zeros(length(RS.fac_syn), simulationSamples);
+      for iPostGroup = 1:TP.numGroups
+        fac_syn_recording{iType, iPostGroup} = zeros(length(RS.fac_syn), simulationSamples);
+      end
   end
   if SS.parallelSim
       fac_synCount = 0;
@@ -192,6 +199,21 @@ if fac_syn
   end
 else
     fac_syn_recording = [];
+end
+
+if stdpvars
+  stdpvars_recording = cell(2, TP.numGroups);
+  for iType=1:2
+      for iPostGroup = 1:TP.numGroups
+        stdpvars_recording{iType, iPostGroup} = zeros(length(RS.stdpvars), simulationSamples);
+      end
+  end
+  if SS.parallelSim
+      stdpvarsCount = 0;
+      stdpvarsIDmap = [];
+  end
+else
+    stdpvars_recording = [];
 end
 
 if weights
@@ -244,6 +266,7 @@ for iSaves = 1:numSaves
           ir = RecordingVars.intraRecording;
           v_m_recording(intraCount+1:intraCount+size(ir,1), ...
             sampleCount+1:sampleCount+size(ir, 2)) = ir;
+
           intraID = find(SS.neuronInLab(v_m) == iLab);
           intraIDmap(intraCount+1:intraCount+size(intraID)) = intraID;
           intraCount = intraCount+size(ir,1);
@@ -280,22 +303,47 @@ for iSaves = 1:numSaves
             if isfield(RecordingVars, 'fac_synRecording')
                 fac_Syn = RecordingVars.fac_synRecording;
               for itype = 1:2
-               fac_syn_recording{itype}(fac_synCount+1:fac_synCount+size(fac_Syn,1), ...
-                  sampleCount+1:sampleCount+size(fac_Syn, 3)) = ...
-                  squeeze(fac_Syn(:, itype,:));
+                  for iPostGroup = 1:TP.numGroups
+                   fac_syn_recording{itype, iPostGroup}(fac_synCount+1:fac_synCount+size(fac_Syn{itype},1), ...
+                      sampleCount+1:sampleCount+size(fac_Syn{itype}, 3)) = ...
+                      squeeze(fac_Syn{itype}(:,iPostGroup,:));
+                  end
               end
               
               fac_synID = find(SS.neuronInLab(fac_syn) == iLab);
-              size(fac_synID)
               fac_synIDmap(fac_synCount+1:fac_synCount+size(fac_synID)) = fac_synID;
-              fac_synCount = fac_synCount+size(fac_Syn,1);
+              fac_synCount = fac_synCount+size(fac_Syn{1},1);
             end
         else
             fac_Syn = RecordingVars.fac_synRecording;
             for itype = 1:2
                 size(fac_Syn)
-              fac_syn_recording{itype}(:, sampleCount+1:sampleCount+size(fac_Syn, 3)) = ...
-                squeeze(fac_Syn(:,itype,:));
+              fac_syn_recording{itype, iPostGroup}(:, sampleCount+1:sampleCount+size(fac_Syn{itype}, 3)) = ...
+                squeeze(fac_Syn{itype}(:,iPostGroup,:));
+            end
+        end
+    end
+      if stdpvars
+        if SS.parallelSim
+            if isfield(RecordingVars, 'stdpvarsRecording')
+                stdpVars = RecordingVars.stdpvarsRecording;
+              for itype = 1:2
+                  for iPostGroup = 1:TP.numGroups
+                   stdpvars_recording{itype, iPostGroup}(stdpvarsCount+1:stdpvarsCount+size(stdpVars{itype},1), ...
+                      sampleCount+1:sampleCount+size(stdpVars{itype}, 3)) = ...
+                      squeeze(stdpVars{itype}(:,iPostGroup,:));
+                  end
+              end
+              
+              stdpvarsID = find(SS.neuronInLab(stdpvars) == iLab);
+              stdpvarsIDmap(stdpvarsCount+1:stdpvarsCount+size(stdpvarsID)) = stdpvarsID;
+              stdpvarsCount = stdpvarsCount+size(stdpvarsID);
+            end
+        else
+            stdpVars = RecordingVars.stdpvarsRecording;
+            for itype = 1:2
+              stdpvars_recording{itype, iPostGroup}(:, sampleCount+1:sampleCount+size(stdpVars{itype}, 3)) = ...
+                squeeze(stdpVars{itype}(:,iPostGroup,:));
             end
         end
     end
@@ -418,9 +466,18 @@ if SS.parallelSim && ~isempty(I_syn_recording)
   end
 end
 if SS.parallelSim && ~isempty(fac_syn_recording)
-  for itype = 1:2
-    fac_syn_recording{itype}(fac_synIDmap, :) = fac_syn_recording{itype};
-  end
+    for iPostGroup = 1:TP.numGroups
+      for itype = 1:2
+        fac_syn_recording{itype,iPostGroup}(fac_synIDmap, :) = fac_syn_recording{itype,iPostGroup};
+      end
+    end
+end
+if SS.parallelSim && ~isempty(stdpvars_recording)
+    for iPostGroup = 1:TP.numGroups
+      for itype = 1:2
+        stdpvars_recording{itype,iPostGroup}(stdpvarsIDmap, :) = stdpvars_recording{itype,iPostGroup};
+      end
+    end
 end
 
 % Store loaded results in cell array to return
@@ -429,6 +486,7 @@ Results.LFP = LFP;
 Results.v_m = v_m_recording;
 Results.I_syn = I_syn_recording;
 Results.fac_syn = fac_syn_recording;
+Results.stdpvars = stdpvars_recording;
 Results.weights = weights_recording;
 Results.synapsePostIDs = postNIDs;
 Results.weights_arr = weights_arr;
