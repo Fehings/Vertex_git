@@ -1,15 +1,17 @@
 %The results of the simulation can be loaded from file.
-RecordingSettings.saveDir = '~/VERTEXResults/VERTEX_rat_somatosensory_slice2/';
-RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDP/';
-%RecordingSettings.saveDir = '~/VERTEXResults/VERTEX_rat_somatosensory_slice_0MG_Spontaneous3/';
-RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice_0MG_PP300ms/';
+RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/VERTEX_rat_somatosensory_slice_0MG_PP300ms/';
+RecordingSettings.saveDir = '~/VERTEX_TOPSY/VERTEX_rat_somatosensory_slice_50msPP/';
+%RecordingSettings.saveDir = '~/VERTEXResults/27Jun/VERTEX_rat_somatosensory_slice_0MG_PPms/';
+RecordingSettings.saveDir = '/data/Results/SinglePulse/SinglePulseTrueConn/VERTEX_rat_somatosensory_sliceSinglePulse500mV';
+%RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDPLTP/';
+%RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSinglePulse500mV';
 
 %RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/VERTEX_rat_somatosensory_slice_0MG_Spontaneous3/';
-%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/Results/RATSOM_0MG/VERTEX_rat_somatosensory_slice_0MG5';
+%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/VERTEX_rat_somatosensory_slice_0MG_100msPP';
 Results = loadResults(RecordingSettings.saveDir);
 
 %make sure no figures are open to keep things tidy
-close all;
+%close all;
 rasterParams.colors = {'k','m','b','g','r','y','c','k','m','b','g','r','k','k','k','c','m','b','g','r','k','k','k','k','c','m','b','g','r'};
 rasterParams.colors = {'k','m','m','m','m','k','k','k','m','m','m','m','k','k','k','k','m','m','m','m','k','k','k','k','k','m','m','m','m'};
 

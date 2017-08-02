@@ -27,9 +27,9 @@ for i = 1:length(ConnectivityNames)
             ConnectionParams(i).synapseType{j} = 'g_stdp';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
-            ConnectionParams(i).rate{j} = 0.01;
-            ConnectionParams(i).tPre{j} = 5;
-            ConnectionParams(i).tPost{j} = 5;
+            ConnectionParams(i).rate{j} = 0.05;
+            ConnectionParams(i).tPre{j} = 15;
+            ConnectionParams(i).tPost{j} = 20;
             ConnectionParams(i).wmin{j} = 0;
             ConnectionParams(i).wmax{j} = 100;
         catch %if there is no description in the file then set zero connections
@@ -42,7 +42,15 @@ for i = 1:length(ConnectivityNames)
     end
   
 end
-
+for i = [9:12 17:20]
+    ConnectionParams(i).numConnectionsToAllFromOne{1} = ConnectionParams(i).numConnectionsToAllFromOne{1}./8;
+end
+for i = [6]
+    ConnectionParams(i).numConnectionsToAllFromOne{1} = [0,400,0,0,0];
+end
+for i = [8]
+    ConnectionParams(i).numConnectionsToAllFromOne{1} = ConnectionParams(i).numConnectionsToAllFromOne{1}*4;
+end
 %%
 
 %Setting remaining connectivity parameters
@@ -365,8 +373,31 @@ for j = 1:29
     ConnectionParams(29).E_reversal{j} = -70;
 end
 excitatory = [1 6 7 8 13 14 15 16 21 22 23 24 25];
-% for i = excitatory
-%     for j = 1:length(ConnectionParams(i).weights)
-%     	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*2;
-%     end
-% end
+inhibitory = [2 3 4 5 9 10 11 12 17 18 19 20 26 27 28 29];
+
+for i = excitatory
+    for j = excitatory
+    	%ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*1.25;
+        ConnectionParams(i).tau{j} = 2;
+        %ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j}*2.5;
+    end
+    for j = inhibitory
+    	%ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*1.25;
+        ConnectionParams(i).synapseType{j} = 'g_exp';
+        %ConnectionParams(i).rate{j} = 0.005;
+
+        ConnectionParams(i).tau{j} = 0.8;
+    end
+end
+for i = inhibitory
+    for j = excitatory
+        ConnectionParams(i).synapseType{j} = 'g_exp';
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
+        ConnectionParams(i).tau{j} = 6;
+    end
+    for j = inhibitory
+        ConnectionParams(i).synapseType{j} = 'g_exp';
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
+        ConnectionParams(i).tau{j} = 3;
+    end
+end

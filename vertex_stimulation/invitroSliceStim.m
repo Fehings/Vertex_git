@@ -3,8 +3,7 @@ function [ result, model ] = invitroSliceStim(geometryloc,stimstrength)
 
 if nargin < 2
     stimstrength = -1; %give a default if stimstrength isn't given as an argument
-    error('stim strength not set')
-    
+    error('stim strength not set')  
 end
 
 model = createpde;
@@ -12,11 +11,11 @@ importGeometry(model,geometryloc);
 
 
 
-% figure(1)
+ figure(1)
 % pdegplot(model,'FaceLabels', 'on')
 
 %figure(1)
-%pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
+pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
 %pdegplot(model,'FaceLabels', 'off','FaceAlpha',0.3)
 
 disp(model.IsTimeDependent)
@@ -61,6 +60,16 @@ elseif isequal(geometryloc, '6layermodelstiml4placedin.stl')
     applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
 elseif isequal(geometryloc, '6layermodelstiml4placedin3000.stl')
+    % dimensions of electrode in tissue: 14 * 14 * 200
+    % Volume: 39200 microns^3
+    % Position: x = 1160.25 - 1150 z = 1258.5 - 1269 y = 40.5 - 500
+  applyBoundaryCondition(model,'face',5:12,'g',0.0,'q',0.0);
+    applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
+elseif isequal(geometryloc, '6layermodelstiml4placedinsmall.stl')
+    % dimensions of electrode in tissue: 14 * 14 * 200
+    % Volume: 39200 microns^3
+    % Position: x = 1160.25 - 1150 z = 1258.5 - 1269 y = 40.5 - 500
   applyBoundaryCondition(model,'face',5:12,'g',0.0,'q',0.0);
     applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
@@ -73,7 +82,7 @@ disp(model.IsTimeDependent)
 
 %conductivity of brain tissue is around 0.3 S m^-1 
 %As vertex is in units of micrometers c --> 0.3/1000000
-specifyCoefficients(model,'m',0, 'd',0, 'c',0.3, 'a',0, 'f',0);
+specifyCoefficients(model,'m',0, 'd',0, 'c',0.3/1000000, 'a',0, 'f',0);
 
 
 
@@ -83,15 +92,15 @@ disp(model.IsTimeDependent)
 result = solvepde(model);
 
 %  u = result.NodalSolution;
- %figure(2)
-% pdeplot3D(model,'ColorMapData', result.NodalSolution);
+ figure(2)
+ pdeplot3D(model,'ColorMapData', result.NodalSolution);
 
 
 
-  figure(3)
- [X,Y,Z] = meshgrid(0:100:2600,300,0:100:2000);
- V = interpolateSolution(result,X,Y,Z);
- V = reshape(V,size(X));
+%   figure(3)
+%  [X,Y,Z] = meshgrid(0:100:2600,300,0:100:2000);
+%  V = interpolateSolution(result,X,Y,Z);
+%  V = reshape(V,size(X));
 % figure
 % colormap jet
 % contourslice(X,Y,Z,V,1:100:1000,1:10:1800,1:100:700)

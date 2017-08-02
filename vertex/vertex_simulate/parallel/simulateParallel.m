@@ -107,6 +107,7 @@ spmd
     recordFac_syn = RecVar.recordFac_syn;
     recordWeights = RecVar.recordWeights;
     recordWeightsArr = RecVar.recordWeightsArr;
+    recordstdpvars = RecVar.recordstdpvars;
     weightsArrcount = 1;
     comCount = SS.minDelaySteps;
     % vars to keep track of where we are in recording buffers:
@@ -138,17 +139,20 @@ spmd
     
     for simStep = 1:simulationSteps
         
-%     if simStep * SS.timeStep > 960000
-%         disp(simStep * SS.timeStep)
-%         for iGroup = 1:TP.numGroups
-%             for synGroup = 1:length(SynModel(iGroup,:))
-%                 if isa(SynModel{iGroup,synGroup}, 'SynapseModel_g_stdp')
-%                     SynModel{iGroup,synGroup}.postRate = 0;
-%                     SynModel{iGroup,synGroup}.preRate = 0;
-%                 end
-%             end
-%         end
-%     end
+    if SS.freezeWeights
+        if simStep * SS.timeStep > SS.freezetime
+            disp('freezing weights')
+            for iGroup = 1:TP.numGroups
+                for synGroup = 1:length(SynModel(iGroup,:))
+                    if isa(SynModel{iGroup,synGroup}, 'SynapseModel_g_stdp')
+                        SynModel{iGroup,synGroup}.postRate = 0;
+                        SynModel{iGroup,synGroup}.preRate = 0;
+                    end
+                end
+            end
+            SS.freezeWeights = false;
+        end
+    end
                         
             
         %%%%
@@ -161,7 +165,7 @@ spmd
             %time start time then turn on.
             
             if current_time > TP.StimulationOn(stimcount) && current_time < TP.StimulationOff(stimcount)
-                
+                disp('Stimulation on')
                 for iGroup = 1:TP.numGroups
                     if  ~NeuronModel{iGroup}.incorporate_vext
                         stimulationOn(NeuronModel{iGroup});
@@ -191,19 +195,20 @@ spmd
                 % otherwise if time is greater than current of time turn
                 % off
            elseif current_time >= TP.StimulationOff(stimcount)
-               disp('Stimulation done')
+               disp('Stimulation off')
                 for iGroup = 1:TP.numGroups
                     if  NeuronModel{iGroup}.incorporate_vext
                         stimulationOff(NeuronModel{iGroup});
                     end
                     % and move stimulation times index on if we have not
                     % reached the final stimulation time window
-
                 end
-                if stimcount < length(TP.StimulationOn)
-                    
+                
+                if stimcount < length(TP.StimulationOn)   
                     stimcount = stimcount+1;
                 end
+                
+                disp(['stimcount: ' num2str(stimcount)]);
             end % if current time is between time on and off do nothing.
             
         end
@@ -258,7 +263,11 @@ spmd
                 end
                 
                 if recordFac_syn
-                    RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,TP);
+                    RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,neuronInGroup,TP);
+                end
+                
+                if recordstdpvars
+                    RecVar = updateSTDPVarsRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,neuronInGroup,TP);
                 end
                 
             end
@@ -357,12 +366,27 @@ spmd
                                 %connection. iSpkSynGroup is the presynaptic group.
                                 %on each lab we call bufferIncomingSpikes
                                 %to process each spike as arrives at its
-                                %postsynaptic neurons. 
 
                                 relative_preID = allSpike(iSpk) - TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
-                                bufferIncomingSpikes( ...
+                                %postsynaptic neurons. 
+
+%                                 if relative_preID == 279 && neuronInGroup(allSpike(iSpk)) == 3
+%                                     disp(['spike id: ' num2str(allSpike(iSpk))]);
+%                                     disp(['iSpkSynGroup: ' num2str(iSpkSynGroup)]);
+%                                     disp(['iPostGroup: ' num2str(iPostGroup)]);
+% 
+%                                     disp(getSTPVars(SynModel{iPostGroup, iSpkSynGroup},relative_preID,neuronInGroup(allSpike(iSpk))))
+%                                 end
+                                
+                                SynModel{iPostGroup, iSpkSynGroup} = bufferIncomingSpikes( ...
                                     SynModel{iPostGroup, iSpkSynGroup}, ...
                                     ind, wArr{allSpike(iSpk)}(inGroup),relative_preID,neuronInGroup(allSpike(iSpk)));
+                                
+%                                 if relative_preID == 279 && neuronInGroup(allSpike(iSpk)) == 3
+%                                     disp(getSTPVars(SynModel{iPostGroup, iSpkSynGroup},relative_preID,neuronInGroup(allSpike(iSpk))))
+% 
+%                                 end
+                                    
                             else
                                 bufferIncomingSpikes(SynModel{iPostGroup, iSpkSynGroup}, ind, ...
                                     wArr{allSpike(iSpk)}(inGroup));
@@ -394,11 +418,9 @@ spmd
                                     %update weights of connections from
                                     %spiking neuron to all in this
                                     %labgroup, only depedent on the post
-                                    %synaptic state
+                                    %synaptic state                                    
                                     wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs );
-                                    %Communicate weight change with other
-                                    %labs
-                                    %Receive weight change from other labs
+
                                     
                             end
                         end
@@ -415,6 +437,7 @@ spmd
                     postsynapticlocation = revSynArr{allSpike(iSpk),2};
                     preInGroup = neuronInGroup(presynaptic);
                      postGroup = neuronInGroup(allSpike(iSpk));
+                     processed = [];
                     %for each group get neurons presynaptic to the firing neuron
                     for iPreGroup = 1:TP.numGroups
                         
@@ -436,8 +459,10 @@ spmd
                             % each lab.
                           if ismember(allSpike(iSpk), subsetInLab)
                             relativeind =  IDMap.modelIDToCellIDMap(allSpike(iSpk));
-                            processAsPostSynSpike(SynModel{postGroup, iSpkSynGroup},relativeind);
-                          
+                            if ~ismember(iSpkSynGroup, processed)
+                                processAsPostSynSpike(SynModel{postGroup, iSpkSynGroup},relativeind);
+                                processed = [processed iSpkSynGroup];
+                            end
                             %logical array specifying which presynaptic
                             %neurons are in the current group
                             inGroup = preInGroup == iPreGroup;

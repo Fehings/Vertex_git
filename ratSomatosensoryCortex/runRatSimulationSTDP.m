@@ -7,20 +7,24 @@
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDP/';
 RecordingSettings.LFP = true;
-[meaX, meaY, meaZ] = meshgrid(500, 200, 200:300:2000);
+[meaX, meaY, meaZ] = meshgrid(1500:-100:800, 300, 2000:-200:300);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 %RecordingSettings.v_m = 1:100:33312;
-RecordingSettings.maxRecTime = 10000;
+RecordingSettings.maxRecTime = 2400;
 RecordingSettings.sampleRate = 2500;
 %RecordingSettings.weights_preN_IDs = 1:1:100;
-RecordingSettings.weights_arr = 1:32000:320000;
-RecordingSettings.v_m = 1:1:10000;
-RecordingSettings.weights_preN_IDs = 6000:1:6100;
+RecordingSettings.weights_arr = [1 25568 57600 70400];
+RecordingSettings.v_m = [6200:1:6500 39500:39600];
+RecordingSettings.weights_preN_IDs = [39500:39600];
+RecordingSettings.stdpvars = [6200:1:6500 39500:39600];
+ RecordingSettings.I_syn = [6200:1:6500];
+% RecordingSettings.v_m = [18000:18200 81800:82000];
+% RecordingSettings.weights_preN_IDs = [81800:82000];
+% RecordingSettings.stdpvars = [18000:18200 81800:82000];
 %Simulation settings:
 %Keep max delay steps at 80, 
 %Simulation time can be varied, it is in milliseconds, currently running
@@ -30,7 +34,7 @@ RecordingSettings.weights_preN_IDs = 6000:1:6100;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 10001;
+SimulationSettings.simulationTime = 2401;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 

@@ -1,4 +1,4 @@
-function [figurehandle] = plotSpikeCounts(Results,t)
+function [p] = plotSpikeCounts(Results,t,NeuronInd, pars)
 
 % a function to plot the occurences of spikes over time.
 % will try to add more options in the future so that like plotSpikeRaster
@@ -8,7 +8,6 @@ function [figurehandle] = plotSpikeCounts(Results,t)
 % simulation run and reloaded with loadResults.
 % 
 % t should be a vector of [starttime, endtime]
-
 if exist('t','var')
     start = t(1);
     finish = t(2);
@@ -17,12 +16,18 @@ else
     finish = max(Results.spikes(:,2));
 end
 
-Spikes=Results.spikes(:,2);
+    
+
+Spikes=Results.spikes(Results.spikes(:,1)>NeuronInd(1) & Results.spikes(:,1)<NeuronInd(2),2);
 
 Spikes=Spikes(Spikes>start);
 Spikes=Spikes(Spikes<finish);
 
 [a,b] = hist(Spikes,unique(Spikes));
-figurehandle = plot(b,a,'Color','k');
+p = plot(b,a,'Color','k');
+
+if isfield(pars, 'color')
+    set(p,'Color',pars.color)
+end
 
 end

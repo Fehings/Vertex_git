@@ -26,7 +26,7 @@ for i = 1:length(ConnectivityNames)
             connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
             ConnectionParams(i).numConnectionsToAllFromOne{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier;
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
-            ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
+            %ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
             ConnectionParams(i).synapseType{j} = 'g_stp';
             ConnectionParams(i).tF{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
             ConnectionParams(i).tD{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){6});
@@ -364,17 +364,17 @@ excitatory = [1 6 7 8 13 14 15 16 21 22 23 24 25];
 inhibitory = [2 3 4 5 9 10 11 12 17 18 19 20 26 27 28 29];
 for i = excitatory
     for j = excitatory
-    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
-        ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j};
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*1.8;
+        ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j}*1.8;
     end
     for j = inhibitory
-    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
-        ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j};
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*1.2;
+        ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j}*1.2;
     end
 end
 for i = inhibitory
     for j = 1:length(ConnectionParams(i).weights)
-    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j};
+    	ConnectionParams(i).weights{j} = ConnectionParams(i).weights{j}*0.8;
         ConnectionParams(i).tau{j} = ConnectionParams(i).tau{j};
     end
 end

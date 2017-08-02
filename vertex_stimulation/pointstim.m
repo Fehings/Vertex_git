@@ -1,7 +1,7 @@
 function [ Ve ] = pointstim( fiberposition)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-stim_I = (-500 *10^-6);
+stim_I = (0.1 *10^-6);
 fiberx = fiberposition(1);
 fibery = fiberposition(2);
 fiberz = fiberposition(3);

@@ -187,12 +187,13 @@ NeuronParams(2).Input(1).stdInput = 50;
 % two groups. First we set the parameters for connections from group 1 (the
 % pyramidal cells) to itself:
 
-ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
-ConnectionParams(1).synapseType{1} = 'i_exp';
-ConnectionParams(1).targetCompartments{1} = {'basalID', ...
-                                             'apicalID'};
-ConnectionParams(1).weights{1} = 1;
-ConnectionParams(1).tau{1} = 2;
+ConnectionParams(1).numConnectionsToAllFromOne{1} = [1700, 500];
+ConnectionParams(1).synapseType{1} = {'i_exp' 'i_exp'};
+ConnectionParams(1).targetCompartments{1} = [{'basalID', ...
+                                             'apicalID'},{'basalID', ...
+                                             'apicalID'}];
+ConnectionParams(1).weights{1} = [1, 5];
+ConnectionParams(1).tau{1} = [2, 10];
 
 %%
 % Then the parameters for connections from group 1 to group 2 (the basket
@@ -257,7 +258,7 @@ RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 1000;
+RecordingSettings.sampleRate = 5000;
 
 SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
