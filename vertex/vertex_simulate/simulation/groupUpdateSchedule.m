@@ -22,9 +22,9 @@ end
 % update inputs
 if ~isempty(InModel)
     for iIn = 1:size(InModel, 2)
-        
-        updateInput(InModel{iGroup, iIn},NeuronModel{iGroup});  
-        
+        if ~isempty(InModel{iGroup,iIn})
+            updateInput(InModel{iGroup, iIn},NeuronModel{iGroup});  
+        end
     end
 end
 

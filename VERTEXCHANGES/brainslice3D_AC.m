@@ -23,7 +23,7 @@ h = pdegplot(model,'FaceLabels','on','FaceAlpha',0.5); % set up plotting paramet
 
 
 
-tlist=0:0.03125:(2*pi)/(2*pi*(40/1000)); % extract solutions for one period of the sine wave. 
+tlist=0:0.03125:(2*pi)/(2*pi*(60/1000)); % extract solutions for one period of the sine wave. 
 
 
     applyBoundaryCondition(model,'face',[3:6],'g',0.0,'q',0.0); % the outer model boundarys have no change in electric current, so it is always zero here and beyond?
@@ -70,14 +70,14 @@ u = result.NodalSolution; % so u is the solution
 
 %hold off
 % if model.IsTimeDependent
-    for i=1:length(tlist)
-        %figure
-        pdeplot3D(model,'ColorMapData', u(:,i));
-        view([0,100])
-        caxis([-1,1]) % colour bar scale, need to change this if increasing the amplitude
-        colorbar
-        Fu(i) = getframe(gcf);
-    end
+%     for i=1:length(tlist)
+%         %figure
+%         pdeplot3D(model,'ColorMapData', u(:,i));
+%         view([0,100])
+%         caxis([-1,1]) % colour bar scale, need to change this if increasing the amplitude
+%         colorbar
+%         Fu(i) = getframe(gcf);
+%     end
 % else
 %     pdeplot3D(model,'ColorMapData', u);
 % end
@@ -149,12 +149,12 @@ u = result.NodalSolution; % so u is the solution
 
 function bcMatrix = myrfun(~,state) 
 
-bcMatrix = 10*sin((2*pi*(40/1000))*state.time); %multiply state.time by the value set to B
+bcMatrix = 100*sin((2*pi*(60/1000))*state.time); %multiply state.time by the value set to B
 
 end
 
 function bcMatrix = myrfun2(~,state)
 
-bcMatrix = -10*sin(2*pi*(40/1000)*state.time); %multiply state.time by the value set to B
+bcMatrix = -100*sin(2*pi*(60/1000)*state.time); %multiply state.time by the value set to B
 
 end

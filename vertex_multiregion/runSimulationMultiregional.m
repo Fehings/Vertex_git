@@ -13,7 +13,10 @@ ROI_N = length(pS);
 
 %find delay steps for if distances have been included
 propSpeed=120; %mm/ms
+regionConnect.map
 regionConnect.map=ceil(regionConnect.map./(propSpeed*pS{1}.SimulationSettings.timeStep));
+regionConnect.map
+
 
 % Create shorthand names for the parameter structures in params
 % TP = params.TissueParams;
@@ -92,7 +95,7 @@ end
 
 
 
-for rn=1:ROI_N 
+for rn=1:ROI_N
     % Initialise the synapse models
     [SynapseModelArr{rn}, synMapCell{rn}] = setupSynapseDynamicVars(pS{rn}.TissueParams, pS{rn}.NeuronParams, pS{rn}.ConnectionParams, pS{rn}.SimulationSettings);
     
@@ -109,7 +112,7 @@ for rn=1:ROI_N
     [synapsesArrSim{rn}, weightArr{rn}] = prepareSynapsesAndWeights(pS{rn}.TissueParams,pS{rn}.ConnectionParams,pS{rn}.SimulationSettings,connectionStacked{rn});
     
     
-   
+    
     
     % Initialise the recording variables
     [pS{rn}.RecordingSettings, RecVar{rn}, lineSourceModCell{rn}] = ...
@@ -117,7 +120,7 @@ for rn=1:ROI_N
     
     
     
-   
+    
     
     
     
@@ -131,12 +134,12 @@ for rn=1:ROI_N
         if pS{rn}.SimulationSettings.parallelSim
             compartments = pS{rn}.TissueParams.compartmentlocations;
             CurrentNMA=NeuronModelArr{rn};
-           
+            
             spmd
                 subsetInLab = find(pS{rn}.SimulationSettings.neuronInLab==labindex());
                 %NeuronModelArr{rn} = get_compartment_midpoints(pS{rn}.TissueParams,NeuronModelArr{rn}, pS{rn}.SimulationSettings,compartments);
                 CurrentNMA = get_compartment_midpoints(pS{rn}.TissueParams,CurrentNMA, pS{rn}.SimulationSettings,compartments);
-
+                
                 
                 if isa(pS{rn}.TissueParams.StimulationField,'pde.TimeDependentResults')
                     for iGroup = 1:length(NeuronModelArr{rn})
@@ -291,7 +294,7 @@ for rn= 1:ROI_N
     end
     pS{rn}.TissueParams.exportNeuronIDs = exportingNeuronIDs{rn};
     pS{rn}.TissueParams.dummyNeuronIDs = dummyNeuronIDs{rn};
-
+    
 end
 
 clear rn rr
@@ -323,50 +326,50 @@ for simStep = 1:simulationSteps
         if pS{1}.SimulationSettings.parallelSim
             % IF IN PARALLEL MODE:
             
-                    % first establish the stimulation field, if there is one, as this is dependent on the current time value.
-        if isfield(pS{rgn}.TissueParams, 'StimulationField')
-            current_time = simStep * pS{rgn}.SimulationSettings.timeStep;
-            
-            if current_time > pS{rgn}.TissueParams.StimulationOn(stimcount) && current_time < pS{rgn}.TissueParams.StimulationOff(stimcount)
-                for iGroup = 1:pS{rgn}.TissueParams.numGroups
-                    
-                    if  ~NeuronModelArr{rgn}.incorporate_vext
-                        stimulationOn(NeuronModelArr{rn}{iGroup});
+            % first establish the stimulation field, if there is one, as this is dependent on the current time value.
+            if isfield(pS{rgn}.TissueParams, 'StimulationField')
+                current_time = simStep * pS{rgn}.SimulationSettings.timeStep;
+                
+                if current_time > pS{rgn}.TissueParams.StimulationOn(stimcount) && current_time < pS{rgn}.TissueParams.StimulationOff(stimcount)
+                    for iGroup = 1:pS{rgn}.TissueParams.numGroups
+                        
+                        if  ~NeuronModelArr{rgn}.incorporate_vext
+                            stimulationOn(NeuronModelArr{rn}{iGroup});
+                        end
+                        % For time varying stimulation, step through the time
+                        % dimension of the vext matrix for each simStep where
+                        % stimulation is active. The vext matrix should have
+                        % been previously interpolated in runSimulation.
+                        if isa(pS{rgn}.TissueParams.StimulationField, 'pde.TimeDependentResults')
+                            setVext(NeuronModelArr{rgn}{iGroup},pS{rgn}.NeuronParams(iGroup).V_ext_mat(:,:,timeStimStep));
+                        elseif isfield(pS{rgn}.TissueParams, 'tRNS')
+                            setVext(NeuronModelArr{rgn}{iGroup},NeuronModelArr{rgn}{iGroup}.v_ext*pS{rgn}.TissueParams.tRNS);
+                        end
+                        
                     end
-                    % For time varying stimulation, step through the time
-                    % dimension of the vext matrix for each simStep where
-                    % stimulation is active. The vext matrix should have
-                    % been previously interpolated in runSimulation.
-                    if isa(pS{rgn}.TissueParams.StimulationField, 'pde.TimeDependentResults')
-                        setVext(NeuronModelArr{rgn}{iGroup},pS{rgn}.NeuronParams(iGroup).V_ext_mat(:,:,timeStimStep));
-                    elseif isfield(pS{rgn}.TissueParams, 'tRNS')
-                        setVext(NeuronModelArr{rgn}{iGroup},NeuronModelArr{rgn}{iGroup}.v_ext*pS{rgn}.TissueParams.tRNS);
+                    if isfield(pS{rgn}.TissueParams, 'tRNS')
+                        pS{rgn}.TissueParams.tRNS = wgn(1,1,0); % generate a new random number for tRNS.
                     end
-                    
-                end
-                if isfield(pS{rgn}.TissueParams, 'tRNS')
-                    pS{rgn}.TissueParams.tRNS = wgn(1,1,0); % generate a new random number for tRNS.
-                end
-                timeStimStep = timeStimStep+1;
-                % reset timeStimStep if it gets passed the length of the
-                % time dimension in the stimulation field, this will loop
-                % back to the beginning of the time varying stimulation.
-                if timeStimStep > size(pS{rgn}.TissueParams.StimulationField.NodalSolution,2)
-                    timeStimStep = 1;
-                end
-            elseif current_time > pS{rgn}.TissueParams.StimulationOff(stimcount)
-                for iGroup = 1:pS{rgn}.TissueParams.numGroups
-                    if  NeuronModelArr{rgn}{iGroup}.incorporate_vext
-                        stimulationOff(NeuronModelArr{rgn}{iGroup});
+                    timeStimStep = timeStimStep+1;
+                    % reset timeStimStep if it gets passed the length of the
+                    % time dimension in the stimulation field, this will loop
+                    % back to the beginning of the time varying stimulation.
+                    if timeStimStep > size(pS{rgn}.TissueParams.StimulationField.NodalSolution,2)
+                        timeStimStep = 1;
                     end
-                    if stimcount < length(pS{rgn}.TissueParams.StimulationOn)
-                        stimcount = stimcount+1;
+                elseif current_time > pS{rgn}.TissueParams.StimulationOff(stimcount)
+                    for iGroup = 1:pS{rgn}.TissueParams.numGroups
+                        if  NeuronModelArr{rgn}{iGroup}.incorporate_vext
+                            stimulationOff(NeuronModelArr{rgn}{iGroup});
+                        end
+                        if stimcount < length(pS{rgn}.TissueParams.StimulationOn)
+                            stimcount = stimcount+1;
+                        end
                     end
                 end
             end
-        end
             
-           
+            
             
             
             [NeuronModelArr{rgn}, SynapseModelArr{rgn}, InputModelArr{rgn},S{rgn},RecVar{rgn},weightArr{rgn}] = simulateParallelMultiregion(pS{rgn}.TissueParams, pS{rgn}.NeuronParams, pS{rgn}.SimulationSettings, pS{rgn}.RecordingSettings, NeuronIDMap{rgn}, NeuronModelArr{rgn}, ...
@@ -381,7 +384,8 @@ for simStep = 1:simulationSteps
                 for lb = 1:length(NeuronModelArr{rgn}) % for each lab
                     NMA_copy=NeuronModelArr{rgn}{lb}; % cloning the current region and lab neuron model to a placeholder so it can be accessed and edited
                     IDsinLab=neuronIDs(nlab==lb);
-                    currentSpikes=[currentSpikes;NMA_copy{regionConnect.exportingNeuronPops{rgn}}.spikes(ismember(IDsinLab,exportingNeuronIDs{rgn}))]; % find spikes from neurons which can export to the other region
+                    currentSpikes=[currentSpikes;
+                        NMA_copy{regionConnect.exportingNeuronPops{rgn}}.spikes(ismember(IDsinLab,exportingNeuronIDs{rgn}))]; % find spikes from neurons which can export to the other region
                     %NB: the order of spikes here will be muddled up, but
                     %should be the same each time at least. The dummy
                     %neurons don't need an exact correspondence to the
@@ -397,7 +401,7 @@ for simStep = 1:simulationSteps
                     for lb=1:length(NeuronModelArr{rgn})
                         NMA_rr = NeuronModelArr{rr}{lb}; % cloning the connected region and lab neuron model to a placeholder so it can be accessed and edited
                         IDsinLab=neuronIDs(nlab_rr==lb);
-                        numDummyNeuronsInLab=sum(ismember(dummyNeuronIDs{rr},IDsinLab));                    
+                        numDummyNeuronsInLab=sum(ismember(dummyNeuronIDs{rr},IDsinLab));
                         assignSpikes(NMA_rr{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes{rgn}{rr}(labDummyCount:labDummyCount+numDummyNeuronsInLab-1,delayAccess{rgn,rr}));
                         labDummyCount=labDummyCount+numDummyNeuronsInLab;
                         NeuronModelArr{rgn}{lb}=NMA_rr;
@@ -414,61 +418,61 @@ for simStep = 1:simulationSteps
                     end
                     if delayAccess{rgn,rr}>regionConnect.map(rgn,rr)
                         delayAccess{rgn,rr}=1;
-                    end  
+                    end
                     
-                    clear lb 
+                    clear lb
                 end
             end
-               clear currentSpikes 
+            clear currentSpikes
             
             
         else
             % IF IN SERIAL MODE:
             
             
-                    % first establish the stimulation field, if there is one, as this is dependent on the current time value.
-        if isfield(pS{rgn}.TissueParams, 'StimulationField')
-            current_time = simStep * pS{rgn}.SimulationSettings.timeStep;
-            
-            if current_time > pS{rgn}.TissueParams.StimulationOn(stimcount) && current_time < pS{rgn}.TissueParams.StimulationOff(stimcount)
-                for iGroup = 1:pS{rgn}.TissueParams.numGroups
-                    if  ~NeuronModelArr{rgn}{iGroup}.incorporate_vext
-                        stimulationOn(NeuronModelArr{rgn}{iGroup});
+            % first establish the stimulation field, if there is one, as this is dependent on the current time value.
+            if isfield(pS{rgn}.TissueParams, 'StimulationField')
+                current_time = simStep * pS{rgn}.SimulationSettings.timeStep;
+                
+                if current_time > pS{rgn}.TissueParams.StimulationOn(stimcount) && current_time < pS{rgn}.TissueParams.StimulationOff(stimcount)
+                    for iGroup = 1:pS{rgn}.TissueParams.numGroups
+                        if  ~NeuronModelArr{rgn}{iGroup}.incorporate_vext
+                            stimulationOn(NeuronModelArr{rgn}{iGroup});
+                        end
+                        % For time varying stimulation, step through the time
+                        % dimension of the vext matrix for each simStep where
+                        % stimulation is active. The vext matrix should have
+                        % been previously interpolated in runSimulation.
+                        if isa(pS{rgn}.TissueParams.StimulationField, 'pde.TimeDependentResults')
+                            setVext(NeuronModelArr{rgn}{iGroup},pS{rgn}.NeuronParams(iGroup).V_ext_mat(:,:,timeStimStep));
+                        elseif isfield(pS{rgn}.TissueParams, 'tRNS')
+                            setVext(NeuronModelArr{rgn}{iGroup},NeuronModelArr{rgn}{iGroup}.v_ext*pS{rgn}.TissueParams.tRNS);
+                        end
+                        
                     end
-                    % For time varying stimulation, step through the time
-                    % dimension of the vext matrix for each simStep where
-                    % stimulation is active. The vext matrix should have
-                    % been previously interpolated in runSimulation.
-                    if isa(pS{rgn}.TissueParams.StimulationField, 'pde.TimeDependentResults')
-                        setVext(NeuronModelArr{rgn}{iGroup},pS{rgn}.NeuronParams(iGroup).V_ext_mat(:,:,timeStimStep));
-                    elseif isfield(pS{rgn}.TissueParams, 'tRNS')
-                        setVext(NeuronModelArr{rgn}{iGroup},NeuronModelArr{rgn}{iGroup}.v_ext*pS{rgn}.TissueParams.tRNS);
+                    if isfield(pS{rgn}.TissueParams, 'tRNS')
+                        pS{rgn}.TissueParams.tRNS = wgn(1,1,0); % generate a new random number for tRNS.
                     end
-                    
-                end
-                if isfield(pS{rgn}.TissueParams, 'tRNS')
-                    pS{rgn}.TissueParams.tRNS = wgn(1,1,0); % generate a new random number for tRNS.
-                end
-                timeStimStep = timeStimStep+1;
-                % reset timeStimStep if it gets passed the length of the
-                % time dimension in the stimulation field, this will loop
-                % back to the beginning of the time varying stimulation.
-                if timeStimStep > size(pS{rgn}.TissueParams.StimulationField.NodalSolution,2)
-                    timeStimStep = 1;
-                end
-            elseif current_time > pS{rgn}.TissueParams.StimulationOff(stimcount)
-                for iGroup = 1:pS{rgn}.TissueParams.numGroups
-                    if  NeuronModelArr{rgn}{iGroup}.incorporate_vext
-                        stimulationOff(NeuronModelArr{rgn}{iGroup});
+                    timeStimStep = timeStimStep+1;
+                    % reset timeStimStep if it gets passed the length of the
+                    % time dimension in the stimulation field, this will loop
+                    % back to the beginning of the time varying stimulation.
+                    if timeStimStep > size(pS{rgn}.TissueParams.StimulationField.NodalSolution,2)
+                        timeStimStep = 1;
                     end
-                    if stimcount < length(pS{rgn}.TissueParams.StimulationOn)
-                        stimcount = stimcount+1;
+                elseif current_time > pS{rgn}.TissueParams.StimulationOff(stimcount)
+                    for iGroup = 1:pS{rgn}.TissueParams.numGroups
+                        if  NeuronModelArr{rgn}{iGroup}.incorporate_vext
+                            stimulationOff(NeuronModelArr{rgn}{iGroup});
+                        end
+                        if stimcount < length(pS{rgn}.TissueParams.StimulationOn)
+                            stimcount = stimcount+1;
+                        end
                     end
                 end
             end
-        end
-        
-        
+            
+            
             
             [NeuronModelArr{rgn}, SynapseModelArr{rgn}, InputModelArr{rgn}, iterator(rgn),S{rgn},RecVar{rgn},weightArr{rgn}] = simulateMultiregional(pS{rgn}.TissueParams, pS{rgn}.NeuronParams, pS{rgn}.SimulationSettings,...
                 pS{rgn}.RecordingSettings, S{rgn}, iterator(rgn), simStep, revSynArr{rgn}, NeuronIDMap{rgn}, NeuronModelArr{rgn}, ...
@@ -482,18 +486,19 @@ for simStep = 1:simulationSteps
             %spikes to the recieving regions.
             if sum(regionConnect.map(rgn,:)>0) %check if the current region has an outbound connection
                 %update the spikes by putting these into the recieving region.
-               
+                
                 currentSpikes=NeuronModelArr{rgn}{regionConnect.exportingNeuronPops{rgn}}.spikes(exportingNeuronIDs{rgn}); % find spikes from neurons which can export to the other region
                 
                 for rr = find(regionConnect.map(rgn,:)) % for all regions recieving connections from the current region
                     exportingNeuronSpikes{rgn}{rr}(:,delayCounter{rgn,rr})=currentSpikes;
                     
-                    if sum(sum(exportingNeuronSpikes{rgn}{rr}))>0 % don't bother assigning spikes unless there are some to assign!
-                      
-                    assignSpikes(NeuronModelArr{rr}{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes{rgn}{rr}(:,delayAccess{rgn,rr}));
-                    
-
-                    end
+                    %if sum(sum(exportingNeuronSpikes{rgn}{rr}))>0 % don't bother assigning spikes unless there are some to assign!
+                        
+                        assignSpikes(NeuronModelArr{rr}{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes{rgn}{rr}(:,delayAccess{rgn,rr}));
+                
+                        
+                        % do I need an else assign spikes to zero?
+                    %end
                     % NB: the assignSpikes method is unique to passive
                     % neurons, so the dummy neurons must have passive
                     % dynamics for this to work.
@@ -505,7 +510,7 @@ for simStep = 1:simulationSteps
                     end
                     if delayAccess{rgn,rr}>regionConnect.map(rgn,rr)
                         delayAccess{rgn,rr}=1;
-                    end     
+                    end
                 end
             end
         end

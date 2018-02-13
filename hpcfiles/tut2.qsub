@@ -1,0 +1,11 @@
+#!/bin/bash
+#$ -cwd
+#$ -S /bin/bash
+#$ -l h_vmem=16G
+#$ -pe threaded 8
+echo Starting job
+echo pwd
+module load matlab/R2016a
+export MATLABPATH=/home/a6028564/Vertex
+matlab -nodesktop -nosplash -r tutorial_2_stim
+echo Finishing job

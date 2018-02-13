@@ -1,4 +1,4 @@
-function [figHandle] = compareLFPbyLayer(ResultStacked,t)
+function [ha] = compareLFPbyLayer(ResultStacked,t)
 %
 %ResultStacked should be an array of results structures as produced by the
 %loadResults command, in the form here of [Results1,Results2,...] which
@@ -31,20 +31,22 @@ end
 
 numL = max(max(elecLayers)); % number of layers
 
-colours=['k','m','b','r','c','y','g'];
+%colours=['k','m','b','r','c','y','g'];
 
 figure('Color',[1 1 1]);
 
+
+colours = abs(rand(length(ResultStacked),3));
 
 
 for i=1:numL
     
     subplot(numL,1,i)
     for rr = 1:length(ResultStacked)
-        plot(mean(ResultStacked(rr).LFP(elecLayers(:,rr)==i,start:finish)),'Color',colours(rr))
+        plot(mean(ResultStacked(rr).LFP(elecLayers(:,rr)==i,start:finish)),'Color',colours(rr,:))
         hold on
     end
-    hold off
+    %hold off
     legend('show')
     xlabel('time (ms)','FontSize',16)
     ylabel('mv','FontSize',16)
@@ -56,6 +58,8 @@ end
 ha = axes('Position',[0 0 1 1],'Xlim',[0 1],'Ylim',[0 1],'Box','off','Visible','off','Units','normalized', 'clipping' , 'off');
 
 text(0.5, 1,'\bf Comparison of LFP averaged by layer ','HorizontalAlignment','center','VerticalAlignment', 'top','FontSize',20)
+
+
 
 
 end

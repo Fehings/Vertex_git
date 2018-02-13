@@ -61,12 +61,19 @@ for iGroup = 1:TP.numGroups
         
         
     end
-    
+   
+    if isfield(RS,'LFP_janrit')
+            RecVar = ...
+                updateLFPRecording(RS,NeuronModel,RecVar,lineSourceModCell,iGroup,iterator.recTimeCounter);
+           
+    end
+
+   
 end % for each group
 
 % increment the recording sample counter
 if simStep == RS.samplingSteps(iterator.sampleStepCounter)
-    recTimeCounter = iterator.recTimeCounter + 1;
+    iterator.recTimeCounter = iterator.recTimeCounter + 1;
     
     % Only increment sampleStepCounter if this isn't the last scheduled
     % recording step

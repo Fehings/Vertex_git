@@ -9,7 +9,7 @@
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
-addpath(genpath('~/Vertex_jun2017'))
+addpath(genpath('~/Vertex'))
 
 TissueParams.X = 2500;
 TissueParams.Y = 400;

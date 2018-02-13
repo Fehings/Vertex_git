@@ -1,4 +1,4 @@
-function [NeuronModel, SynModel, InModel, numSaves] = simulate(TP, NP, SS, RS, IDMap, ...
+function [NeuronModel, SynModel, InModel, numSaves, RecVar] = simulate(TP, NP, SS, RS, IDMap, ...
     NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves)
 
 outputDirectory = RS.saveDir;
@@ -363,7 +363,7 @@ for simStep = 1:simulationSteps
         disp(num2str(simStep * SS.timeStep));
     end
     if simStep == RS.dataWriteSteps(numSaves)
-        if spikeRecCounter-1 ~= length(RecVar.spikeRecording)
+        if spikeRecCounter-1 ~= length(RecVar.spikeRecording) && ~isfield(SS,'optimisation')
             RecVar.spikeRecording{end} = {[], []};
             
         end
@@ -389,7 +389,7 @@ for simStep = 1:simulationSteps
     end
     
 end % end of simulation time loop
-if isfield(RS,'LFPoffline') && RS.LFPoffline
+if isfield(RS,'LFPoffline') && RS.LFPoffline 
     save(outputDirectory, 'LineSourceConsts.mat', lineSourceModCell);
 end
 end

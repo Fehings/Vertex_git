@@ -9,9 +9,9 @@
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
-addpath(genpath('~/Vertex_jun2017'))
+addpath(genpath('~/Vertex'));
 
-TissueParams.X = 2500;
+TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 1240;
 TissueParams.neuronDensity = 30000;
@@ -21,9 +21,10 @@ TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
 
-%TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
+%TissueParams.StimulationField = invitroSliceStim('catvisblend1.stl',100);
 %TissueParams.StimulationOn = [10 40];
 %TissueParams.StimulationOff = [15 45];
+
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
 % use the neuron models described in (Tomsett et al. 2014) for layer 2/3
@@ -191,7 +192,8 @@ NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 ConnectionParams(1).synapseType{1} = 'i_exp';
-ConnectionParams(1).targetCompartments{1} = {'basalID','apicalID'};
+ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
+                                             NeuronParams(1).apicalID];
 ConnectionParams(1).weights{1} = 2.5;
 ConnectionParams(1).tau{1} = 2;
 
@@ -201,7 +203,7 @@ ConnectionParams(1).tau{1} = 2;
 
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
 ConnectionParams(1).synapseType{2} = 'i_exp';
-ConnectionParams(1).targetCompartments{2} = {'dendritesID'};
+ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(1).weights{2} = 28;
 ConnectionParams(1).tau{2} = 1;
 
@@ -220,13 +222,13 @@ ConnectionParams(1).synapseReleaseDelay = 0.5;
 
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'i_exp';
-ConnectionParams(2).targetCompartments{1} = {'somaID'};
+ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
 ConnectionParams(2).weights{1} = -0.5;
 ConnectionParams(2).tau{1} = 6;
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
 ConnectionParams(2).synapseType{2} = 'i_exp';
-ConnectionParams(2).targetCompartments{2} ={'dendritesID'};
+ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(2).weights{2} = -4;
 ConnectionParams(2).tau{2} = 3;
 
@@ -249,21 +251,20 @@ ConnectionParams(2).synapseReleaseDelay = 0.5;
 % tutorial. Note that the simulation will take longer to run than in
 % tutorial 1, as the AdEx dyamics add complexity to the calculations.
 
-RecordingSettings.saveDir = '~/VERTEX_Results/tut2nostim30kneuDen';
+RecordingSettings.saveDir = '~/Vertex_Results/tut2_nostim_neuDens30k';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(0:100:2000, 200, 600:-300:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:2:1000;
+RecordingSettings.v_m = 1:400:2000;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 5000;
 
 SimulationSettings.simulationTime = 5000;
 SimulationSettings.timeStep = 0.025;
 SimulationSettings.parallelSim = true;
-SimulationSettings.onTopsy = true;
 control.stim = true;
 
 %% Generate the network
@@ -312,7 +313,7 @@ NeuronModelArr = runSimulation(params, connections, electrodes);
 %rasterParams.xlabel = 'Time (ms)';
 %rasterParams.ylabel = 'Neuron ID';
 %rasterParams.figureID = 2;
-%
+
 %rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 %%
@@ -330,7 +331,7 @@ NeuronModelArr = runSimulation(params, connections, electrodes);
 %title('Tutorial 2: LFP at all electrodes', 'FontSize', 16)
 %xlabel('Time (ms)', 'FontSize', 16)
 %ylabel('LFP (mV)', 'FontSize', 16)
-%
+
 %%
 % Plotting the LFP from all electrodes also reveals a phase inversion,
 % which depends on the location of the electrodes in relation to the

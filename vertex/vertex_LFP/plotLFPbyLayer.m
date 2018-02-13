@@ -19,7 +19,7 @@ numL = max(elecLayers); % number of layers
 
 colours=['k','m','b','r','c','y','g'];
 
-figure('Color',[1 1 1]);
+%figure('Color',[1 1 1]);
 
 for i=1:numL
     layerLFP(:,i)=mean(Results.LFP(elecLayers==i,start:finish));

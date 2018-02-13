@@ -7,7 +7,7 @@
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice_0MG_PPms/';
+RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice_0MG_PPms/weightfreeze100ms';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1500:-100:800, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;

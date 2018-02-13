@@ -4,7 +4,7 @@
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
-TissueParams.X = 2500;
+TissueParams.X = 1500;
 TissueParams.Y = 400;
 TissueParams.Z = 200;
 TissueParams.neuronDensity = 25000;
@@ -241,6 +241,6 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 250:250:4750;
+RecordingSettings.v_m = 100:1000:4100;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;

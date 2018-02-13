@@ -70,7 +70,7 @@ SimulationSettings.parallelSim = false;
          
 %%  
  % defining the between region connectivity here:
- regionConnect.map = [0,1000,0; 0,0,1000; 0,0,0];%[0,100;0,0];%
+ regionConnect.map = [0,1,0; 0,0,1; 1,0,0];%[0,100;0,0];%
  % for example [1,1;0,1] there are two regions and there is only an
  % external connection from region 1 to region 2, it is not returned, and
  % while they do connect to themselves internally for the sake of incoming external

@@ -165,7 +165,7 @@ spmd
             %time start time then turn on.
             
             if current_time > TP.StimulationOn(stimcount) && current_time < TP.StimulationOff(stimcount)
-                disp('Stimulation on')
+                %disp('Stimulation on')
                 for iGroup = 1:TP.numGroups
                     if  ~NeuronModel{iGroup}.incorporate_vext
                         stimulationOn(NeuronModel{iGroup});
