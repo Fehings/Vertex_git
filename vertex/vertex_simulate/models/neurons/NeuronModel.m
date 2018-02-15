@@ -60,30 +60,18 @@ classdef NeuronModel < handle
      %max(max(NM.I_ax))
       
       if NM.incorporate_vext
-          for iTree = 1:NM.treeChildren %3
+            %tree children is max number of children (neighbours) a node can have
+            %so vectorised over all compartments for each connecting neighbour
+          for iTree = 1:NM.treeChildren
               %Additional Axial current caused by temporary v_ext change is proportional to the difference between the
               %external potential in adjacent compartments
+              
               NM.I_ax(:, N.adjCompart{iTree}(1, :)) = ...
                   NM.I_ax(:, N.adjCompart{iTree}(1, :)) + ...
                   bsxfun(@times, N.g_ax{iTree}, ...
                   (NM.v_ext(:, N.adjCompart{iTree}(1, :)) - ...
                   NM.v_ext(:, N.adjCompart{iTree}(2, :))));
               
-%               disp('with the added v_ext')
-%               max(max(NM.I_ax(:,N.adjCompart{iTree}(1,:))))
-%               disp('max v_ext incoming(?)')
-%               max(max(NM.v_ext(:, N.adjCompart{iTree}(1, :))))
-%                disp('max v_ext outgoing(?)')
-%               max(max(NM.v_ext(:, N.adjCompart{iTree}(2, :))))
-%               disp('N.g_ax')
-%               max(N.g_ax{iTree})
-              
-              if isnan(NM.I_ax)
-                  error('NaNs in the axial currents')
-              end
-              if isinf(NM.I_ax)
-                  error('NaNs in the axial currents')
-              end
           end
       end
 
@@ -112,6 +100,10 @@ classdef NeuronModel < handle
     NM.v_ext = V_ext;
     NM.v_ext(NM.v_ext>100) = 100;
     NM.v_ext(NM.v_ext<-100) = -100;
+    if size(NM.v_ext) ~= size(NM.I_ax)
+        error('V_ext not the same size as I_ax');
+    end
+
   end
   
   function stimulationOn(NM)

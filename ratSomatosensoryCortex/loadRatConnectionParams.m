@@ -1,5 +1,5 @@
 volumemultiplier = ((TissueParams.X/1000)*(TissueParams.Y/1000)*(TissueParams.Z/1000))/0.31;
-%volumemultiplier = 1;
+volumemultiplier = 1;
 
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 

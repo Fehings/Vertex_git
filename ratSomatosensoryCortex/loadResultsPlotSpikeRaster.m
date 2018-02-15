@@ -2,12 +2,20 @@
 RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/VERTEX_rat_somatosensory_slice_0MG_PP300ms/';
 RecordingSettings.saveDir = '~/VERTEX_TOPSY/VERTEX_rat_somatosensory_slice_50msPP/';
 %RecordingSettings.saveDir = '~/VERTEXResults/27Jun/VERTEX_rat_somatosensory_slice_0MG_PPms/';
-RecordingSettings.saveDir = '/data/Results/SinglePulse/SinglePulseTrueConn/VERTEX_rat_somatosensory_sliceSinglePulse500mV';
+RecordingSettings.saveDir = '/data/Results/SinglePulseAugust/SinglePulseincreasedconnectivity/VERTEX_rat_somatosensory_sliceSinglePulse500mV';
 %RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDPLTP/';
+%RecordingSettings.saveDir = '/data/Results/STDP/HBPdataTBS/VERTEX_rat_somatosensory_sliceSTDPLTP';
 %RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSinglePulse500mV';
-
-%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/VERTEX_rat_somatosensory_slice_0MG_Spontaneous3/';
-%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Jobs/VERTEX_rat_somatosensory_slice_0MG_100msPP';
+%RecordingSettings.saveDir = '/data/Results/STDP/HBPdataTBS/VERTEX_rat_somatosensory_sliceSTDPLTP';
+RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDPLTP/';
+%RecordingSettings.saveDir = '~/VERTEXResults/August/VERTEX_rat_somatosensory_slice_100msPP';
+%RecordingSettings.saveDir = '/home/chris/VERTEX_TOPSY/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
+%RecordingSettings.saveDir = '/data/HPC_Julia/finalresult/VERTEX_rat_somatosensory_slice12sfw';
+%RecordingSettings.saveDir = '/data/Spontaneous/VERTEX_rat_somatosensory_slice_0MGLSP';
+%RecordingSettings.saveDir = '~/VERTEXResults/VERTEX_rat_somatosensory_slice12s';
+%RecordingSettings.saveDir = '/data/Results/STDP/HBPdataTBS/VERTEX_rat_somatosensory_sliceSTDPLTP';
+%RecordingSettings.saveDir = '//data/IEDsFullNetworkWithCurrentRec/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
+RecordingSettings.saveDir = '/data/pps/VERTEX_rat_somatosensory_slice_100msPP';
 Results = loadResults(RecordingSettings.saveDir);
 
 %make sure no figures are open to keep things tidy
@@ -22,6 +30,8 @@ rasterParams.colors = {'k','m','m','m','m','k','k','k','m','m','m','m','k','k','
 %which the neuron of a particular id (on the y axis) fired. 
 rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Spike Raster';
+
+
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
 N = Results.params.TissueParams.N;

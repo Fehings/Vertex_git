@@ -12,15 +12,15 @@ importGeometry(model,geometryloc);
 
 
  figure(1)
-% pdegplot(model,'FaceLabels', 'on')
+ %pdegplot(model,'FaceLabels', 'on')
 
 %figure(1)
-pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
+%pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
 %pdegplot(model,'FaceLabels', 'off','FaceAlpha',0.3)
 
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
-applyBoundaryCondition(model,'face',1:12,'g',0.0,'q',0.0); % for the
+%applyBoundaryCondition(model,'face',1:12,'g',0.0,'q',0.0); % for the
 
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
@@ -73,6 +73,20 @@ elseif isequal(geometryloc, '6layermodelstiml4placedinsmall.stl')
   applyBoundaryCondition(model,'face',5:12,'g',0.0,'q',0.0);
     applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
+elseif isequal(geometryloc, '6layermodelstiml23in.stl')
+    % dimensions of electrode in tissue: 14 * 14 * 200
+    % Volume: 39200 microns^3
+    % Position: x = 1160.25 - 1150 z = 1258.5 - 1269 y = 40.5 - 500
+  applyBoundaryCondition(model,'face',5:11,'g',0.0,'q',0.0);
+    applyBoundaryCondition(model,'face',[3,4,15,17,16],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
+elseif isequal(geometryloc, '6layermodelstiml56in.stl')
+    % dimensions of electrode in tissue: 14 * 14 * 200
+    % Volume: 39200 microns^3
+    % Position: x = 1160.25 - 1150 z = 1258.5 - 1269 y = 40.5 - 500
+  applyBoundaryCondition(model,'face',5:11,'g',0.0,'q',0.0);
+    applyBoundaryCondition(model,'face',[3,4,14,15,16],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[1,13,12,17,2],'h',1.0,'r',-stimstrength);
 else % boundaries for the default point stimulation geometry
     applyBoundaryCondition(model,'face',[2,11,12,1,16],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[4,14,3,13,15],'h',1.0,'r',-stimstrength);
@@ -92,8 +106,7 @@ disp(model.IsTimeDependent)
 result = solvepde(model);
 
 %  u = result.NodalSolution;
- figure(2)
- pdeplot3D(model,'ColorMapData', result.NodalSolution);
+ pdeplot3D(model,'ColorMapData', result.NodalSolution,'FaceAlpha',0.3);
 
 
 

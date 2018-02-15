@@ -22,10 +22,12 @@ Spikes=Results.spikes(Results.spikes(:,1)>NeuronInd(1) & Results.spikes(:,1)<Neu
 
 Spikes=Spikes(Spikes>start);
 Spikes=Spikes(Spikes<finish);
+nbins = diff([start finish]);
+N = diff(NeuronInd);
 
-[a,b] = hist(Spikes,unique(Spikes));
-p = plot(b,a,'Color','k');
-
+[a,b] = hist(Spikes,nbins);
+p = plot(b,(a*1000)./N,'Color','k');
+sum(a)
 if isfield(pars, 'color')
     set(p,'Color',pars.color)
 end

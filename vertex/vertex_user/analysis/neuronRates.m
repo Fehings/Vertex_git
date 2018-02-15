@@ -31,7 +31,6 @@ rates = zeros(Results.params.TissueParams.N, 1);
 tinterval = (tmax - tmin)/1000;
 
 for iN = 1:Results.params.TissueParams.N
-  disp(iN)
   neuronSpikes = sum(spikes(:,1)==iN);
   rates(iN) = neuronSpikes ./ tinterval;
 end

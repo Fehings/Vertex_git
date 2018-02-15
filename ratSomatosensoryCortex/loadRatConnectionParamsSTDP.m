@@ -24,7 +24,7 @@ for i = 1:length(ConnectivityNames)
         try
             connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
             ConnectionParams(i).numConnectionsToAllFromOne{j} = round(double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier);
-            ConnectionParams(i).synapseType{j} = 'g_stdp';
+            ConnectionParams(i).synapseType{j} = 'g_stdp_delays';
             ConnectionParams(i).weights{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4})/10;
             ConnectionParams(i).rate{j} = 0.05;

@@ -12,7 +12,7 @@ function [figureHandle] = viewMorphology(NP)
 %   % group 6, we do:
 %   viewMorphology(NeuronParams(6));
 
-figureHandle = figure();
+%figureHandle = figure();
 hold on;
 
 for iComp = 1:NP.numCompartments
@@ -22,7 +22,15 @@ for iComp = 1:NP.numCompartments
         'Color',[0,0,0], ...
         'LineWidth',NP.compartmentDiameterArr(iComp));
 end
-
+if isfield(NP, 'axonal')
+    for iComp = NP.axonal'
+        plot3(NP.compartmentXPositionMat(iComp,:), ...
+            NP.compartmentYPositionMat(iComp,:), ...
+            NP.compartmentZPositionMat(iComp,:), ...
+            'Color',[0,0,1], ...
+            'LineWidth',NP.compartmentDiameterArr(iComp));
+    end
+end
 set(gcf,'color','w');
 set(gca,'YDir','reverse');
 set(gca,'TickDir','out');

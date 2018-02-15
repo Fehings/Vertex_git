@@ -21,7 +21,9 @@ TissueParams.maxZOverlap = [-1 , -1];
 % TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100);
 % TissueParams.StimulationOn = [250:50:300000]; % Turn stimulation on at 50 ms
 % TissueParams.StimulationOff = [250.5:50:300001]; % Turn stimulation off at 55 ms
-
+TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
+TissueParams.StimulationOn = [10 40];
+TissueParams.StimulationOff = [15 45];
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
 % use the neuron models described in (Tomsett et al. 2014) for layer 2/3
@@ -195,29 +197,24 @@ INScaler = 0.8;
 % 
 % 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
-ConnectionParams(1).synapseType{1} = 'g_stdp';
+ConnectionParams(1).synapseType{1} = 'g_stdp_delays';
 ConnectionParams(1).targetCompartments{1} = {'basalID', ...
                                              'apicalID'};
  ConnectionParams(1).weights{1} = 0.05;
 ConnectionParams(1).tau{1} = 1;
-ConnectionParams(1).rate{1} = 0.01;
-ConnectionParams(1).tPre{1} = 2;
-ConnectionParams(1).tPost{1} = 10;
+ConnectionParams(1).rate{1} = 0.004;
+ConnectionParams(1).tPre{1} = 15;
+ConnectionParams(1).tPost{1} = 20;
 ConnectionParams(1).wmin{1} = 0;
 ConnectionParams(1).wmax{1} = 100;
 
 % 
 % 
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 600;
-ConnectionParams(1).synapseType{2} = 'g_stdp';
+ConnectionParams(1).synapseType{2} = 'g_exp';
 ConnectionParams(1).targetCompartments{2} = {'dendritesID'};
 ConnectionParams(1).weights{2} = 0.1;
 ConnectionParams(1).tau{2} = 1;
-ConnectionParams(1).rate{2} = 0.01;
-ConnectionParams(1).tPre{2} = 2;
-ConnectionParams(1).tPost{2} = 10;
-ConnectionParams(1).wmin{2} = 0;
-ConnectionParams(1).wmax{2} = 100;
 % 
 ConnectionParams(1).axonArborSpatialModel = 'gaussian';
 ConnectionParams(1).sliceSynapses = true;
@@ -231,26 +228,18 @@ ConnectionParams(1).E_reversal{2} = -0;
 % 
 % %GABA_B synapses
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
-ConnectionParams(2).synapseType{1} = 'g_stdp';
+ConnectionParams(2).synapseType{1} = 'g_exp';
 ConnectionParams(2).targetCompartments{1} = {'somaID'};
 ConnectionParams(2).weights{1} = 0.2;
 ConnectionParams(2).tau{1} = 3;
-ConnectionParams(2).rate{1} = 0.01;
-ConnectionParams(2).tPre{1} = 2;
-ConnectionParams(2).tPost{1} = 10;
-ConnectionParams(2).wmin{1} = 0;
-ConnectionParams(2).wmax{1} = 100;
+
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 600;
-ConnectionParams(2).synapseType{2} = 'g_stdp';
+ConnectionParams(2).synapseType{2} = 'g_exp';
 ConnectionParams(2).targetCompartments{2} = {'dendritesID'};
 ConnectionParams(2).weights{2} = 0.2;
 ConnectionParams(2).tau{2} = 6;
-ConnectionParams(2).rate{2} = 0.01;
-ConnectionParams(2).tPre{2} = 2;
-ConnectionParams(2).tPost{2} = 10;
-ConnectionParams(2).wmin{2} = 0;
-ConnectionParams(2).wmax{2} = 100;
+
 % 
 % 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
@@ -286,7 +275,7 @@ RecordingSettings.maxRecTime = 500;
 RecordingSettings.sampleRate = 1000;
 RecordingSettings.weights_preN_IDs = [1:5:1000, 4300:4500];
 RecordingSettings.weights_arr = [1000:1000:6000];
-SimulationSettings.simulationTime = 200;
+SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 

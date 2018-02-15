@@ -4,7 +4,8 @@ function [RecVar] = ...
 inGroup = RecVar.I_synRecCellIDArr(:, 2) == iGroup;
 
 if sum(inGroup) ~= 0
-  RecVar.I_synRecording(inGroup, :, recTimeCounter) = 0;
+  %RecVar.I_synRecording(inGroup, :, recTimeCounter) = 0;
+  %size(SynapseModel, 2)
   for iSynType = 1:size(SynapseModel, 2)
       if ~isempty(SynapseModel{iGroup, iSynType})
         RecVar.I_synRecording(inGroup, iSynType, recTimeCounter) = ...

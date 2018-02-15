@@ -7,6 +7,7 @@ for iPost = 1:TP.numGroups
   postSynDetails = cell(TP.numGroups,1);
   for iPre = 1:TP.numGroups
     model = lower(CP(iPre).synapseType{iPost});
+
     if ~isempty(model)
       params = eval(['SynapseModel_' model '.getRequiredParams();']);
       for iP = 1:length(params)
@@ -66,7 +67,7 @@ if SS.parallelSim
           preID_N = find(synMapCell{iPost}==iSynType);
               SynapseModelArr{iPost, iSynType} = ...
             constructor(NP(iPost),CP(preID), ...
-            SS,iPost, TP.numInGroupInLab(iPost, labindex()),numInGroup(preID_N), preID_N);
+            SS,iPost, TP.numInGroupInLab(iPost, labindex()),numInGroup(preID_N), preID_N, TP.groupBoundaryIDArr);
         else
           SynapseModelArr{iPost, iSynType} = [];
         end
@@ -85,7 +86,7 @@ else
         constructor = constructorCell{iPost, iSynType};
         
         SynapseModelArr{iPost, iSynType} = ...  
-          constructor(NP(iPost),CP(preID),SS,iPost,numInGroup(iPost),numInGroup(preID_N),preID_N);
+          constructor(NP(iPost),CP(preID),SS,iPost,numInGroup(iPost),numInGroup(preID_N),preID_N,TP.groupBoundaryIDArr);
       
       else
         SynapseModelArr{iPost, iSynType} = [];

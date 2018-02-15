@@ -1,4 +1,4 @@
-classdef SynapseModel_g_stp < SynapseModel
+classdef SynapseModel_g_stpnmda < SynapseModel
   %SynapseModel_g_exp Conductance-based single exponential synapses
   %   Parameters to set in ConnectionParams:
   %   - E_reversal, the reversal potential (in mV)
@@ -13,7 +13,9 @@ classdef SynapseModel_g_stp < SynapseModel
     tD
     E_reversal
     tau
+    tau_nmda
     g_exp
+    g_exp_nmda
     g_expEventBuffer
     bufferCount
     bufferMax
@@ -22,7 +24,7 @@ classdef SynapseModel_g_stp < SynapseModel
   end
   
   methods
-    function SM = SynapseModel_g_stp(Neuron, CP, SimulationSettings, ...
+    function SM = SynapseModel_g_stpnmda(Neuron, CP, SimulationSettings, ...
                                      postID, number_in_post,number_in_pre,pre_group_ids,~)
       SM = SM@SynapseModel(Neuron, number_in_post);
       SM.E_reversal = CP.E_reversal{postID};
@@ -31,6 +33,7 @@ classdef SynapseModel_g_stp < SynapseModel
       SM.facilitation = CP.facilitation{postID};
       SM.depression = CP.depression{postID};
       SM.tau = CP.tau{postID};
+      SM.tau_nmda = 150;
       SM.bufferCount = 1;
       SM.preBoundaryArr = [0; cumsum(number_in_pre)];
       disp(number_in_pre)
@@ -41,6 +44,7 @@ classdef SynapseModel_g_stp < SynapseModel
       %the weight of this is summed from all synapses onto the particular
       %compartment of the neuron for a particular group.
       SM.g_exp = zeros(number_in_post, numComparts);
+      SM.g_exp_nmda = zeros(number_in_post, numComparts);
       
       %STP is only dependent only on the firing of the presynaptic neuron
       %so we to store the facilitation and depression modifiers for only
@@ -64,7 +68,8 @@ classdef SynapseModel_g_stp < SynapseModel
     function SM = updateBuffer(SM)
         %Extract spike acumulator value at current buffer location
       SM.g_exp = SM.g_exp + SM.g_expEventBuffer(:, :, SM.bufferCount);
-          
+      SM.g_exp_nmda = SM.g_exp_nmda + SM.g_expEventBuffer(:, :, SM.bufferCount).*0.25;
+
       SM.g_expEventBuffer(:, :, SM.bufferCount) = 0;
       SM.bufferCount = SM.bufferCount + 1;
       
@@ -76,13 +81,20 @@ classdef SynapseModel_g_stp < SynapseModel
     function SM = updateSynapses(SM, NM, dt)
         
       % update synaptic currents
-      SM.I_syn = SM.g_exp .* (NM.v() - SM.E_reversal);
+      SM.I_syn = (SM.g_exp+SM.g_exp_nmda) .* (NM.v() - SM.E_reversal);
+          
       
       % update synaptic conductances
       kg = - SM.g_exp ./ SM.tau;
       k2g_in = SM.g_exp + 0.5 .* dt .* kg;
       kg = - k2g_in ./ SM.tau;
       SM.g_exp = SM.g_exp + dt .* kg;
+      
+      kg_n = - SM.g_exp_nmda ./ SM.tau_nmda;
+      k2g_in_n = SM.g_exp_nmda + 0.5 .* dt .* kg_n;
+      kg_n = - k2g_in_n ./ SM.tau_nmda;
+      SM.g_exp_nmda = SM.g_exp_nmda + dt .* kg_n;
+      
       SM.F = SM.F + ((1 - SM.F)./SM.tF).*dt;
       SM.D = SM.D + ((1 - SM.D)./SM.tD).*dt;
       %size(SM.F)
@@ -102,7 +114,7 @@ classdef SynapseModel_g_stp < SynapseModel
         SM.F(preInd) = SM.facilitation + SM.F(preInd);
         SM.D(preInd) = SM.depression * SM.D(preInd);
         SM.g_expEventBuffer(synIndeces) = ...
-            SM.g_expEventBuffer(synIndeces) + (weightsToAdd).*(SM.F(preInd) * SM.D(preInd) );
+            SM.g_expEventBuffer(synIndeces) + ((weightsToAdd) .*(SM.F(preInd) * SM.D(preInd)));
        
         
         %Add the weights multiplied by the plasticity variables to the
@@ -114,6 +126,8 @@ classdef SynapseModel_g_stp < SynapseModel
     function SM = randomInit(SM, g_mean, g_std)
       SM.g_exp = g_std .* randn(size(SM.g_exp)) + g_mean;
       SM.g_exp(SM.g_exp < 0) = 0;
+      
+      
     end
     
     function g = get.g_exp(SM)

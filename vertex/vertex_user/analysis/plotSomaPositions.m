@@ -79,10 +79,6 @@ for iGroup=1:TP.numGroups
         pars.markers{iGroup},'MarkerSize', 8, ...
         'MarkerEdgeColor', pars.colors{iGroup}, ...
         'MarkerFaceColor', pars.colors{iGroup});
-    if ~isempty(p)
-        disp(['setting opacity for group: ' num2str(iGroup)]);
-        p.Color(4)= pars.opacity;
-    end
 end
 
 hold off

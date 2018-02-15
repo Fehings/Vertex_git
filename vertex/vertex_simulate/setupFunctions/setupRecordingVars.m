@@ -49,7 +49,7 @@ if SS.parallelSim
             preweightsRecLab = RS.weights_preN_IDs;
             weightsRec = cell(length(preweightsRecLab),1);
             for c = 1:length(weightsRec)
-                weightsRec{c} = ones(round(RS.maxRecSamples),length(wArr{preweightsRecLab(c)}));
+                weightsRec{c} = zeros(round(RS.maxRecSamples),length(wArr{preweightsRecLab(c)}));
                 synapseIDs{c} = synArr{preweightsRecLab(c),1};
             end
             %RS.v_m=floor(RS.v_m);
@@ -71,8 +71,8 @@ else
     
     weightsRec = cell(length(preweightsRecLab),1);
     for c = 1:length(weightsRec)
-        weightsRec{c} = ones(round(RS.maxRecSamples),length(wArr{preweightsRecLab(c)}));
-        synapseIDs{c} = synArr{c,1};
+        weightsRec{c} = zeros(round(RS.maxRecSamples),length(wArr{preweightsRecLab(c)}));
+        synapseIDs{c} = synArr{preweightsRecLab(c),1};
     end
 
     RecordingVars.preweightsRecCellIDArr = RS.weights_preN_IDs;
@@ -178,7 +178,8 @@ else
     recordFac_syn = true;
    fac_synRecCellIDArr = IDMap.modelIDToCellIDMap(RS.fac_syn, :);
     numToRecordfac_syn = size(fac_synRecCellIDArr, 1);
-    fac_synRecording = zeros(numToRecordfac_syn, 2, round(RS.maxRecSamples));
+    fac_synRecording{1} = zeros(numToRecordfac_syn, TP.numGroups, round(RS.maxRecSamples));
+    fac_synRecording{2} = zeros(numToRecordfac_syn, TP.numGroups, round(RS.maxRecSamples));
     RecordingVars.fac_synRecCellIDArr = fac_synRecCellIDArr';
     RecordingVars.fac_synRecording = fac_synRecording;
   else
@@ -215,9 +216,12 @@ else
     recordstdpvars = true;
    stdpvarsRecCellIDArr = IDMap.modelIDToCellIDMap(RS.stdpvars, :);
     numToRecordstdpvars = size(stdpvarsRecCellIDArr, 1);
-    stdpvarsRecording = zeros(numToRecordstdpvars, 2, round(RS.maxRecSamples));
-    RecordingVars.stdpvarsRecCellIDArr = stdpvarsRecCellIDArr';
+    stdpvarsRecording{1} = zeros(numToRecordstdpvars, TP.numGroups, round(RS.maxRecSamples));
+    stdpvarsRecording{2} = zeros(numToRecordstdpvars, TP.numGroups, round(RS.maxRecSamples));
+    RecordingVars.stdpvarsRecCellIDArr = stdpvarsRecCellIDArr;
+    RecordingVars.stdpvarsRecModelIDArr = RS.stdpvars;
     RecordingVars.stdpvarsRecording = stdpvarsRecording;
+    
   else
     recordstdpvars = false;
   end
@@ -236,8 +240,7 @@ if SS.parallelSim
       p_I_synRecCellIDArr = ...
         IDMap.modelIDToCellIDMap(p_I_synRecModelIDArr, :);
       p_numToRecordI_syn = size(p_I_synRecModelIDArr, 1);
-      p_I_synRecording = zeros(p_numToRecordI_syn, TP.numGroups, round(RS.maxRecSamples));
-      
+      p_I_synRecording = zeros(p_numToRecordI_syn, size(synArr,2), round(RS.maxRecSamples));
       RecordingVars.I_synRecCellIDArr = p_I_synRecCellIDArr;
       RecordingVars.I_synRecording = p_I_synRecording;
     else
@@ -250,7 +253,8 @@ else
     recordI_syn = true;
     I_synRecCellIDArr = IDMap.modelIDToCellIDMap(RS.I_syn, :);
     numToRecordI_syn = size(I_synRecCellIDArr, 1);
-    I_synRecording = zeros(numToRecordI_syn, TP.numGroups, round(RS.maxRecSamples));
+    I_synRecording = zeros(numToRecordI_syn, size(synArr,2), round(RS.maxRecSamples));
+
     
     RecordingVars.I_synRecCellIDArr = I_synRecCellIDArr;
     RecordingVars.I_synRecording = I_synRecording;

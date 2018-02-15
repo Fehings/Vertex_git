@@ -35,10 +35,14 @@ if isfield(SS,'spikeLoad')
     end
   end
 end
+
 SS.stdp = false;
 for c = 1:length(CP)
     for cc = 1:length(CP(c).synapseType)
         if strcmp('g_stdp', CP(c).synapseType{cc})
+            SS.stdp = true;
+        end
+        if strcmp('g_stdp_delays', CP(c).synapseType{cc})
             SS.stdp = true;
         end
     end

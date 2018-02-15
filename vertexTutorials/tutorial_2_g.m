@@ -12,7 +12,7 @@
 % First we specify the same tissue parameters as in tutorial 1:
 
 TissueParams.X = 2500;
-TissueParams.Y = 400;
+TissueParams.Y = 500;
 TissueParams.Z = 200;
 TissueParams.neuronDensity = 25000;
 TissueParams.numLayers = 1;
@@ -119,7 +119,7 @@ NeuronParams(1).apicalID = [2 3 4 5];
 % reversal potential).
 
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput = 330;
+NeuronParams(1).Input(1).meanInput = 250;
 NeuronParams(1).Input(1).stdInput = 90;
 NeuronParams(1).Input(1).tau = 2;
 
@@ -195,7 +195,7 @@ ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 %Here we specify the synapse type, g_stp is the type for exponential
 %conductance based synapses with short term plasticity. 
 %g_exp is for the same synapses without plasticity. 
-ConnectionParams(1).synapseType{1} = 'g_stp';
+ConnectionParams(1).synapseType{1} = 'g_exp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
  ConnectionParams(1).weights{1} = 0.05;
@@ -208,26 +208,18 @@ ConnectionParams(1).tau{1} = 1;
 %facilitation. The depression value should also be between 1 and greater than 0 with 1
 %being no depression and small values being strong depression.
 %Depressing
-ConnectionParams(1).facilitation{1} = 0;
-ConnectionParams(1).depression{1} = 1;
-ConnectionParams(1).tD{1} = 670;
-ConnectionParams(1).tF{1} = 17;
+
 %%
 % Then the parameters for connections from group 1 to group 2 (the basket
 % interneurons):
 
 ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
-ConnectionParams(1).synapseType{2} = 'g_stp';
+ConnectionParams(1).synapseType{2} = 'g_exp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(1).weights{2} = 0.3;
 ConnectionParams(1).tau{2} = 1;
 %Depressing
-ConnectionParams(1).facilitation{2} = 0.8;
-ConnectionParams(1).depression{2} = 0.5;
 
-
-ConnectionParams(1).tD{2} =510;
-ConnectionParams(1).tF{2} = 180;
 %%
 % And then the generic parameters for connections from group 1:
 
@@ -243,27 +235,18 @@ ConnectionParams(1).E_reversal{2} = -0;
 % We repeat this process for connections from group 2:
 
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
-ConnectionParams(2).synapseType{1} = 'g_stp';
+ConnectionParams(2).synapseType{1} = 'g_exp';
 ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
 ConnectionParams(2).weights{1} = 0.2;
 ConnectionParams(2).tau{1} = 6;
-%Facilitating
-ConnectionParams(2).facilitation{1} = 1;
-ConnectionParams(2).depression{1} = 1;
-ConnectionParams(2).tD{1} = 710;
-ConnectionParams(2).tF{1} = 23;
+
 
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
-ConnectionParams(2).synapseType{2} = 'g_stp';
+ConnectionParams(2).synapseType{2} = 'g_exp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(2).weights{2} = 0.1;
 ConnectionParams(2).tau{2} = 6;
-%Depressing
-ConnectionParams(2).facilitation{2} = 0;
-ConnectionParams(2).depression{2} = 1;
-ConnectionParams(2).tD{2} = 710;
-ConnectionParams(2).tF{2} = 21;
 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
 ConnectionParams(2).sliceSynapses = true;
@@ -296,7 +279,7 @@ RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 500;
+SimulationSettings.simulationTime = 1000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
@@ -328,9 +311,6 @@ Results = loadResults(RecordingSettings.saveDir);
 rasterParams.colors = {'k', 'm'};
 
 %%
-% Using these parameters, we obtain the following figure:
-
-rasterFigure = plotSpikeRaster(Results, rasterParams);
 
 %%
 % We can add some further fields to the parameter structure for enhanced
@@ -344,7 +324,7 @@ rasterParams.groupBoundaryLines = [0.7, 0.7, 0.7];
 rasterParams.title = 'Tutorial 2 Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
-rasterParams.figureID = 2;
+rasterParams.figureID = 3;
 
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
@@ -356,7 +336,7 @@ rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 % (seeding random numbers in VERTEX is covered in tutorial 5). The
 % oscillation can be seen in the LFP:
 
-figure(3)
+figure(4)
 plot(Results.LFP', 'LineWidth', 2)
 set(gcf,'color','w');
 set(gca,'FontSize',16)
