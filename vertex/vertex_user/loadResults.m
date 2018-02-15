@@ -122,7 +122,7 @@ else
     weights = false;
 end
 if isfield(RS, 'weights_arr')
-    weightsarr = RS.weights_arr;
+    weightsarr = true;
 else
     weightsarr = false;
 end
@@ -227,7 +227,8 @@ else
     weights_recording = [];
     postNIDs = [];
 end
-
+    synArr = [];
+    weights_arr= [];
 if weightsarr
     wcount = cell(length(RS.weights_arr),1);
     for i = 1:length(wcount)

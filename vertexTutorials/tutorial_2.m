@@ -12,7 +12,7 @@
 TissueParams.X = 2500;
 TissueParams.Y = 400;
 TissueParams.Z = 200;
-TissueParams.neuronDensity = 25000;
+TissueParams.neuronDensity = 20000;
 TissueParams.numLayers = 1;
 TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
@@ -122,6 +122,13 @@ NeuronParams(1).Input(1).meanInput = 330;
 NeuronParams(1).Input(1).stdInput = 90;
 NeuronParams(1).Input(1).tau = 2;
 
+
+% NeuronParams(1).Input(2).inputType = 'i_step';
+% NeuronParams(1).Input(2).amplitude = 500;
+% NeuronParams(1).Input(2).timeOn = 290;
+% NeuronParams(1).Input(2).timeOff = 300;
+
+
 %%
 % Next we set the parameters for the 2nd neuron group, which represent
 % basket interneurons. These cells' dendrites are not aligned along a
@@ -179,6 +186,13 @@ NeuronParams(2).Input(1).inputType = 'i_ou';
 NeuronParams(2).Input(1).meanInput = 190;
 NeuronParams(2).Input(1).tau = 0.8;
 NeuronParams(2).Input(1).stdInput = 50;
+
+
+
+% NeuronParams(2).Input(2).inputType = 'i_step';
+% NeuronParams(2).Input(2).amplitude = 10;
+% NeuronParams(2).Input(2).timeOn = 290;
+% NeuronParams(2).Input(2).timeOff = 300;
 
 
 %% Connectivity parameters
@@ -248,20 +262,27 @@ ConnectionParams(2).synapseReleaseDelay = 0.5;
 % tutorial. Note that the simulation will take longer to run than in
 % tutorial 1, as the AdEx dyamics add complexity to the calculations.
 
-RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/';
+RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/ac30stim1';%ac30hz';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(0:1000:2000, 200, 600:-300:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 250:250:4750;
+RecordingSettings.v_m = 1:10:20;%250:250:4750;
 RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 5000;
+RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 500;
+SimulationSettings.simulationTime = 5000;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = true;
+SimulationSettings.parallelSim = false;
+
+%%
+
+
+TissueParams.StimulationField = result;
+TissueParams.StimulationOn = 0;
+TissueParams.StimulationOff = SimulationSettings.simulationTime;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by

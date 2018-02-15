@@ -277,7 +277,7 @@ RecordingSettings.weights_preN_IDs = [1:5:1000, 4300:4500];
 RecordingSettings.weights_arr = [1000:1000:6000];
 SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim =true;
+SimulationSettings.parallelSim =false;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by

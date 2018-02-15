@@ -3,5 +3,5 @@ loadRatConnectionParamsShortTermPlasticityPP
 %setUpBipolarElectrodeStimulation
 loadSimulationSettings
 tic;
-runRatSimulation100PPS
+runRatSimulation
 toc

@@ -1,17 +1,24 @@
 %% Neocortical slice model from Tomsett et al. 2014
 
 cvc_tissue;
+%cvc_neurons_nonoise;
+%cvc_connectivity_none;
+cvc_neurons_noisy;
+cvc_connectivity_noisy;
+%cvc_neurons_beta;
+%cvc_connectivity_beta;
 %cvc_neurons;
-%cvc_connectivity;
-cvc_neurons_gamma;
-cvc_connectivity_gamma_update;
+%cvc_connectivity_alpha;
+%cvc_neurons_gamma;
+%cvc_connectivity_gamma_update;
+%cvc_step_current;
 cvc_recording;
 cvc_simulation;
 cvc_field_stimulation;
 
 % Change this directory to where you would like to save the results of the
 % simulation
-RS.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_cvc_results/cvc_slow_newrotations_fixedslice_10s_2mvDCstimanodal';
+RS.saveDir = '~/Documents/MATLAB/Vertex_Results/PaperResults/cvc_noise_nostim20k';%AC30hz_long';
 % Change these settings if you need to use fewer cores or a different
 % parallel profile, or if you want to run in serial mode (this will take a
 % long time)
@@ -26,8 +33,20 @@ SS.profileName = 'local';
 tic
 runSimulation(params, connections, electrodes);
 toc
-% Load the simulation results
+%% Load the simulation results
 Results = loadResults(RS.saveDir);
+
+%% Plotting
+% 
+% rasterParams.colors = {'k','c','g','y','m','r','b','c','k','m','b','g','r','k','c'};
+% pars.colors = rasterParams.colors;
+% pars.opacity=0.6;
+% pars.markers = {'^','p','h','*','x','^','p','h','d','v','p','h','d','v','p'};
+% N = Results.params.TissueParams.N;
+% pars.toPlot = 1:5:N;
+% plotSomaPositions(Results.params.TissueParams,pars);
+
+
 %%
 % If you have experienced any problems when trying to run this code, please
 % email Richard Tomsett: r _at_ autap _dot_ se

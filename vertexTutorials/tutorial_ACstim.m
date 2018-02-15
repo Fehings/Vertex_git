@@ -26,9 +26,10 @@ stimstrength=50;
 B=20; % the frequency in Hz.
 SimulationSettings.timeStep = 0.03125;
 
-[TissueParams.StimulationField,model] = invitroSliceStimAC('largemod2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
-%load('AC_10hz_str100_topbot2.mat') %'ACbasicModResults')
-%TissueParams.StimulationField= AC_10hz_str100_topbot2; %ACbasicModResults;
+%[TissueParams.StimulationField,model] = invitroSliceStimAC('largemod2.stl',SimulationSettings.timeStep,stimstrength,B); % slicecutoutsmallnew chrismodelmod9 topbottomstim4
+result = load('ACpderesult4mv30hz.mat') %'ACbasicModResults')
+TissueParams.StimulationField=result.result; %ACbasicModResults;
+ 
 
 %%
 % However, we need to set the number of layers to 3 and make sure we set
@@ -433,6 +434,8 @@ SimulationSettings.parallelSim = false;
 SimulationSettings.ef_stimulation = true;
 SimulationSettings.fu_stimulation = false;
 
+TissueParams.StimulationOn = 0;
+TissueParams.StimulationOff = SimulationSettings.simulationTime;
 
 %% Run simulation and load results
 % We run the simulation and load results as before. Note that this simulation
