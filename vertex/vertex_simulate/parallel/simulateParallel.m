@@ -105,7 +105,7 @@ spmd
     
     recordIntra = RecVar.recordIntra;
     recordI_syn = RecVar.recordI_syn;
-    recordFac_syn = RecVar.recordFac_syn;
+    recordstp_syn = RecVar.recordstp_syn;
     recordWeights = RecVar.recordWeights;
     recordWeightsArr = RecVar.recordWeightsArr;
     recordstdpvars = RecVar.recordstdpvars;
@@ -140,20 +140,7 @@ spmd
     
     for simStep = 1:simulationSteps
         
-        %     if SS.freezeWeights
-        %         if simStep * SS.timeStep > SS.freezetime
-        %             disp('freezing weights')
-        %             for iGroup = 1:TP.numGroups
-        %                 for synGroup = 1:length(SynModel(iGroup,:))
-        %                     if isa(SynModel{iGroup,synGroup}, 'SynapseModel_g_stdp')
-        %                         SynModel{iGroup,synGroup}.postRate = 0;
-        %                         SynModel{iGroup,synGroup}.preRate = 0;
-        %                     end
-        %                 end
-        %             end
-        %             SS.freezeWeights = false;
-        %         end
-        %     end
+
         
         
         %%%%
@@ -252,7 +239,7 @@ spmd
                 
                 if recordI_syn
                     RecVar = ...
-                        updateI_synRecording(SynModel,RecVar,iGroup,recTimeCounter);
+                        updateI_synRecording(SynModel,synMap,RecVar,iGroup,recTimeCounter);
                 end
                 
                 % for LFP:
@@ -261,7 +248,7 @@ spmd
                         updateLFPRecording(RS,NeuronModel,RecVar,lineSourceModCell,iGroup,recTimeCounter);
                 end
                 
-                if recordFac_syn
+                if recordstp_syn
                     RecVar = updateSTPVarsRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,neuronInGroup,TP);
                 end
                 
@@ -367,25 +354,12 @@ spmd
                                 %to process each spike as arrives at its
                                 
                                 relative_preID = allSpike(iSpk) - TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
-                                %postsynaptic neurons.
-                                
-                                %                                 if relative_preID == 279 && neuronInGroup(allSpike(iSpk)) == 3
-                                %                                     disp(['spike id: ' num2str(allSpike(iSpk))]);
-                                %                                     disp(['iSpkSynGroup: ' num2str(iSpkSynGroup)]);
-                                %                                     disp(['iPostGroup: ' num2str(iPostGroup)]);
-                                %
-                                %                                     disp(getSTPVars(SynModel{iPostGroup, iSpkSynGroup},relative_preID,neuronInGroup(allSpike(iSpk))))
-                                %                                 end
-                                
+
                                 SynModel{iPostGroup, iSpkSynGroup} = bufferIncomingSpikes( ...
                                     SynModel{iPostGroup, iSpkSynGroup}, ...
                                     ind, wArr{allSpike(iSpk)}(inGroup),relative_preID,neuronInGroup(allSpike(iSpk)));
                                 
-                                %                                 if relative_preID == 279 && neuronInGroup(allSpike(iSpk)) == 3
-                                %                                     disp(getSTPVars(SynModel{iPostGroup, iSpkSynGroup},relative_preID,neuronInGroup(allSpike(iSpk))))
-                                %
-                                %                                 end
-                                
+ 
                             else
                                 bufferIncomingSpikes(SynModel{iPostGroup, iSpkSynGroup}, ind, ...
                                     wArr{allSpike(iSpk)}(inGroup));

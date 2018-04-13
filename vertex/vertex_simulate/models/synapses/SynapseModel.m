@@ -18,6 +18,12 @@ classdef SynapseModel < handle
     function params = getRequiredParams()
       params = {};
     end
+    
+    % Returns either the distribution specified or the single parameter if
+    % no distribution is specified.
+
+        
+        
   end
 end
 

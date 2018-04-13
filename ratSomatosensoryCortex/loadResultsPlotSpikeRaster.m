@@ -11,11 +11,13 @@ RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDPLTP/';
 %RecordingSettings.saveDir = '~/VERTEXResults/August/VERTEX_rat_somatosensory_slice_100msPP';
 %RecordingSettings.saveDir = '/home/chris/VERTEX_TOPSY/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
 %RecordingSettings.saveDir = '/data/HPC_Julia/finalresult/VERTEX_rat_somatosensory_slice12sfw';
-%RecordingSettings.saveDir = '/data/Spontaneous/VERTEX_rat_somatosensory_slice_0MGLSP';
+RecordingSettings.saveDir = '/data/Spontaneous/VERTEX_rat_somatosensory_slice_0MGLSP';
 %RecordingSettings.saveDir = '~/VERTEXResults/VERTEX_rat_somatosensory_slice12s';
 %RecordingSettings.saveDir = '/data/Results/STDP/HBPdataTBS/VERTEX_rat_somatosensory_sliceSTDPLTP';
 %RecordingSettings.saveDir = '//data/IEDsFullNetworkWithCurrentRec/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
-RecordingSettings.saveDir = '/data/pps/VERTEX_rat_somatosensory_slice_100msPP';
+%RecordingSettings.saveDir = '/data/pps/VERTEX_rat_somatosensory_slice_100msPP';
+RecordingSettings.saveDir = '/data/IEDswithsynapseVars/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
+RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice_W_Dist/';
 Results = loadResults(RecordingSettings.saveDir);
 
 %make sure no figures are open to keep things tidy

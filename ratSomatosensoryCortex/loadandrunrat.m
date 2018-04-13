@@ -1,5 +1,5 @@
-loadRatTissueandNeuronParamsSTP_PP
-loadRatConnectionParamsShortTermPlasticityPP
+loadRatTissueandNeuronParams;
+loadRatConnectionParams;
 %setUpBipolarElectrodeStimulation
 loadSimulationSettings
 tic;

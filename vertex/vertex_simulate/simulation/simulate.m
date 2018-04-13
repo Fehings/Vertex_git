@@ -60,7 +60,7 @@ timeStimStep = 1;
 %disp(['max: ' num2str(max(StimParams.activation))]);
 
 stdp = SS.stdp;
-
+revSynArr = [];
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
     
@@ -164,7 +164,7 @@ for simStep = 1:simulationSteps
             % for synaptic currents:
             if recordI_syn
                 RecVar = ...
-                    updateI_synRecording(SynModel,RecVar,iGroup,recTimeCounter);
+                    updateI_synRecording(SynModel,synMap, RecVar,iGroup,recTimeCounter);
             end
             
             % for LFP:
@@ -173,8 +173,8 @@ for simStep = 1:simulationSteps
                     updateLFPRecording(RS,NeuronModel,RecVar,lineSourceModCell,iGroup,recTimeCounter);
             end
             
-            if recordFac_syn
-                RecVar = updateSTPVarsRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,TP);
+            if recordstp_syn
+                RecVar = updateSTPVarsRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,neuronInGroup,TP);
             end
             
             if recordstdpvars
@@ -229,6 +229,10 @@ for simStep = 1:simulationSteps
         % Record the spikes
         RecVar.spikeRecording{spikeRecCounter} = {allSpike, allSpikeTimes};
         spikeRecCounter = spikeRecCounter + 1;
+
+            
+        %[SynModel, wArr] = processSpikes(allSpike,allSpikeTimes,TP,wArr,groupComparts, IDMap,synArr,revSynArr, neuronInGroup, synMap, SynModel, bufferLength,numInGroup, stdp);
+       
         % Go through spikes and insert events into relevant buffers
         % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
         for iSpk = 1:length(allSpike)

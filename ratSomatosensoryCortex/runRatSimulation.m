@@ -7,18 +7,20 @@
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice_Network/';
+RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_slice_W_Dist/';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1500:-100:800, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:500:49968;
-RecordingSettings.fac_syn = 1:500:49968;
+RecordingSettings.v_m = 1:200:33312;
+RecordingSettings.stp_syn = 1:200:33312;
+RecordingSettings.I_syn = 1:200:33312;
+RecordingSettings.I_syn_preGroups = [1,5,20,25];
 %RecordingSettings.v_m = 1:1000:172773;
 
-RecordingSettings.maxRecTime = 2501;
+RecordingSettings.maxRecTime = 2500;
 RecordingSettings.sampleRate = 5000;
 
 %Simulation settings:
@@ -30,7 +32,7 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2500;
+SimulationSettings.simulationTime = 1500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 
@@ -42,4 +44,6 @@ SimulationSettings.parallelSim =true;
               RecordingSettings, SimulationSettings);
 
 %%
+tic;
 runSimulation(params, connections, electrodes);
+toc;
