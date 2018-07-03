@@ -1,5 +1,5 @@
 function [NeuronModel, SynModel, InModel, wArr] = ...
-    groupUpdateSchedule(NP,TP,SS,NeuronModel,SynModel,InModel,iGroup, synArr,wArr, IDMap, neuronInGroup)
+    groupUpdateSchedule(NP,TP,SS,NeuronModel,SynModel,InModel,iGroup, synArr,wArr, IDMap,neuronInGroup)
 
 
 % update synaptic conductances/currents according to buffers

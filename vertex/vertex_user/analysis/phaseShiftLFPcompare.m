@@ -89,9 +89,9 @@ for i=1:numL
 %    
     OnesidedX = twosidedX(1:min(length(layerMeans1)/2+1));
     OnesidedY = twosidedY(1:min(length(layerMeans2)/2+1));
- plot(OnesidedX)
- hold on
- plot(OnesidedY)
+ %plot(OnesidedX)
+ %hold on
+ %plot(OnesidedY)
    % need to find the points at which the oscillations switch from
    % increasing to decreasing, using find peaks for this, but plotting them
    % first to show that the peaks are 
@@ -104,20 +104,22 @@ for i=1:numL
     diffs1=diff(time1(pts1));
     diffs2=diff(time2(pts2));
     
-    std(diffs1)
-    std(diffs2)
+    %std(diffs1)
+    %std(diffs2)
     
-    Fs1=1/mean(diffs1)
-    Fs2=1/mean(diffs2)
+    Fs1=1/mean(diffs1);
+    Fs2=1/mean(diffs2);
     
     if abs(Fs1-Fs2) < 0.01 %check if the two frequencies are similar within a tolerance
         pshift.phaselag(i)= 2*pi*Fs1*(lags(I)/Fs1);
+    else
+        pshift.phaselag(i) = NaN;
     end
     
-   [~, maxptx] = max(abs(X(i,:)))
-   [~, maxpty] = max(abs(Y(i,:)))
-    X(i,maxptx)
-    Y(i,maxpty)
+   [~, maxptx] = max(abs(X(i,:)));
+   [~, maxpty] = max(abs(Y(i,:)));
+   % X(i,maxptx)
+   % Y(i,maxpty)
 %    
    pshift.pShiftLayers(i) = angle(X(i,maxptx)) - angle(Y(i,maxpty)); % find the phase shift at the maximum point of one oscillation cycle for each cycle to get pshift over time
 

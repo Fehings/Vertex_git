@@ -4,9 +4,7 @@
 % cortical layers 3, 4 and 5. Note that this tutorial may take some time to run
 % as it implements a model containing more than 10,000 neurons.
 %
-%% BEFORE running this script please run the tissuestimulation.m script to simulate
-%the electric field in the slice. Export the solution: u, as well as the
-%mesh: p,e, and t
+
 
 %clear vars
 %% Tissue parameters
@@ -23,7 +21,7 @@ TissueParams.maxZOverlap = [-1 , -1];
 %% Show VERTEX where the electric field solution and mesh are
 
 stimstrength=100;
-B=40; % the frequency in Hz.
+%B=40; % the frequency in Hz.
 SimulationSettings.timeStep = 0.03125;
 
 [TissueParams.StimulationField,model] = invitroSliceStim('topbottomstim2.stl',stimstrength);

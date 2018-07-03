@@ -31,7 +31,7 @@ for iGroup = 1:TP.numGroups
    
     
     [NeuronModel, SynModel, InModel] = ...
-        groupUpdateSchedule(NP,SS,NeuronModel,SynModel,InModel,iGroup);
+        groupUpdateSchedule(NP,TP,SS,NeuronModel,SynModel,InModel,iGroup, synArr,wArr, IDMap,neuronInGroup);
     
     S = addGroupSpikesToSpikeList(NeuronModel,IDMap,S,iGroup,iterator.comCount);
     

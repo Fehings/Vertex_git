@@ -44,7 +44,7 @@ if isfield(NP,'TissueParams')
     end
 end
 colorbar
-caxis([-100 -23])
+%caxis([minv maxv])
 set(gcf,'color','w');
 set(gca,'YDir','reverse');
 set(gca,'TickDir','out');

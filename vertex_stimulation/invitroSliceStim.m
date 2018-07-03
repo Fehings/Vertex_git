@@ -11,7 +11,7 @@ importGeometry(model,geometryloc);
 
 
 
- figure(1)
+ %figure(1)
  %pdegplot(model,'FaceLabels', 'on')
 
 %figure(1)

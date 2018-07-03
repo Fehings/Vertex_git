@@ -4,7 +4,7 @@
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
-stdprate=0.5;
+stdprate=0.1;
 
 TissueParams.X = 2500;
 TissueParams.Y = 400;

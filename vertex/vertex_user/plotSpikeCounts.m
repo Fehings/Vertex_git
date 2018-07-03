@@ -1,4 +1,4 @@
-function [figurehandle] = plotSpikeCounts(Results,t)
+function [figurehandle,a,b] = plotSpikeCounts(Results,t)
 
 % a function to plot the occurences of spikes over time.
 % will try to add more options in the future so that like plotSpikeRaster

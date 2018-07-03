@@ -9,7 +9,7 @@ setup_multiregion_allstdp;
 
 
 
-RecordingSettings.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_results_multiregion/mr2reg_nodelay_stdp_bothstim_circularconnect_2s';
+RecordingSettings.saveDir = '~/Documents/MATLAB/Vertex_Results/VERTEX_results_multiregion/mr2reg_nodelay_stdp_r1stim_linearconnect_2s';
 %RecordingSettings.weights_arr = 
 RecordingSettings.LFP = true;
 RecordingSettings.weights_preN_IDs = [1:966:3864,3865:171:4546,4547:50:5000];%2972:3000;
@@ -37,14 +37,10 @@ RecordingSettings.weights_arr = 1:10000:SimulationSettings.simulationTime/Simula
 % NeuronParams(1).Input(2).amplitude = 1000; 
 
 % 
-  [stlresult,model] = invitroSliceStim('tutorial2_3.stl',4);
-  TissueParams.StimulationField = stlresult;
-%   %invitroSliceStimAC('tutorial2_3.stl',SimulationSettings.timeStep,4,40);
-  TissueParams.StimulationOn = 0;
- TissueParams.StimulationOff = SimulationSettings.simulationTime;
-% 
+  %[stlresult,model] = invitroSliceStim('tutorial2_3.stl',4);
 
-[params, connections, electrodes] = ...
+
+[params2, connections2, electrodes2] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
               RecordingSettings, SimulationSettings);
 
@@ -54,7 +50,17 @@ RecordingSettings.weights_arr = 1:10000:SimulationSettings.simulationTime/Simula
  % of setup_multilayer with mofified parameters and then initialise this
  % new network with another call of initNetwork. As commented out below:
  
-           
+    brainslice3Dorig
+ TissueParams.StimulationField = result;
+  %invitroSliceStimAC('tutorial2_3.stl',SimulationSettings.timeStep,4,40);
+ TissueParams.StimulationOn = 0;
+ TissueParams.StimulationOff = SimulationSettings.simulationTime;
+       
+ 
+ [params, connections, electrodes] = ...
+  initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
+              RecordingSettings, SimulationSettings);
+
  
  
 %clear TissueParams NeuronParams ConnectionParams
@@ -74,9 +80,9 @@ RecordingSettings.weights_arr = 1:10000:SimulationSettings.simulationTime/Simula
 %ConnectionParams(2).tau{2} = 30;
 %ConnectionParams(2).tau{3} = 10;
 %  
-  params2 = params;
-  connections2 = connections;
-  electrodes2 = electrodes;         
+ % params2 = params;
+ % connections2 = connections;
+ % electrodes2 = electrodes;         
 % could overwrite the parameters used to initialise the first region
 % with the parameters for the new region, which can then be initialised:
 %    [params2, connections2, electrodes2] = ...
@@ -172,9 +178,10 @@ r2time4weights=getSparseConnectivityWeights(multiRegResults(2).weights_arr{4},mu
 
 
 figure
+subplot(1,2,1)
 imagesc(abs(r1time4weights - r1time1weights))
 title('Region1 weight changes')
-figure
+subplot(1,2,2)
 imagesc(abs(r2time4weights - r2time1weights))
 title('Region2 weight changes')
 %figure

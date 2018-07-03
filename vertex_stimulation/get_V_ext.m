@@ -9,8 +9,10 @@ function [ v_ext ] = get_V_ext(locations,field,t)
 
 v_ext = zeros(size(squeeze(locations(1,:,:))))';
 
-
-% locations=locations.*angle
+%microMtoMconversion=1e-3;
+% convert locations to metres to match the field solution units. (They are
+% in micrometeres according to VERTEX)
+% locations=locations.*microMtoMconversion;
 
 for iComp = 1:length(locations(1,:,1))
     if isa(field, 'pde.TimeDependentResults')
@@ -26,10 +28,17 @@ for iComp = 1:length(locations(1,:,1))
     else
         v_ext(:,iComp) = interp3(field.x, field.y, field.z, field.v, locations(1,:),locations(2,:),locations(3,:));
     end
+    
 v_ext(isnan(v_ext(:,iComp)),iComp) = 0;
 end
 
-
+if any(v_ext(:)>100) 
+    disp('overly large values detected in the field, the values will be capped at 100 and this may produce negligable currents')
+elseif any(v_ext(:)<-100)
+    disp('overly negative values detected in the field, the values will be capped at -100 and this may produce negligable currents')
+elseif nnz(v_ext(:))==0
+    disp('The field is zero valued, just so you know. If this was unintended then you may need to troubleshoot.') 
+end
 
 end
 
