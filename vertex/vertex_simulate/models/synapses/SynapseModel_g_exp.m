@@ -18,7 +18,7 @@ classdef SynapseModel_g_exp < SynapseModel
                                      postID, number,~,~,~)
       SM = SM@SynapseModel(Neuron, number);
       for param = SynapseModel_g_exp.getPostSynapticParams()
-          SM.(param{1}) = getAttributeDist(CP,param,number,postID);
+          SM.(param{1}) = getAttributeDist(CP,param,number,postID,SimulationSettings);
       end
       
       SM.bufferCount = 1;

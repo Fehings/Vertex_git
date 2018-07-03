@@ -85,14 +85,20 @@ end
 % %For layer 4 Inhibitory cells
 for i = 9:10
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 190;
+    NeuronParams(i).Input(1).meanInput = 210;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 1;
 end
-for i = 11:12
+for i = 11
+    NeuronParams(i).Input(1).inputType = 'i_ou';
+    NeuronParams(i).Input(1).meanInput = 170;
+    NeuronParams(i).Input(1).stdInput = 50;
+    NeuronParams(i).Input(1).tau = 1;
+end
+for i = 12
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput = 160;
-    NeuronParams(i).Input(1).stdInput = 40;
+    NeuronParams(i).Input(1).stdInput = 50;
     NeuronParams(i).Input(1).tau = 1;
 end
 % %For layer 5 Excitatory cells
@@ -131,8 +137,8 @@ end
 % %For layer 6 Excitatory cells
 for i = 21:22
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 620;
-    NeuronParams(i).Input(1).stdInput = 280;
+    NeuronParams(i).Input(1).meanInput = 720;
+    NeuronParams(i).Input(1).stdInput = 300;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 23
@@ -143,7 +149,7 @@ for i = 23
 end
 for i = 24
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 260;
+    NeuronParams(i).Input(1).meanInput = 250;
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 2;
 end

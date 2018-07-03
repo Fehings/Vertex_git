@@ -17,7 +17,7 @@ classdef (Abstract) SynapseModel_g_stp < SynapseModel_g_exp
       % short term plasticity involves variables that are dependent on pre
       % synaptic activity.
       for param = SM.getPreSynapticParams()
-          SM.(param{1}) = getAttributeDist(CP,param,sum(number_in_pre),postID);
+          SM.(param{1}) = getAttributeDist(CP,param,sum(number_in_pre),postID,SimulationSettings,true);
       end
       
       SM.preBoundaryArr = [0; cumsum(number_in_pre)];

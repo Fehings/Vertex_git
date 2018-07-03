@@ -18,7 +18,14 @@ for iPost = 1:TP.numGroups
           elseif isfield(CP(iPre), [params{iP} '_distribution'])
               dist = CP(iPre).([params{iP} '_distribution']){iPost};
               model = [model, dist];
-              tempdist = makedist(dist);
+              try
+                tempdist = makedist(dist);
+              catch
+                  errMsg = ['The distribution ' CP(iPre).weights_distribution{iPost}...
+                ' does not exist.'];
+
+                    error('vertex:checkConnectivityStruct:weightDistNonExistant',errMsg);
+              end
               distparams = tempdist.ParameterNames;
               for p = distparams
                   model = [model, num2str(CP(iPre).([params{iP} '_' p{1}]){iPost})];
@@ -69,11 +76,12 @@ for iPost = 1:TP.numGroups
     end
   end
 end
-
+disp('Generating synaptic parameters..')
 if SS.parallelSim
   spmd
     SynapseModelArr = cell(TP.numGroups, numSynTypes);
     numInGroup = diff(TP.groupBoundaryIDArr);
+
     for iPost = 1:TP.numGroups
       for iSynType = 1:numSynTypes
         if ~isempty(constructorCell{iPost, iSynType})
@@ -86,6 +94,9 @@ if SS.parallelSim
         else
           SynapseModelArr{iPost, iSynType} = [];
         end
+      end
+      if labindex() ==1
+        disp([num2str(iPost) '/' num2str(TP.numGroups)  ' groups generated'])
       end
     end
     
@@ -107,5 +118,6 @@ else
         SynapseModelArr{iPost, iSynType} = [];
       end
     end
+    disp([num2str(iPost) '/' num2str(TP.numGroups) 'groups generated'])
   end
 end

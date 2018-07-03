@@ -32,6 +32,7 @@ for i = 1:length(ConnectivityNames)
             ConnectionParams(i).tPost{j} = 20;
             ConnectionParams(i).wmin{j} = 0;
             ConnectionParams(i).wmax{j} = 100;
+            
         catch %if there is no description in the file then set zero connections
             ConnectionParams(i).numConnectionsToAllFromOne{j} = [0,0,0,0,0];
             ConnectionParams(i).synapseType{j} = 'g_exp';

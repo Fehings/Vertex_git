@@ -1,15 +1,7 @@
 function [RecVar] = ...
-  updateWeightsRecording(RecVar,Rectimecounter,wArr,SS)
+  updateWeightsRecording(RecVar,Rectimecounter,wArr,~)
 
-presyn = RecVar.preweightsRecCellIDArr;
-
-if SS.parallelSim
-        for i = 1:length(presyn)
-            RecVar.weightsRecording{i}(Rectimecounter,:) = wArr{presyn(i),1};
+        for i = 1:length(RecVar.preweightsRecCellIDArr)
+            RecVar.weightsRecording{i}(Rectimecounter,:) = wArr{RecVar.preweightsRecCellIDArr(i),1};
         end
-else
-    for i = 1:length(presyn)
-        RecVar.weightsRecording{i}(Rectimecounter,:) = wArr{presyn(i),1};
-    end
-end
 end

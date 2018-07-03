@@ -20,22 +20,31 @@ RecordingSettings.minDistToElectrodeTip = 20;
 %RecordingSettings.stp_syn = 1:100:33312;
 %RecordingSettings.I_syn = 1:100:33312;
 %post synaptic recruitment 1450 1200
-%  RecordingSettings.I_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
+% RecordingSettings.I_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
 % RecordingSettings.I_syn_number = [50, 50, 50];
 % RecordingSettings.I_syn_group = [13, 14, 8];
-%  RecordingSettings.v_m_location = [[1150 1200];[1150 1200];[1150 1200]];
+% RecordingSettings.v_m_location = [[1150 1200];[1150 1200];[1150 1200]];
 % RecordingSettings.v_m_number = [50, 50, 50];
 % RecordingSettings.v_m_group = [13, 14, 8];
-%  RecordingSettings.stp_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
+% RecordingSettings.stp_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
 % RecordingSettings.stp_syn_number = [50, 50, 50];
 % RecordingSettings.stp_syn_group = [13, 14, 8];
-% RecordingSettings.I_syn_preGroups = [6:20];
+% RecordingSettings.stdpvars_location = [[1150 1200];[1150 1200];[1150 1200]];
+% RecordingSettings.stdpvars_number = [50, 50, 50];
+% RecordingSettings.stdpvars_group = [13, 14, 8];
+%RecordingSettings.weights_preN_IDs_location = [[1150 1200];[1150 1200];[1150 1200]];
+%RecordingSettings.weights_preN_IDs_number = [5, 5, 5];
+%RecordingSettings.weights_preN_IDs_group = [13, 14, 8];
+%RecordingSettings.I_syn_preGroups = [6:20];
 
-RecordingSettings.maxRecTime = 2500;
+%RecordingSettings.weights_arr = [1 38000 89000 100000];
+RecordingSettings.maxRecTime = 3400;
 RecordingSettings.sampleRate = 5000;
 
 %Simulation settings:
 %Keep max delay steps at 80, 
+
+
 %Simulation time can be varied, it is in milliseconds, currently running
 %for 500 ms.
 %We want to run this simulation in parallel, this means that all cpu cores
@@ -43,7 +52,7 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2400;
+SimulationSettings.simulationTime = 3400;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 

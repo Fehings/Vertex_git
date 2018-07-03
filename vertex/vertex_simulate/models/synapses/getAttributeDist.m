@@ -1,4 +1,4 @@
-    function dist = getAttributeDist(CP, attribute, number, postID)
+    function dist = getAttributeDist(CP, attribute, number, postID,SS, isTimeConstant)
         fields = fieldnames(CP);
         attribute = attribute{1};
         if isfield(CP, [attribute '_distribution']) && ...
@@ -17,8 +17,22 @@
                     end
                 end
             end
+            if isTimeConstant
+                if strcmp(attribute,'U')
+                    dist = truncate(dist,0,inf);
+                else
+                    if dist.mean < SS.timeStep
+                        errmsg = ['The mean of this time constant distribution ' ...
+                        'is less than the timestep.'];
+                        error('vertex:vertexsimulate:models;synapses:getattributedistribution',errmsg);
+                    end
+                    dist = truncate(dist,SS.timeStep,inf); 
+                end
+            end
             
             dist = dist.random(number,1);
+            resetRandomSeed()
+
         else 
             dist = CP.(attribute){postID};
         end

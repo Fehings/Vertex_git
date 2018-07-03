@@ -42,9 +42,13 @@ for c = 1:length(CP)
         if strcmp('g_stdp', CP(c).synapseType{cc})
             SS.stdp = true;
         end
+        if strcmp('g_mt_stdp', CP(c).synapseType{cc})
+            SS.stdp = true;
+        end
         if strcmp('g_stdp_delays', CP(c).synapseType{cc})
             SS.stdp = true;
         end
+        
     end
 end
 
@@ -52,6 +56,7 @@ SS.recordingI_syn = false;
 if isfield(RS, 'I_syn') && ~isempty(RS.I_syn)
   SS.recordingI_syn = true;
 end
+
 %NP = NeuronParams;
 % Calculate passive neuron properties in correct units
 NP = calculatePassiveProperties(NP, TP);
@@ -99,6 +104,7 @@ end
 % Prepare synapses and synaptic weights.
 [synapsesArrSim, weightArr] = prepareSynapsesAndWeights(TP,CP,SS,connections);
 % Initialise the recording variables
+
 [RS, RecordingVars, lineSourceModCell] = ...
     setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes, weightArr,synapsesArrSim, SynapseModelArr);
 

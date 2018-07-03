@@ -30,7 +30,7 @@ for iPreGroup = 1:TP.numGroups
   
   for iLayer = 1:TP.numLayers
     numSynapses(inGroup, iLayer, :) = ...
-      bsxfun(@times, ratioRemaining(inGroup, iLayer), preC(iLayer, :));
+      round(bsxfun(@times, ratioRemaining(inGroup, iLayer), preC(iLayer, :)));
   end
   
 end

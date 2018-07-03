@@ -1,4 +1,4 @@
-classdef SynapseModel_g_stdp < SynapseModel_g_exp
+classdef SynapseModel_g_mt_stdp < SynapseModel_g_stp_mt
   %SynapseModel_g_exp Conductance-based single exponential synapses
   %   Parameters to set in ConnectionParams:
   %   - E_reversal, the reversal potential (in mV)
@@ -12,8 +12,6 @@ classdef SynapseModel_g_stdp < SynapseModel_g_exp
     wmax
     Apre
     Apost
-    preBoundaryArr
-    preGroupIDs
   end
   
   properties (SetAccess=public)
@@ -28,18 +26,16 @@ classdef SynapseModel_g_stdp < SynapseModel_g_exp
       % neurons in the presynatpic synapse group and all neurons in the post
       % synaptic group. Or all post synaptic neurons on the lab and all
       % presynaptic neurons regardless of lab, if using parallel mode. 
-    function SM = SynapseModel_g_stdp(Neuron, CP, SimulationSettings, ...
+    function SM = SynapseModel_g_mt_stdp(Neuron, CP, SimulationSettings, ...
                                      postID, number_in_post,number_in_pre,pre_group_ids, ~)
                                  
-      SM = SM@SynapseModel_g_exp(Neuron, CP, SimulationSettings,postID, number_in_post,number_in_pre,pre_group_ids);
+      SM = SM@SynapseModel_g_stp_mt(Neuron, CP, SimulationSettings,postID, number_in_post,number_in_pre,pre_group_ids);
       SM.tPre = CP.tPre{postID};
       SM.tPost = CP.tPost{postID};
       SM.preRate = CP.rate{postID};
       SM.postRate = -CP.rate{postID};
       SM.wmin = CP.wmin{postID};
       SM.wmax = CP.wmax{postID};
-      SM.preBoundaryArr = [0; cumsum(number_in_pre)];
-      SM.preGroupIDs = pre_group_ids;
 
 
       %trace variable for presynaptic neurons, contains an entry for each
@@ -56,7 +52,7 @@ classdef SynapseModel_g_stdp < SynapseModel_g_exp
     function SM = updateSynapses(SM, NM, dt)
         
       % update synaptic currents
-      updateSynapses@SynapseModel_g_exp(SM, NM, dt);
+      updateSynapses@SynapseModel_g_stp_mt(SM, NM, dt);
 
       SM.Apre = SM.Apre + (( - SM.Apre)./SM.tPre).*dt;
       SM.Apost = SM.Apost + ((- SM.Apost)./SM.tPost).*dt;

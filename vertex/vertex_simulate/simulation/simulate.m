@@ -47,7 +47,7 @@ end
 
 recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
-recordFac_syn = RecVar.recordFac_syn;
+recordstp_syn = RecVar.recordstp_syn;
 recordWeights = RecVar.recordWeights;
 recordWeightsArr = RecVar.recordWeightsArr;
 recordstdpvars = RecVar.recordstdpvars;

@@ -46,10 +46,12 @@ stdp = SS.stdp;
 
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
+    %Calculate reversed synapse array on each node
     spmd
         posttoprearr = reverseSynArr(synArr);
         disp('Map calculated');
     end
+    %combine reversed array from each node into a single array
     revSynArr = posttoprearr{1};
     for iLab = 1:length(posttoprearr)
         currLabSynArr = posttoprearr{iLab};
@@ -57,6 +59,8 @@ if stdp
         revSynArr(~cellfun(@isempty,currLabSynArr(:,2)),2) = currLabSynArr(~cellfun(@isempty,currLabSynArr(:,2)),2);
         revSynArr(~cellfun(@isempty,currLabSynArr(:,3)),3) = currLabSynArr(~cellfun(@isempty,currLabSynArr(:,3)),3);
     end
+    %revSynArr = distributed(revSynArr);
+    clear posttoprearr;
 end
 
 spmd
@@ -188,7 +192,7 @@ spmd
                     end
                     % and move stimulation times index on if we have not
                     % reached the final stimulation time window
-                end
+                end 
                 
                 if stimcount < length(TP.StimulationOn)
                     stimcount = stimcount+1;
@@ -197,11 +201,13 @@ spmd
             end % if current time is between time on and off do nothing.
             
         end
-        
         %Update weight recording
+        %Records all weights from presynaptic neurons specified to the
+        %users to all neurons in this lab. Results are compiled in
+        %loadResults.
         if simStep == RS.samplingSteps(sampleStepCounter)
             if recordWeights
-                RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr,SS);
+                RecVar = updateWeightsRecording(RecVar,recTimeCounter,wArr);
             end
         end
         if recordWeightsArr
@@ -220,7 +226,6 @@ spmd
         end
         
         for iGroup = 1:TP.numGroups
-            
             
             [NeuronModel, SynModel, InModel, wArr] = ...
                 groupUpdateSchedule(NP,TP,SS,NeuronModel,SynModel,InModel,iGroup,synArr,wArr, IDMap, neuronInGroup);
@@ -378,7 +383,7 @@ spmd
                                 relativeSpikeID = allSpike(iSpk) - TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
                                 relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
                                 processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup},relativeSpikeID,neuronInGroup(allSpike(iSpk)),relativepostneuronIDs,tBufferLoc(inGroup) );
-                            elseif isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
+                            elseif isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp') || isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_mt_stdp')
                                 processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))),neuronInGroup(allSpike(iSpk)));
                                 relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
                                 wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs);
@@ -424,7 +429,7 @@ spmd
                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                         iSpkSynGroup = synMap{postGroup}(iPreGroup);
                         
-                        if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp') || isa(SynModel{postGroup, iSpkSynGroup}, 'SynapseModel_g_stdp_delays')
+                        if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp') || isa(SynModel{postGroup, iSpkSynGroup}, 'SynapseModel_g_stdp_delays')  || isa(SynModel{postGroup, iSpkSynGroup}, 'SynapseModel_g_mt_stdp')
                             % if the spiking neuron is on this lab
                             % then it is our responsibility to update its
                             % Apost value - it is a postsynaptic spike on
@@ -484,7 +489,10 @@ spmd
                                     % array and syn array could be sparse matrices,
                                     % but to allow multiple synapses between a
                                     % single pair of neurons it must be a cell
-                                    % array.
+                                    % array. In parallel mode the weights
+                                    % array contains all synapse weights to
+                                    % from all presynaptic neurons to the
+                                    % neurons in the present lab.
                                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                     wMat = zeros(length(presyningroup),1);
                                     
