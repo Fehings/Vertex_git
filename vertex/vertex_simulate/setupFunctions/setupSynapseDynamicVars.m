@@ -1,4 +1,4 @@
-function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS)
+function [SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS, RS)
 
 paramsMapCell = cell(TP.numGroups,1);
 synMapCell = cell(TP.numGroups,1);
@@ -11,11 +11,36 @@ for iPost = 1:TP.numGroups
     if ~isempty(model)
       params = eval(['SynapseModel_' model '.getRequiredParams();']);
       for iP = 1:length(params)
-          %if iscell(CP(iPre).(params{iP}))
+          
+          if isfield(CP(iPre), params{iP}) && length(CP(iPre).(params{iP})) >= iPost ...
+                  && ~isempty(CP(iPre).(params{iP}))
               model = [model, num2str(CP(iPre).(params{iP}){iPost})];
+          elseif isfield(CP(iPre), [params{iP} '_distribution'])
+              dist = CP(iPre).([params{iP} '_distribution']){iPost};
+              model = [model, dist];
+              try
+                tempdist = makedist(dist);
+              catch
+                  errMsg = ['The distribution ' CP(iPre).weights_distribution{iPost}...
+                ' does not exist.'];
+
+                    error('vertex:checkConnectivityStruct:weightDistNonExistant',errMsg);
+              end
+              distparams = tempdist.ParameterNames;
+              for p = distparams
+                  model = [model, num2str(CP(iPre).([params{iP} '_' p{1}]){iPost})];
+              end
+              clear tempdist;
+          end
+          
+          if isfield(RS, 'I_syn_preGroups') && ismember(iPre,RS.I_syn_preGroups)
+              model = [model num2str(iPre) num2str(iPost)];
+          end
 
       end
-      postSynDetails{iPre} = model;
+      
+
+      postSynDetails{iPre} = model; 
    else
       postSynDetails{iPre} = '';
     end
@@ -51,11 +76,12 @@ for iPost = 1:TP.numGroups
     end
   end
 end
-
+disp('Generating synaptic parameters..')
 if SS.parallelSim
   spmd
     SynapseModelArr = cell(TP.numGroups, numSynTypes);
     numInGroup = diff(TP.groupBoundaryIDArr);
+
     for iPost = 1:TP.numGroups
       for iSynType = 1:numSynTypes
         if ~isempty(constructorCell{iPost, iSynType})
@@ -69,6 +95,9 @@ if SS.parallelSim
           SynapseModelArr{iPost, iSynType} = [];
         end
       end
+      if labindex() ==1
+        disp([num2str(iPost) '/' num2str(TP.numGroups)  ' groups generated'])
+      end
     end
     
   end
@@ -81,7 +110,7 @@ else
         preID = paramsMapCell{iPost}(iSynType);
         preID_N = find(synMapCell{iPost}==iSynType);
         constructor = constructorCell{iPost, iSynType};
-        
+
         SynapseModelArr{iPost, iSynType} = ...  
           constructor(NP(iPost),CP(preID),SS,iPost,numInGroup(iPost),numInGroup(preID_N),preID_N,TP.groupBoundaryIDArr);
       
@@ -89,5 +118,6 @@ else
         SynapseModelArr{iPost, iSynType} = [];
       end
     end
+    disp([num2str(iPost) '/' num2str(TP.numGroups) 'groups generated'])
   end
 end

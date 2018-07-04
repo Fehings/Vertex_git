@@ -97,7 +97,7 @@ end
 
 for rn=1:ROI_N
     % Initialise the synapse models
-    [SynapseModelArr{rn}, synMapCell{rn}] = setupSynapseDynamicVars(pS{rn}.TissueParams, pS{rn}.NeuronParams, pS{rn}.ConnectionParams, pS{rn}.SimulationSettings);
+    [SynapseModelArr{rn}, synMapCell{rn}] = setupSynapseDynamicVars(pS{rn}.TissueParams, pS{rn}.NeuronParams, pS{rn}.ConnectionParams, pS{rn}.SimulationSettings, pS{rn}.RecordingSettings);
     
     % Initialise the input models (if any)
     if isfield(pS{rn}.NeuronParams, 'Input')

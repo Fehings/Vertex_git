@@ -50,12 +50,9 @@ classdef NeuronModel_adex < NeuronModel
       
       kw = (N.a .* (NM.v(:, 1) - N.E_leak) - k2w_in) ./ N.tau_w;
       
-      %NM.v = NM.v + 0.5 .* dt .* kv;
-      %NM.w = NM.w + 0.5 .* dt .* kw;
-      
-      
       NM.v = NM.v + dt .* kv;
       NM.w = NM.w + dt .* kw;
+      
       
       NM.spikes = NM.v(:,1) >= N.v_cutoff;
       NM.v(NM.spikes, 1) = N.v_reset;

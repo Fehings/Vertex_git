@@ -1,6 +1,6 @@
-loadRatTissueandNeuronParams
-loadRatConnectionParams
-%setUpBipolarElectrodeStimulation
+loadRatTissueandNeuronParams;
+loadRatConnectionParams;
+setUpBipolarElectrodeStimulation
 loadSimulationSettings
 tic;
 runRatSimulation

@@ -8,16 +8,16 @@ end
 
 model = createpde;
 importGeometry(model,geometryloc);
+slicebound.P1 = [100, 10 , 100];
+slicebound.P2 = [1900, 10 , 100];
+slicebound.P4 = [100, 390 , 100];
+slicebound.P5 = [100, 10 , 1000];
+%conductivity = makeCondFunc(slicebound, 0.3, 0.03);
+ pdegplot(model,'FaceLabels', 'on')
 
-
-
- %figure(1)
- %pdegplot(model,'FaceLabels', 'on')
-
-%figure(1)
-%pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
+figure(1)
+pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
 %pdegplot(model,'FaceLabels', 'off','FaceAlpha',0.3)
-
 disp(model.IsTimeDependent)
 %Outer, insulating boundaries
 %applyBoundaryCondition(model,'face',1:12,'g',0.0,'q',0.0); % for the
@@ -73,6 +73,20 @@ elseif isequal(geometryloc, '6layermodelstiml4placedinsmall.stl')
   applyBoundaryCondition(model,'face',5:12,'g',0.0,'q',0.0);
     applyBoundaryCondition(model,'face',[3,4,15,16,17],'h',1.0,'r',stimstrength);
     applyBoundaryCondition(model,'face',[1,13,18,14,2],'h',1.0,'r',-stimstrength);
+elseif isequal(geometryloc, '6layermodelstiml4placedinwithbacktrueunits.stl')
+    % dimensions of electrode in tissue: 14 * 14 * 200
+    % Volume: 39200 microns^3
+    % Position: x = 1160.25 - 1150 z = 1258.5 - 1269 y = 40.5 - 500
+  applyBoundaryCondition(model,'face',[2 6:21],'g',0.0,'q',0.0);
+    applyBoundaryCondition(model,'face',[23,27,22,1,3],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[24,25,26,4,5],'h',1.0,'r',-stimstrength);
+elseif isequal(geometryloc, '6layermodelstiml4placedinnobacktrueunits.stl')
+    % dimensions of electrode in tissue: 14 * 14 * 200
+    % Volume: 39200 microns^3
+    % Position: x = 1160.25 - 1150 z = 1258.5 - 1269 y = 40.5 - 500
+  applyBoundaryCondition(model,'face',[2 6:14],'g',0.0,'q',0.0);
+    applyBoundaryCondition(model,'face',[16,20,15,1,3],'h',1.0,'r',stimstrength);
+    applyBoundaryCondition(model,'face',[18,17,19,4,5],'h',1.0,'r',-stimstrength);
 elseif isequal(geometryloc, '6layermodelstiml23in.stl')
     % dimensions of electrode in tissue: 14 * 14 * 200
     % Volume: 39200 microns^3
@@ -96,7 +110,7 @@ disp(model.IsTimeDependent)
 
 %conductivity of brain tissue is around 0.3 S m^-1 
 %As vertex is in units of micrometers c --> 0.3/1000000
-specifyCoefficients(model,'m',0, 'd',0, 'c',0.3/1000000, 'a',0, 'f',0);
+specifyCoefficients(model,'m',0, 'd',0, 'c',0.3, 'a',0, 'f',0);
 
 
 
@@ -106,6 +120,7 @@ disp(model.IsTimeDependent)
 result = solvepde(model);
 
 %  u = result.NodalSolution;
+figure(2)
  pdeplot3D(model,'ColorMapData', result.NodalSolution,'FaceAlpha',0.3);
 
 

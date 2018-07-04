@@ -27,47 +27,60 @@ end
 mcount = 0;
 wcount = 0;
 dcount = 0;
+pcount = 0;
 missingFieldCell = cell(length(fieldCell), 1);
+missingDistParsCell = {};
 for iC = 1:size(fieldCell, 1)
-  if ~isfield(StructIn, fieldCell{iC})
-    mcount = mcount + 1;
-    missingFieldCell{mcount, 1} = strcat(fieldCell{iC}, ', ');
-  elseif nargin >= 3
-    if ~strcmpi(class(StructIn.(fieldCell{iC})), classCell{iC})
-      wcount = wcount + 1;
-      wrongClassCell{wcount, 1} = strcat('Field name: ', ...
-                                  fieldCell{iC},'\t');
-      wrongClassCell{wcount, 2} = strcat('Class given: ', ...
-                                  class(StructIn.(fieldCell{iC})), '\t');
-      wrongClassCell{wcount, 3} = strcat('Class expected: ', ...
-                                  classCell{iC}, '.');
-    end
-    if nargin == 4
-      sizeGiven = size(StructIn.(fieldCell{iC}));
-      if ~isempty(dimensionCell{iC})
-        if length(dimensionCell{iC}) == length(sizeGiven)
-          if ~isequal(sizeGiven, dimensionCell{iC})
-            dcount = dcount + 1;
-            wrongDimensionCell{dcount, 1} = strcat('Field name: ', ...
-                                    fieldCell{iC},'\t');
-            wrongDimensionCell{dcount, 2} = strcat('Dimensions given: ', ...
-                                  num2str(sizeGiven), '\t');
-            wrongDimensionCell{dcount, 3} = strcat('Dimensions expected: ', ...
-                                    num2str(dimensionCell{iC}), '.');
-          end
-        else % only 1 dimension size specified, we assume
-          if ~all(ismember(dimensionCell{iC}, sizeGiven))
-            dcount = dcount + 1;
-            wrongDimensionCell{dcount, 1} = strcat('Field name: ', ...
-                                  fieldCell{iC},'\t');
-            wrongDimensionCell{dcount, 2} = strcat('Dimensions given: ', ...
-                                    num2str(sizeGiven), '\t');
-            wrongDimensionCell{dcount, 3} = ...
-                strcat('Expected one dimension to be length ', ...
-                                    num2str(dimensionCell{iC}), '.');
+
+  if isfield(StructIn, [fieldCell{iC} '_distribution'])
+      [nummissingpars, errmsg, givenpars] = checkFieldDistribution(StructIn, fieldCell{iC});
+      if nummissingpars > 0
+          pcount = pcount + 1;
+          missingDistParsCell{pcount,1} = ['Field name: ' fieldCell{iC}];
+          missingDistParsCell{pcount,2} = ['Required parameters: ' errmsg ];
+          missingDistParsCell{pcount,3} = ['Given parameters: ' givenpars ];
+      end
+  else
+      if ~isfield(StructIn, fieldCell{iC})
+        mcount = mcount + 1;
+        missingFieldCell{mcount, 1} = strcat(fieldCell{iC}, ', ');
+      elseif nargin >= 3
+        if ~strcmpi(class(StructIn.(fieldCell{iC})), classCell{iC})
+          wcount = wcount + 1;
+          wrongClassCell{wcount, 1} = strcat('Field name: ', ...
+                                      fieldCell{iC},'\t');
+          wrongClassCell{wcount, 2} = strcat('Class given: ', ...
+                                      class(StructIn.(fieldCell{iC})), '\t');
+          wrongClassCell{wcount, 3} = strcat('Class expected: ', ...
+                                      classCell{iC}, '.');
+        end
+        if nargin == 4
+          sizeGiven = size(StructIn.(fieldCell{iC}));
+          if ~isempty(dimensionCell{iC})
+            if length(dimensionCell{iC}) == length(sizeGiven)
+              if ~isequal(sizeGiven, dimensionCell{iC})
+                dcount = dcount + 1;
+                wrongDimensionCell{dcount, 1} = strcat('Field name: ', ...
+                                        fieldCell{iC},'\t');
+                wrongDimensionCell{dcount, 2} = strcat('Dimensions given: ', ...
+                                      num2str(sizeGiven), '\t');
+                wrongDimensionCell{dcount, 3} = strcat('Dimensions expected: ', ...
+                                        num2str(dimensionCell{iC}), '.');
+              end
+            else % only 1 dimension size specified, we assume
+              if ~all(ismember(dimensionCell{iC}, sizeGiven))
+                dcount = dcount + 1;
+                wrongDimensionCell{dcount, 1} = strcat('Field name: ', ...
+                                      fieldCell{iC},'\t');
+                wrongDimensionCell{dcount, 2} = strcat('Dimensions given: ', ...
+                                        num2str(sizeGiven), '\t');
+                wrongDimensionCell{dcount, 3} = ...
+                    strcat('Expected one dimension to be length ', ...
+                                        num2str(dimensionCell{iC}), '.');
+              end
+            end
           end
         end
-      end
     end
   end
 end
@@ -87,6 +100,14 @@ if dcount > 0
   errMsg = strcat(errMsg, 'Fields with incorrect dimension: \n');
   for iD = 1:dcount
       errMsg = strcat(errMsg, cell2mat(wrongDimensionCell(iD, :)), '\n');
+  end
+end
+if pcount >0
+    errMsg = strcat(errMsg, 'Fields with missing distribution parameters: \n');
+  for iP = 1:pcount
+      errMsg = strcat(errMsg, missingDistParsCell{pcount,1}, '\n');
+      errMsg = strcat(errMsg, missingDistParsCell{pcount,2}, '\n');
+      errMsg = strcat(errMsg, missingDistParsCell{pcount,3}, '\n');
   end
 end
 

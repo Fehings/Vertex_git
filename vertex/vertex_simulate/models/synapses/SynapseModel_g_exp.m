@@ -17,24 +17,33 @@ classdef SynapseModel_g_exp < SynapseModel
     function SM = SynapseModel_g_exp(Neuron, CP, SimulationSettings, ...
                                      postID, number,~,~,~)
       SM = SM@SynapseModel(Neuron, number);
-      SM.E_reversal = CP.E_reversal{postID};
-      SM.tau = CP.tau{postID};
+      for param = SynapseModel_g_exp.getPostSynapticParams()
+          SM.(param{1}) = getAttributeDist(CP,param,number,postID,SimulationSettings);
+      end
+      
       SM.bufferCount = 1;
       maxDelaySteps = SimulationSettings.maxDelaySteps;
       numComparts = Neuron.numCompartments;
+      
+      %for each connection a conductance value for each neuron is stored. 
+      %the weight of this is summed from all synapses onto the particular
+      %compartment of the neuron for a particular group.
       SM.g_exp = zeros(number, numComparts);
+      
+      %for each connection group an event buffer stores the spike accumulation at
+      %each compartment for each time step of each post synaptic neuron. 
       SM.g_expEventBuffer = zeros(number, numComparts, maxDelaySteps);
       SM.bufferMax = maxDelaySteps;
 
-      if SM.tau <= 0
+      if min(SM.tau) <= 0
         error('vertex:SynapseModel_g_exp', ...
            'tau must be greater than zero');
       end
     end
     
     function SM = updateBuffer(SM)
+
       SM.g_exp = SM.g_exp + SM.g_expEventBuffer(:, :, SM.bufferCount);
-          
       SM.g_expEventBuffer(:, :, SM.bufferCount) = 0;
       SM.bufferCount = SM.bufferCount + 1;
       
@@ -61,6 +70,13 @@ classdef SynapseModel_g_exp < SynapseModel
                             SM.g_expEventBuffer(synIndeces) + weightsToAdd;
       
     end
+    function set_event_buffer(SM,buffer, synIndeces)
+        SM.g_expEventBuffer(synIndeces) = ...
+            buffer(synIndeces);
+    end
+    function buffer = get_event_buffer(SM)
+        buffer = SM.g_expEventBuffer;
+    end
     
     function SM = randomInit(SM, g_mean, g_std)
       SM.g_exp = g_std .* randn(size(SM.g_exp)) + g_mean;
@@ -75,8 +91,12 @@ classdef SynapseModel_g_exp < SynapseModel
   
   
   methods(Static)
-    function params = getRequiredParams()
-      params = {'tau', 'E_reversal'};
+
+    function params = getPostSynapticParams()
+          params = {'tau', 'E_reversal'};
+    end
+     function params = getRequiredParams()
+      params = SynapseModel_g_exp.getPostSynapticParams();
     end
   end
 end % classdef

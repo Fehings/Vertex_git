@@ -199,8 +199,9 @@ ConnectionParams(1).synapseType{1} = 'g_exp';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
  ConnectionParams(1).weights{1} = 0.05;
-ConnectionParams(1).tau{1} = 1;
-
+ConnectionParams(1).tau_mu{1} = 1;
+ ConnectionParams(1).tau_distribution{1} = 'Normal';
+ConnectionParams(1).tau_sigma{1} = 0.2;
 %Here we specify the parameters for the plasticity,
 %facilitation is a unitless parameter with no biological correlate that
 %indicates the rate at which facilitation occurs. It should be a value
@@ -217,7 +218,9 @@ ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
 ConnectionParams(1).synapseType{2} = 'g_exp';
 ConnectionParams(1).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(1).weights{2} = 0.3;
-ConnectionParams(1).tau{2} = 1;
+ConnectionParams(1).tau_distribution{2} = 'Normal';
+ConnectionParams(1).tau_mu{2} = 1;
+ConnectionParams(1).tau_sigma{2} = 0.2;
 %Depressing
 
 %%
@@ -238,15 +241,18 @@ ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
 ConnectionParams(2).synapseType{1} = 'g_exp';
 ConnectionParams(2).targetCompartments{1} = NeuronParams(1).somaID;
 ConnectionParams(2).weights{1} = 0.2;
-ConnectionParams(2).tau{1} = 6;
-
+ConnectionParams(2).tau_mu{1} = 6;
+ ConnectionParams(2).tau_distribution{1} = 'Normal';
+ ConnectionParams(2).tau_sigma{1} = 0.2;
 
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
 ConnectionParams(2).synapseType{2} = 'g_exp';
 ConnectionParams(2).targetCompartments{2} = NeuronParams(2).dendritesID;
 ConnectionParams(2).weights{2} = 0.1;
-ConnectionParams(2).tau{2} = 6;
+ConnectionParams(2).tau_mu{2} = 6;
+ ConnectionParams(2).tau_distribution{2} = 'Normal';
+ ConnectionParams(2).tau_sigma{2} = 0.2;
 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
 ConnectionParams(2).sliceSynapses = true;
@@ -279,7 +285,7 @@ RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 1000;
+SimulationSettings.simulationTime = 200;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 

@@ -42,12 +42,20 @@ for c = 1:length(CP)
         if strcmp('g_stdp', CP(c).synapseType{cc})
             SS.stdp = true;
         end
+        if strcmp('g_mt_stdp', CP(c).synapseType{cc})
+            SS.stdp = true;
+        end
         if strcmp('g_stdp_delays', CP(c).synapseType{cc})
             SS.stdp = true;
         end
+        
     end
 end
 
+SS.recordingI_syn = false;
+if isfield(RS, 'I_syn') && ~isempty(RS.I_syn)
+  SS.recordingI_syn = true;
+end
 
 %NP = NeuronParams;
 % Calculate passive neuron properties in correct units
@@ -79,13 +87,11 @@ end
 
 % Setup the neuron ID mapping for routing spikes, saving variables etc.
 [NeuronIDMap] = setupNeuronIDMapping(TP, SS);
-disp('Ndyn')
 % Initialise the neuron models
 [NeuronModelArr] = ...
     setupNeuronDynamicVars(TP, NP, SS, NeuronIDMap, loadedSpikeTimeCell);
-disp('syndyn')
 % Initialise the synapse models
-[SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS);
+[SynapseModelArr, synMapCell] = setupSynapseDynamicVars(TP, NP, CP, SS, RS);
 
 % Initialise the input models (if any)
 if isfield(NP, 'Input')
@@ -94,14 +100,13 @@ else
     InputModelArr = [];
 end
 
-disp('synweightds')
 
 % Prepare synapses and synaptic weights.
 [synapsesArrSim, weightArr] = prepareSynapsesAndWeights(TP,CP,SS,connections);
-disp('rec vars')
 % Initialise the recording variables
+
 [RS, RecordingVars, lineSourceModCell] = ...
-    setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes, weightArr,synapsesArrSim);
+    setupRecordingVars(TP, NP, SS, RS, NeuronIDMap, electrodes, weightArr,synapsesArrSim, SynapseModelArr);
 
 %Setting the stimulation field v_ext for each neuron compartment
 %Get_V_ext returns the extracellular potential specified by

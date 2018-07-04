@@ -6,13 +6,14 @@ function [CP] = checkConnectivityStruct(CP)
 numGroups = length(CP);
 
 requiredFields = {'numConnectionsToAllFromOne','synapseType', ...
-    'targetCompartments', 'weights', 'axonArborSpatialModel', ...
+    'targetCompartments', 'axonArborSpatialModel', ...
     'axonConductionSpeed', 'synapseReleaseDelay'};
-requiredClasses = {'cell','cell','cell','cell','char','double','double'};
-requiredDimensions = {numGroups, numGroups, numGroups, numGroups, ...
+requiredClasses = {'cell','cell','cell','char','double','double'};
+requiredDimensions = {numGroups, numGroups, numGroups, ...
                       [], [1 1], [1 1]};
 
 for iPre = 1:numGroups
+    
   checkStructFields(CP(iPre), requiredFields, ...
                     requiredClasses, requiredDimensions);
   
@@ -34,14 +35,27 @@ for iPre = 1:numGroups
       error('vertex:checkConnectivityStruct:synapseModelNotFound', errMsg);
     end
     
-    if ~isempty(CP(iPre).weights{iPost}) && ...
-       ~checkNumeric(CP(iPre).weights{iPost})
-      errMsg = ['Content of weights cell array must be numeric ', ...
-                '(pre->post connection: ' num2str(iPre) ...
-                ' -> ' num2str(iPost) ')'];
-      error('vertex:checkConnectivityStruct:weightNotNumericScalar', errMsg);
+    if isfield(CP(iPre),'weights_distribution') && ...
+        iPost <= length(CP(iPre).weights_distribution) && ...
+        isempty(CP(iPre).weights_distribution{iPost}) 
+        
+    elseif isfield(CP(iPre), 'weights') && iPost <= length(CP(iPre).weights)...
+            &&  ~isempty(CP(iPre).weights{iPost})
+        
+         if ~checkNumeric(CP(iPre).weights{iPost})
+
+          errMsg = ['Content of weights cell array must be numeric ', ...
+                    '(pre->post connection: ' num2str(iPre) ...
+                    ' -> ' num2str(iPost) ')'];
+          error('vertex:checkConnectivityStruct:weightNotNumericScalar', errMsg);
+         end
     end
+    
+    
+                    
   end
+  
+  
   
   if ~checkNumericScalarPositive(CP(iPre).axonConductionSpeed)
     errMsg = ['Axon conduction speed must be positive, numeric ', ...

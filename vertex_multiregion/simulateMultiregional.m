@@ -3,7 +3,7 @@ function [NeuronModel, SynModel, InModel, iterator,S,RecVar,wArr] = simulateMult
 
 recordIntra = RecVar.recordIntra;
 recordI_syn = RecVar.recordI_syn;
-recordFac_syn = RecVar.recordFac_syn;
+recordstp_syn = RecVar.recordstp_syn;
 recordWeights = RecVar.recordWeights;
 recordWeightsArr = RecVar.recordWeightsArr;
 nIntSize = 'uint32';
@@ -31,7 +31,7 @@ for iGroup = 1:TP.numGroups
    
     
     [NeuronModel, SynModel, InModel] = ...
-        groupUpdateSchedule(NP,TP,SS,NeuronModel,SynModel,InModel,iGroup, synArr,wArr, IDMap,neuronInGroup);
+       groupUpdateSchedule(NP,TP,SS,NeuronModel,SynModel,InModel,iGroup,synArr,wArr, IDMap, neuronInGroup);
     
     S = addGroupSpikesToSpikeList(NeuronModel,IDMap,S,iGroup,iterator.comCount);
     
@@ -55,7 +55,7 @@ for iGroup = 1:TP.numGroups
                 updateLFPRecording(RS,NeuronModel,RecVar,lineSourceModCell,iGroup,iterator.recTimeCounter);
         end
         
-        if recordFac_syn
+        if recordstp_syn
             RecVar = updateFac_synRecording(SynModel,RecVar,iGroup,iterator.recTimeCounter,synMap,TP);
         end
         

@@ -11,12 +11,18 @@ RecordingSettings.saveDir = '~/VERTEX_rat_somatosensory_sliceSTDPLTP/';
 %RecordingSettings.saveDir = '~/VERTEXResults/August/VERTEX_rat_somatosensory_slice_100msPP';
 %RecordingSettings.saveDir = '/home/chris/VERTEX_TOPSY/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
 %RecordingSettings.saveDir = '/data/HPC_Julia/finalresult/VERTEX_rat_somatosensory_slice12sfw';
-%RecordingSettings.saveDir = '/data/Spontaneous/VERTEX_rat_somatosensory_slice_0MGLSP';
+RecordingSettings.saveDir = '/data/Spontaneous/VERTEX_rat_somatosensory_slice_0MGLSP';
 %RecordingSettings.saveDir = '~/VERTEXResults/VERTEX_rat_somatosensory_slice12s';
 %RecordingSettings.saveDir = '/data/Results/STDP/HBPdataTBS/VERTEX_rat_somatosensory_sliceSTDPLTP';
 %RecordingSettings.saveDir = '//data/IEDsFullNetworkWithCurrentRec/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
-RecordingSettings.saveDir = '/data/pps/VERTEX_rat_somatosensory_slice_100msPP';
-Results = loadResults(RecordingSettings.saveDir);
+%RecordingSettings.saveDir = '/data/pps/VERTEX_rat_somatosensory_slice_100msPP';
+RecordingSettings.saveDir = '/data/IEDswithsynapseVars/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
+RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/STDPAugust/VERTEX_rat_somatosensory_sliceSTDPLTP';
+RecordingSettings.saveDir = '~/Rocket_Results/SinglePulse/longer_no_synapses/singlepulse_1001/';
+%RecordingSettings.saveDir = '~/Rocket_Results/pairedPulse/pairedpulse_501001';
+%RecordingSettings.saveDir = '~/Rocket_Results/STDP/pulse_stdp/';
+%RecordingSettings.saveDir = '~/pulse_stdp/';
+Results = loadResults(RecordingSettings.saveDir,0);
 
 %make sure no figures are open to keep things tidy
 %close all;
@@ -49,6 +55,7 @@ pars.markers = {'^','x','x','x','s', ...
     'd','*','^','x','x','x','m',...
     '^','^','^','*','x','x','x','s'...
     '^','^','^','v','p','x','x','x','s'};
-pars.figureID =2;
+pars.figureID =1;
 pars.toPlot = 1:5:N;
+pars.dimensionscaler = 0.000001;
 plotSomaPositions(Results.params.TissueParams,pars);

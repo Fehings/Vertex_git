@@ -95,10 +95,10 @@ else
     I_syn = false;
 end
 
-if isfield(RS, 'fac_syn')
-    fac_syn = RS.fac_syn;
+if isfield(RS, 'stp_syn')
+    stp_syn = RS.stp_syn;
 else
-    fac_syn = false;
+    stp_syn = false;
 end
 
 if isfield(RS, 'apre_syn')
@@ -186,19 +186,19 @@ else
     I_syn_recording = [];
 end
 
-if fac_syn
-    fac_syn_recording = cell(2, TP.numGroups);
+if stp_syn
+    stp_syn_recording = cell(2, TP.numGroups);
     for iType=1:2
         for iPostGroup = 1:TP.numGroups
-            fac_syn_recording{iType, iPostGroup} = zeros(length(RS.fac_syn), simulationSamples);
+            stp_syn_recording{iType, iPostGroup} = zeros(length(RS.stp_syn), simulationSamples);
         end
     end
     if SS.parallelSim
-        fac_synCount = 0;
-        fac_synIDmap = [];
+        stp_synCount = 0;
+        stp_synIDmap = [];
     end
 else
-    fac_syn_recording = [];
+    stp_syn_recording = [];
 end
 
 if stdpvars
@@ -303,28 +303,28 @@ for iSaves = 1:numSaves
             end
         end
         
-        if fac_syn
+        if stp_syn
             if SS.parallelSim
-                if isfield(RecordingVars, 'fac_synRecording')
-                    fac_Syn = RecordingVars.fac_synRecording;
-                    for itype = 1:2
+                if isfield(RecordingVars, 'stp_synRecording')
+                    stp_Syn = RecordingVars.stp_synRecording;
+                    for itype = 1:4
                         for iPostGroup = 1:TP.numGroups
-                            fac_syn_recording{itype, iPostGroup}(fac_synCount+1:fac_synCount+size(fac_Syn{itype},1), ...
-                                sampleCount+1:sampleCount+size(fac_Syn{itype}, 3)) = ...
-                                squeeze(fac_Syn{itype}(:,iPostGroup,:));
+                            stp_syn_recording{iPostGroup,itype}(stp_synCount+1:stp_synCount+size(stp_Syn{iPostGroup},1), ...
+                                sampleCount+1:sampleCount+size(stp_Syn{iPostGroup}, 3)) = ...
+                                squeeze(stp_Syn{iPostGroup}(:,itype,:));
                         end
                     end
                     
-                    fac_synID = find(SS.neuronInLab(fac_syn) == iLab);
-                    fac_synIDmap(fac_synCount+1:fac_synCount+size(fac_synID)) = fac_synID;
-                    fac_synCount = fac_synCount+size(fac_Syn{1},1);
+                    stp_synID = find(SS.neuronInLab(stp_syn) == iLab);
+                    stp_synIDmap(stp_synCount+1:stp_synCount+size(stp_synID)) = stp_synID;
+                    stp_synCount = stp_synCount+size(stp_Syn{1},1);
                 end
             else
-                fac_Syn = RecordingVars.fac_synRecording;
+                stp_Syn = RecordingVars.stp_synRecording;
                 for itype = 1:2
-                    size(fac_Syn)
-                    fac_syn_recording{itype, iPostGroup}(:, sampleCount+1:sampleCount+size(fac_Syn{itype}, 3)) = ...
-                        squeeze(fac_Syn{itype}(:,iPostGroup,:));
+                    size(stp_Syn)
+                    stp_syn_recording{itype, iPostGroup}(:, sampleCount+1:sampleCount+size(stp_Syn{itype}, 3)) = ...
+                        squeeze(stp_Syn{itype}(:,iPostGroup,:));
                 end
             end
         end
@@ -469,10 +469,10 @@ if SS.parallelSim && ~isempty(I_syn_recording)
         I_syn_recording{iGroup}(I_synIDmap, :) = I_syn_recording{iGroup};
     end
 end
-if SS.parallelSim && ~isempty(fac_syn_recording)
+if SS.parallelSim && ~isempty(stp_syn_recording)
     for iPostGroup = 1:TP.numGroups
         for itype = 1:2
-            fac_syn_recording{itype,iPostGroup}(fac_synIDmap, :) = fac_syn_recording{itype,iPostGroup};
+            stp_syn_recording{itype,iPostGroup}(stp_synIDmap, :) = stp_syn_recording{itype,iPostGroup};
         end
     end
 end
@@ -489,7 +489,7 @@ Results.spikes = spikes;
 Results.LFP = LFP;
 Results.v_m = v_m_recording;
 Results.I_syn = I_syn_recording;
-Results.fac_syn = fac_syn_recording;
+Results.stp_syn = stp_syn_recording;
 Results.stdpvars = stdpvars_recording;
 Results.weights = weights_recording;
 Results.synapsePostIDs = postNIDs;
