@@ -10,6 +10,12 @@ if isfield(RS, 'LFP') && RS.LFP
 else
     RS.LFP = false;
 end
+if isfield(RS, 'CSD') && RS.CSD
+    
+else
+    RS.CSD = false;
+end
+    
 
 if ~isfield(RS, 'v_m')
     RS.v_m = [];
@@ -281,7 +287,36 @@ else
     end
     RecordingVars.recordI_syn = recordI_syn;
 end
-
+if RS.CSD
+    if SS.parallelSim
+        spmd 
+            p_neuronInThisLab = SS.neuronInLab == labindex();
+           
+            p_neuronInGroup = neuronInGroup(p_neuronInThisLab);
+            CSDRecording = cell(TP.numGroups, 1);
+                for iGroup = 1:TP.numGroups
+                    if ismember(iGroup,RS.CSD_groups)
+                    RecordingVars.CSD_NeuronIDs{iGroup} = RS.CSD_NeuronIDs{iGroup}(SS.neuronInLab(RS.CSD_NeuronIDs{iGroup})==labindex());
+                    
+                    CSDRecording{iGroup} = zeros(size(RecordingVars.CSD_NeuronIDs{iGroup},1), ...
+                        NP(iGroup).numCompartments, round(RS.maxRecSamples));
+                    RecordingVars.CSD_NeuronIDs{iGroup} = IDMap.modelIDToCellIDMap(RecordingVars.CSD_NeuronIDs{iGroup},:);
+                    end
+                    
+                end
+            
+            RecordingVars.CSDRecording = CSDRecording;
+        end
+    else
+        CSDRecording = cell(TP.numGroups, 1);
+            for iGroup = 1:TP.numGroups
+                
+                CSDRecording{iGroup} = zeros(length(RS.CSD_NeuronIDs{iGroup}), ...
+                    NP(iGroup).numCompartments, round(RS.maxRecSamples));
+            end
+        RecordingVars.CSDRecording = CSDRecording;
+    end % if parallelSim
+end
 % for LFPs:
 if RS.LFP
     if SS.parallelSim

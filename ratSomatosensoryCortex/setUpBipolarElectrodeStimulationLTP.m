@@ -1,10 +1,7 @@
 [TissueParams.StimulationField,model] = invitroSliceStim('6layermodelstiml4placedinnobacktrueunits.stl',750); % slicecutoutsmallnew
 %Thalamic burst stimulation
-TissueParams.StimulationOn = [500 ]; 
-TissueParams.StimulationOff = [ 500.5]; 
-
-TissueParams.StimulationOn = [500,1200,1210,1220,1230,1240,1400,1410,1420,1430,1440,1600,1610,1620,1630,1640,1800,1810,1820,1830,1840,2000,2010,2020,2030,2040,2200,2210,2220,2230,2240,2940];
-TissueParams.StimulationOff = [500.5,1200.5,1210.5,1220.5,1230.5,1240.5,1400.5,1410.5,1420.5,1430.5,1440.5,1600.5,1610.5,1620.5,1630.5,1640.5,1800.5,1810.5,1820.5,1830.5,1840.5,2000.5,2010.5,2020.5,2030.5,2040.5,2200.5,2210.5,2220.5,2230.5,2240.5,2940.5];
+TissueParams.StimulationOn = [1500 ]; 
+TissueParams.StimulationOff = [ 1500.5]; 
 %%
 % 
 % TissueParams.StimulationOn = [500 800 1000 1200 ...

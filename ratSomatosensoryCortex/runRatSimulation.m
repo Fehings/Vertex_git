@@ -9,7 +9,7 @@
 %this.
 %RecordingSettings.saveDir = '~/pulse_test/';
 
-RecordingSettings.LFP = true;
+RecordingSettings.LFP = false;
 [meaX, meaY, meaZ] = meshgrid(1200:-100:500, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -30,7 +30,12 @@ RecordingSettings.minDistToElectrodeTip = 20;
 % RecordingSettings.stp_syn_number = [50, 50, 50];
 % RecordingSettings.stp_syn_group = [13, 14, 8];
 % RecordingSettings.I_syn_preGroups = [6:20];
-
+for iGroup = 1:29
+    RecordingSettings.CSD_groups(iGroup) = iGroup;
+    RecordingSettings.CSD_Xboundary(iGroup,:) = [1100 1200];
+    RecordingSettings.CSD_Yboundary(iGroup,:) = [150 200];
+    RecordingSettings.CSD_Zboundary(iGroup,:) = [300 1800];
+end
 RecordingSettings.maxRecTime = 2500;
 RecordingSettings.sampleRate = 5000;
 
@@ -43,7 +48,7 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2400;
+SimulationSettings.simulationTime = 200;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 

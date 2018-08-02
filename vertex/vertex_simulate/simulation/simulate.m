@@ -173,6 +173,10 @@ for simStep = 1:simulationSteps
                     updateLFPRecording(RS,NeuronModel,RecVar,lineSourceModCell,iGroup,recTimeCounter);
             end
             
+            if RS.CSD 
+                RecVar = updateCSDRecording(RS, NeuronModel, RecVar, iGroup, recTimeCounter);
+            end
+            
             if recordstp_syn
                 RecVar = updateSTPVarsRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,neuronInGroup,TP);
             end

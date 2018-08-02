@@ -1,4 +1,3 @@
-c
 %%
 %Connectivity parameters loaded from connections.mat and assinged with the 
 %connectivity parameters. Weights and number of connections loaded from

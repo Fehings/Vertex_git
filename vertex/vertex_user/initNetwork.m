@@ -200,6 +200,13 @@ if control.init
         RS.weights_preN_IDs = [RS.weights_preN_IDs getNeuronsNear(TP, RS.weights_preN_IDs_location(i,:), RS.weights_preN_IDs_number(i), RS.weights_preN_IDs_group(i))'];
       end
   end
+  if isfield(RS, 'CSD_groups')
+      RS.CSD_NeuronIDs = [];
+      for i = 1:length(RS.CSD_groups)
+        RS.CSD_NeuronIDs{i} = getNeuronsBetween(TP, RS.CSD_groups(i), RS.CSD_Xboundary(i,:), RS.CSD_Yboundary(i,:), RS.CSD_Zboundary(i,:));
+      end
+      RS.CSD = true;
+  end
   % Calculate compartment connectivity probabilities according to positions
   % in layers
   NP = calculateCompartmentConnectionProbabilities(NP, TP);

@@ -1,10 +1,13 @@
-function [ compartmentPositions ] = getCompartmentLocations(NeuronArr, SS, TP )
+function [ compartmentPositions ] = getCompartmentLocations(NeuronArr, SS, TP,NeuronIDs )
 N = TP.N;
-if SS.parallelSim
+if nargin >= 4
+    neuronInThisLab = NeuronIDs;
+elseif SS.parallelSim
     neuronInThisLab = find(SS.neuronInLab == labindex);
 else
     neuronInThisLab = 1:N;
 end
+
 somaPositionMat = TP.somaPositionMat(:, 1:3);
 
 neuronInGroup = ...
