@@ -101,16 +101,7 @@ else
     stp_syn = false;
 end
 
-if isfield(RS, 'apre_syn')
-    apre_syn = RS.apre_syn;
-else
-    apre_syn = false;
-end
-if isfield(RS, 'apost_syn')
-    apost_syn = RS.apost_syn;
-else
-    apost_syn = false;
-end
+
 if isfield(RS, 'stdpvars')
     stdpvars = RS.stdpvars;
 else
@@ -125,6 +116,13 @@ if isfield(RS, 'weights_arr')
     weightsarr = true;
 else
     weightsarr = false;
+end
+if ~isfield(RS, 'CSD')
+    RS.CSD = 0;
+end
+
+if ~RS.CSD
+    CSD = [];
 end
 
 % Are we to calculate the LFP offline?
@@ -170,6 +168,9 @@ if v_m
 else
     v_m_recording = [];
 end
+
+
+
 spikeCell = cell(numSaves*ceil(maxRecSteps / minDelaySteps), 1);
 
 % Create matrix to store loaded I_syn
@@ -247,6 +248,20 @@ else
     
 end
 
+if RS.CSD 
+    CSD = cell(TP.numGroups,1);
+    if SS.parallelSim
+        csdCount = cell(TP.numGroups,1);
+        CSDIDMap = cell(TP.numGroups,1);
+        
+        for iGroup = 1:TP.numGroups
+            csdCount{iGroup} = 0;
+            CSDIDMap{iGroup} = zeros(length(RS.CSD_NeuronIDs{iGroup}),1);
+        end
+    end
+end
+    
+
 %Recording number
 sampleCount = 0;
 
@@ -254,6 +269,7 @@ sampleCount = 0;
 numSpikeTransmissions = 0;
 for iSaves = 1:numSaves
     for iLab = 1:numLabs
+        disp(['Lab: ' num2str(iLab)]);
         if SS.parallelSim
             fName = sprintf('%sRecordings%d_%d.mat', saveDir, iSaves, iLab);
         else
@@ -405,7 +421,17 @@ for iSaves = 1:numSaves
                 end
             end
         end
-        
+        if RS.CSD 
+            csd = RecordingVars.CSDRecording;
+            for iGroup = 1:TP.numGroups
+                disp(['Group: ' num2str(iGroup)]);
+                CSDID = find(SS.neuronInLab(RS.CSD_NeuronIDs{iGroup}) == iLab);
+                CSDIDMap{iGroup}(csdCount{iGroup}+1:csdCount{iGroup}+size(CSDID)) = CSDID;
+                CSD{iGroup}(csdCount{iGroup}+1:csdCount{iGroup}+size(csd{iGroup},1), 1:NP(iGroup).numCompartments,sampleCount+1:sampleCount+size(csd{iGroup},3)) = csd{iGroup};
+                csdCount{iGroup} = csdCount{iGroup}+size(csd{iGroup},1);
+            end
+            
+        end
         if RS.LFP
             lr = RecordingVars.LFPRecording;
             if LFPoffline
@@ -483,7 +509,11 @@ if SS.parallelSim && ~isempty(stdpvars_recording)
         end
     end
 end
-
+if SS.parallelSim && ~isempty(CSD)
+    for iGroup = 1:TP.numGroups
+       CSD{iGroup}(CSDIDMap{iGroup}, :,:) = CSD{iGroup};
+    end
+end
 % Store loaded results in cell array to return
 Results.spikes = spikes;
 Results.LFP = LFP;
@@ -495,6 +525,7 @@ Results.weights = weights_recording;
 Results.synapsePostIDs = postNIDs;
 Results.weights_arr = weights_arr;
 Results.syn_arr = synArr;
+Results.csd = CSD;
 Results.params.TissueParams = TP;
 Results.params.NeuronParams = NP;
 Results.params.ConnectionParams = CP;
