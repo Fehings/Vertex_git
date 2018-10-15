@@ -112,7 +112,6 @@ for iGroup = 1:length(NP)
             NP(iGroup).minCompartmentSize = Inf;
             Nparams(iGroup) = adjustCompartments(NP(iGroup), TP);
         end
-        
     end
 end
 
@@ -206,6 +205,22 @@ if control.init
         RS.CSD_NeuronIDs{i} = getNeuronsBetween(TP, RS.CSD_groups(i), RS.CSD_Xboundary(i,:), RS.CSD_Yboundary(i,:), RS.CSD_Zboundary(i,:));
       end
       RS.CSD = true;
+  end
+  if isfield(RS, 'I_synComp_groups')
+      if ~isfield(RS, 'I_synComp_NeuronIDs')
+          if isfield(RS, 'I_synComp_Xboundary')
+              RS.I_synComp_NeuronIDs = [];
+              for i = 1:length(RS.I_synComp_groups)
+                  RS.I_synComp_NeuronIDs{i} = getNeuronsBetween(TP, RS.I_synComp_groups(i), RS.I_synComp_Xboundary(i,:), RS.I_synComp_Yboundary(i,:), RS.I_synComp_Zboundary(i,:));
+              end
+          elseif isfield(RS, 'I_synComp_location')
+              RS.I_synComp_NeuronIDs = [];
+              for i = 1:length(RS.I_synComp_groups)
+                  RS.I_synComp_NeuronIDs{i} = getNeuronsNear(TP, RS.I_synComp_location(i,:), RS.I_synComp_number(i), RS.I_synComp_groups(i));
+              end
+          end
+      end
+      RS.I_synComp = true;
   end
   % Calculate compartment connectivity probabilities according to positions
   % in layers

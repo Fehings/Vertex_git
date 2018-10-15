@@ -100,9 +100,6 @@ classdef NeuronModel < handle
     NM.v_ext = V_ext;
     NM.v_ext(NM.v_ext>100) = 100;
     NM.v_ext(NM.v_ext<-100) = -100;
-    if size(NM.v_ext) ~= size(NM.I_ax)
-        error('V_ext not the same size as I_ax');
-    end
 
   end
   

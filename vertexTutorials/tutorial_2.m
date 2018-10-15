@@ -61,11 +61,11 @@ NeuronParams(1).v_cutoff = -45;
 %
 % The remaining parameters defining the structure and passive properties
 % are the same as in Tutorial 1:
-NeuronParams(1).numCompartments = 8;
-NeuronParams(1).compartmentParentArr = [0, 1, 2, 2, 4, 1, 6, 6];
-NeuronParams(1).compartmentLengthArr = [13 48 124 145 137 40 143 143];
+NeuronParams(1).numCompartments = 9;
+NeuronParams(1).compartmentParentArr = [0, 1, 2, 2, 4, 1, 6, 6, 1];
+NeuronParams(1).compartmentLengthArr = [13 48 124 145 137 40 143 143 100];
 NeuronParams(1).compartmentDiameterArr = ...
-  [29.8, 3.75, 1.91, 2.81, 2.69, 2.62, 1.69, 1.69];
+  [29.8, 3.75, 1.91, 2.81, 2.69, 2.62, 1.69, 1.69, 1];
 NeuronParams(1).compartmentXPositionMat = ...
 [   0,    0;
     0,    0;
@@ -74,9 +74,11 @@ NeuronParams(1).compartmentXPositionMat = ...
     0,    0;
     0,    0;
     0, -139;
-    0,  139];
+    0,  139;
+    0,  0];
 NeuronParams(1).compartmentYPositionMat = ...
 [   0,    0;
+    0,    0;
     0,    0;
     0,    0;
     0,    0;
@@ -92,7 +94,9 @@ NeuronParams(1).compartmentZPositionMat = ...
   193,  330;
   -13,  -53;
   -53, -139;
-  -53, -139];
+  -53, -139
+  -13, -113];
+NeuronParams(1).ax_id = [1, 9];
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
@@ -102,7 +106,7 @@ NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
 NeuronParams(1).labelNames = {'somaID', 'basalID','apicalID'};
-NeuronParams(1).minCompartmentSize = 0.8;
+%NeuronParams(1).minCompartmentSize = 0.8;
 %%
 % In order to generate spikes, we need to provide the neurons with some
 % input. We set the inputs to our neuron group in another structure array,
@@ -181,7 +185,7 @@ NeuronParams(2).R_A = 150;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).labelNames = {'dendritesID'};
-NeuronParams(2).minCompartmentSize = 0.8;
+%NeuronParams(2).minCompartmentSize = 0.8;
 NeuronParams(2).Input(1).inputType = 'i_ou';
 NeuronParams(2).Input(1).meanInput = 190;
 NeuronParams(2).Input(1).tau = 0.8;
@@ -189,10 +193,6 @@ NeuronParams(2).Input(1).stdInput = 50;
 
 
 
-% NeuronParams(2).Input(2).inputType = 'i_step';
-% NeuronParams(2).Input(2).amplitude = 10;
-% NeuronParams(2).Input(2).timeOn = 290;
-% NeuronParams(2).Input(2).timeOff = 300;
 
 
 %% Connectivity parameters
@@ -262,27 +262,23 @@ ConnectionParams(2).synapseReleaseDelay = 0.5;
 % tutorial. Note that the simulation will take longer to run than in
 % tutorial 1, as the AdEx dyamics add complexity to the calculations.
 
-RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/ac30stim1';%ac30hz';
+RecordingSettings.saveDir = '~/VERTEX_results_tutorial_2/';
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(0:1000:2000, 200, 600:-300:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 1:10:20;%250:250:4750;
-RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 1000;
+RecordingSettings.v_m = 1:10:2000;
+RecordingSettings.maxRecTime = 500;
+RecordingSettings.sampleRate = 5000;
 
-SimulationSettings.simulationTime = 5000;
+SimulationSettings.simulationTime = 200;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
 %%
 
-
-TissueParams.StimulationField = result;
-TissueParams.StimulationOn = 0;
-TissueParams.StimulationOff = SimulationSettings.simulationTime;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
@@ -312,7 +308,7 @@ Results = loadResults(RecordingSettings.saveDir);
 
 rasterParams.colors = {'k', 'm'};
 
-%%
+
 % Using these parameters, we obtain the following figure:
 
 rasterFigure = plotSpikeRaster(Results, rasterParams);

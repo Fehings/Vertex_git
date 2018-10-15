@@ -9,10 +9,11 @@ for iSyn = 1:size(SynModel, 2)
         % Get absolute presynaptic IDs of spikes arriving currently
         % getCurrSpikesPreIndex returns  a neuron group relative ID. We then add the neuron
         % group boundary to get the absolute ID.
-        if  isa(SynModel{iGroup, iSyn}, 'SynapseModel_g_stdp_delays')
+        if  isa(SynModel{iGroup, iSyn}, 'STDPModel_delays')
             if SynModel{iGroup,iSyn}.hasArrivingSpikes()
                 wArr = updateWeights(SynModel{iGroup,iSyn},wArr,IDMap,iGroup, synArr);
             end
+            updateSTDPBuffer(SynModel{iGroup, iSyn});
         end
         
         updateBuffer(SynModel{iGroup, iSyn});

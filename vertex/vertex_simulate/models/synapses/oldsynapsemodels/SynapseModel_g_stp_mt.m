@@ -1,4 +1,4 @@
-classdef SynapseModel_g_stp_mt < SynapseModel_g_stp
+classdef SynapseModel_g_exp_mt < SynapseModel_g_stp
   %SynapseModel_g_exp Conductance-based single exponential synapses
   %   Parameters to set in ConnectionParams:
   %   - E_reversal, the reversal potential (in mV)

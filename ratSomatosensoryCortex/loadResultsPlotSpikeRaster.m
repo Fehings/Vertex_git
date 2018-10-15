@@ -17,15 +17,15 @@ RecordingSettings.saveDir = '/data/Spontaneous/VERTEX_rat_somatosensory_slice_0M
 %RecordingSettings.saveDir = '//data/IEDsFullNetworkWithCurrentRec/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
 %RecordingSettings.saveDir = '/data/pps/VERTEX_rat_somatosensory_slice_100msPP';
 RecordingSettings.saveDir = '/data/IEDswithsynapseVars/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
-RecordingSettings.saveDir = '//media/b3046588/Elements/VERTEX_RESULTS/newconnectivity/singlepulse_1002';
-RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Rocket_Results/SinglePulse/CSD/singlepulse_1001';
-%RecordingSettings.saveDir = '~/Rocket_Results/pairedPulse/pairedpulse_501001';
-RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/longer_no_synapses/singlepulse_1001';
-RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_STDPResults/tbs_weights1001';
-%RecordingSettings.saveDir = '~/pulse_test/';
-%RecordingSettings.saveDir = '~/pulse_test_nosyn/';
+RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Rocket_Results/SinglePulse/CSD/singlepulse_1001_nosyn';
+RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/CSD/singlepulse_1001_wsyn';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_STDPResults/tbs_weights1001';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/no_synapses/singlepulsenosyn1003';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/paired_pulse/recfromstimulated/withcsd/withweights/pairedpulse1001';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/pairedpulse1001';
+%RecordingSettings.saveDir = '~/zero_magnesium//';
 
-Results = loadResults(RecordingSettings.saveDir);
+Results = loadResults(RecordingSettings.saveDir,0);
 
 %make sure no figures are open to keep things tidy
 %close all;

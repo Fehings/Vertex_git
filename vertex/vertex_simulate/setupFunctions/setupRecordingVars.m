@@ -42,6 +42,9 @@ end
 if ~isfield(RS, 'weights_arr')
     RS.weights_arr = [];
 end
+if ~isfield(RS, 'I_synComp')
+    RS.I_synComp = [];
+end
 
 
 
@@ -163,7 +166,6 @@ if SS.parallelSim
             p_stp_synRecCellIDArr = ...
                 IDMap.modelIDToCellIDMap(p_stp_synRecModelIDArr, :);
             p_numToRecordstp_syn = size(p_stp_synRecModelIDArr, 2);
-            length(TP.numGroups)
             for iGroup = 1:TP.numGroups
                 p_stp_synRecording{iGroup} = zeros(p_numToRecordstp_syn, 4, round(RS.maxRecSamples));
             end
@@ -188,7 +190,7 @@ else
             stp_synRecording{iGroup} = zeros(numToRecordstp_syn, 4, round(RS.maxRecSamples));
         end
         stp_synRecModelIDArr = RS.stp_syn;
-        RecordingVars.stp_synRecCellIDArr = stp_synRecCellIDArr';
+        RecordingVars.stp_synRecCellIDArr = stp_synRecCellIDArr;
         RecordingVars.stp_synRecModelIDArr =stp_synRecModelIDArr;
         RecordingVars.stp_synRecording = stp_synRecording;
     else
@@ -250,9 +252,9 @@ if SS.parallelSim
                 IDMap.modelIDToCellIDMap(p_I_synRecModelIDArr, :);
             p_numToRecordI_syn = size(p_I_synRecModelIDArr, 1);
             if isfield(RS, 'I_syn_preGroups')
-                p_I_synRecording = zeros(p_numToRecordI_syn, length(RS.I_syn_preGroups), round(RS.maxRecSamples));
-                RecordingVars.recAllI_syn = false;
-                RecordingVars.I_syn_pregroups = RS.I_syn_preGroups;
+                    p_I_synRecording = zeros(p_numToRecordI_syn, length(RS.I_syn_preGroups), round(RS.maxRecSamples));
+                    RecordingVars.recAllI_syn = false;
+                    RecordingVars.I_syn_pregroups = RS.I_syn_preGroups;
 
             else
                 p_I_synRecording = zeros(p_numToRecordI_syn, size(synArr,2), round(RS.maxRecSamples));
@@ -287,12 +289,39 @@ else
     end
     RecordingVars.recordI_syn = recordI_syn;
 end
+% Record synaptic currents per compartment
+if RS.I_synComp
+    if SS.parallelSim
+        spmd           
+
+                I_synCompRecording = cell(TP.numGroups, 1);
+                    for i = 1:length(RS.I_synComp_groups)
+                        iGroup = RS.I_synComp_groups(i);
+                        if ismember(iGroup,RS.I_synComp_groups)
+                            RecordingVars.I_synComp_NeuronIDs{iGroup} = RS.I_synComp_NeuronIDs{i}(SS.neuronInLab(RS.I_synComp_NeuronIDs{i})==labindex());
+
+                            I_synCompRecording{iGroup} = zeros(size(RecordingVars.I_synComp_NeuronIDs{iGroup},1), ...
+                                NP(iGroup).numCompartments, round(RS.maxRecSamples));
+                            RecordingVars.I_synComp_NeuronIDs{iGroup} = IDMap.modelIDToCellIDMap(RecordingVars.I_synComp_NeuronIDs{iGroup},:);
+                        end
+
+                    end
+                RecordingVars.I_synCompRecording = I_synCompRecording;
+        end
+    else
+            I_synCompRecording = cell(TP.numGroups, 1);
+                for iGroup = 1:TP.numGroups
+
+                    I_synCompRecording{iGroup} = zeros(length(RS.I_synComp_NeuronIDs{iGroup}), ...
+                        NP(iGroup).numCompartments, round(RS.maxRecSamples));
+                end
+            RecordingVars.I_synCompRecording = I_synCompRecording;
+    end
+end
 if RS.CSD
     if SS.parallelSim
         spmd 
-            p_neuronInThisLab = SS.neuronInLab == labindex();
            
-            p_neuronInGroup = neuronInGroup(p_neuronInThisLab);
             CSDRecording = cell(TP.numGroups, 1);
                 for iGroup = 1:TP.numGroups
                     if ismember(iGroup,RS.CSD_groups)
@@ -317,6 +346,7 @@ if RS.CSD
         RecordingVars.CSDRecording = CSDRecording;
     end % if parallelSim
 end
+
 % for LFPs:
 if RS.LFP
     if SS.parallelSim
@@ -333,6 +363,7 @@ if RS.LFP
             else
                 for iGroup = 1:TP.numGroups
                     LFPRecording{iGroup} = zeros(numElectrodes, round(RS.maxRecSamples));
+                    disp(size(LFPRecording{iGroup}));
                 end
             end
             for iGroup = 1:TP.numGroups

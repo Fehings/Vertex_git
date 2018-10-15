@@ -64,28 +64,31 @@ for i = 0:segmentgroup.getLength-1
     seggroup = segmentgroup.item(i);
     group.id = char(seggroup.getAttribute('id'));
     members = seggroup.getElementsByTagName('member');
-   
+   if ~strcmp(seggroup.getAttribute('neuroLexId'), 'sao864921383')
+       continue;
+   else
         segmentnumbers = zeros(members.getLength,1);
         for j = 0:members.getLength-1
             segmentnumbers(j+1) = str2num(members.item(j).getAttribute('segment'));
         end
-    if length(segmentnumbers) < 1
-        members = seggroup.getElementsByTagName('include');
-        segmentnumbers = [];
-        for j = 0:members.getLength-1
-            groupid = char(members.item(j).getAttribute('segmentGroup'));
-            for e = 1:length(groups)
-                if strcmp(groups{e}.id,groupid)
-                    segmentnumbers= [segmentnumbers; groups{e}.segnumbers];
-                    break;
+        if length(segmentnumbers) < 1
+            members = seggroup.getElementsByTagName('include');
+            segmentnumbers = [];
+            for j = 0:members.getLength-1
+                groupid = char(members.item(j).getAttribute('segmentGroup'));
+                for e = 1:length(groups)
+                    if strcmp(groups{e}.id,groupid)
+                        segmentnumbers= [segmentnumbers; groups{e}.segnumbers];
+                        break;
+                    end
                 end
             end
         end
-    end
-    disp(['Added group ' group.id ' with ' num2str(length(segmentnumbers)) ' members.']);
+        disp(['Added group ' group.id ' with ' num2str(length(segmentnumbers)) ' members.']);
 
-    group.segnumbers = segmentnumbers;
-    groups{i+1} = group;
+        group.segnumbers = segmentnumbers;
+        groups{i+1} = group;
+   end
 end
 neuron.groups = groups;
 

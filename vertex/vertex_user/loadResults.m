@@ -95,6 +95,11 @@ else
     I_syn = false;
 end
 
+if isfield(RS, 'I_synComp')
+    I_synComp = RS.I_synComp;
+else
+    I_synComp = false;
+end
 if isfield(RS, 'stp_syn')
     stp_syn = RS.stp_syn;
 else
@@ -124,7 +129,9 @@ end
 if ~RS.CSD
     CSD = [];
 end
-
+if ~isfield(RS, 'I_synComp')
+    RS.I_synComp = 0;
+end
 % Are we to calculate the LFP offline?
 if isfield(RS, 'LFPoffline') && RS.LFPoffline
     LFPoffline = true;
@@ -257,6 +264,19 @@ if RS.CSD
         for iGroup = 1:TP.numGroups
             csdCount{iGroup} = 0;
             CSDIDMap{iGroup} = zeros(length(RS.CSD_NeuronIDs{iGroup}),1);
+        end
+    end
+end
+
+if RS.I_synComp 
+    I_synComp = cell(length(RS.I_synComp_groups),1);
+    if SS.parallelSim
+        I_synCompCount = cell(length(RS.I_synComp_groups),1);
+        I_synCompIDMap = cell(length(RS.I_synComp_groups),1);
+        
+        for i = 1:length(RS.I_synComp_groups)
+            I_synCompCount{i} = 0;
+            I_synCompIDMap{i} = zeros(length(RS.I_synComp_NeuronIDs{i}),1);
         end
     end
 end
@@ -421,10 +441,20 @@ for iSaves = 1:numSaves
                 end
             end
         end
+        if RS.I_synComp
+            I_synCompCurrent = RecordingVars.I_synCompRecording;
+            for i = 1:length(RS.I_synComp_groups)
+                iGroup = RS.I_synComp_groups(i);
+                I_synCompID = find(SS.neuronInLab(RS.I_synComp_NeuronIDs{i}) == iLab);
+                I_synCompIDMap{i}(I_synCompCount{i}+1:I_synCompCount{i}+size(I_synCompID)) = I_synCompID;
+                I_synComp{i}(I_synCompCount{i}+1:I_synCompCount{i}+size(I_synCompCurrent{iGroup},1), 1:NP(iGroup).numCompartments,sampleCount+1:sampleCount+size(I_synCompCurrent{iGroup},3)) = I_synCompCurrent{iGroup};
+                I_synCompCount{i} = I_synCompCount{i}+size(I_synCompCurrent{iGroup},1);
+            end
+            
+        end
         if RS.CSD 
             csd = RecordingVars.CSDRecording;
             for iGroup = 1:TP.numGroups
-                disp(['Group: ' num2str(iGroup)]);
                 CSDID = find(SS.neuronInLab(RS.CSD_NeuronIDs{iGroup}) == iLab);
                 CSDIDMap{iGroup}(csdCount{iGroup}+1:csdCount{iGroup}+size(CSDID)) = CSDID;
                 CSD{iGroup}(csdCount{iGroup}+1:csdCount{iGroup}+size(csd{iGroup},1), 1:NP(iGroup).numCompartments,sampleCount+1:sampleCount+size(csd{iGroup},3)) = csd{iGroup};
@@ -453,6 +483,7 @@ for iSaves = 1:numSaves
             else
                 for iGroup = 1:TP.numGroups
                     if combineLFPs
+
                         LFP(:, sampleCount+1:sampleCount+size(lr{iGroup},2)) = ...
                             LFP(:, sampleCount+1:sampleCount+size(lr{iGroup},2)) + ...
                             lr{iGroup};
@@ -514,6 +545,13 @@ if SS.parallelSim && ~isempty(CSD)
        CSD{iGroup}(CSDIDMap{iGroup}, :,:) = CSD{iGroup};
     end
 end
+if SS.parallelSim && ~isempty(I_synComp)
+    if I_synComp
+        for iGroup = 1:length(RS.I_synComp_groups)
+           I_synComp{iGroup}(I_synCompIDMap{iGroup}, :,:) = I_synComp{iGroup};
+        end
+    end
+end
 % Store loaded results in cell array to return
 Results.spikes = spikes;
 Results.LFP = LFP;
@@ -525,6 +563,7 @@ Results.weights = weights_recording;
 Results.synapsePostIDs = postNIDs;
 Results.weights_arr = weights_arr;
 Results.syn_arr = synArr;
+Results.I_synComp = I_synComp;
 Results.csd = CSD;
 Results.params.TissueParams = TP;
 Results.params.NeuronParams = NP;
