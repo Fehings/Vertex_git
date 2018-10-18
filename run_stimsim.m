@@ -3,13 +3,15 @@
 load('neuroandstimparams.mat')
 
 %% Set simulation settings
-SimulationParams.timeStep = 0.001;
+SimulationParams.timeStep = 0.01;
 SimulationParams.simulationTime = 10.5;
 SimulationParams.TP = TissueParams;
+%% Simulate model
 [v_m, I_input,NM] = neuronDynamicsStimPost(NP, SimulationParams);
-%%
+%% Ready model output
 v_m = squeeze(v_m);
 I_input = squeeze(I_input);
+%% Calculate the membrane polarisation at each compartment
 for iComp = 1:length(v_m(:,1))
     [a,ind] = max(abs(v_m(iComp,:)-(-70)));
       vm_diff(iComp) = v_m(iComp,ind);
@@ -17,12 +19,14 @@ end
 vdiff = max(abs(-70-(v_m')));
 
 vmax = max(abs(-70-(v_m')));
-%%
-v_m_ab2= v_m;
-NPab2 = NP;
+%% View results
+viewMorphologyColour(NP, v_m(:,end),0);
+
 %
 %%
-viewMorphologyColour(NP, v_m(:,end),0);
+
+% v_m_ab2= v_m;
+% NPab2 = NP;
 % offset = 700;
 % NPsctemp = NP_sc25;
 % NPsctemp.compartmentXPositionMat = NPsctemp.compartmentXPositionMat+offset;
