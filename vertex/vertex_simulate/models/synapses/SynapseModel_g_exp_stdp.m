@@ -9,7 +9,7 @@ classdef SynapseModel_g_exp_stdp < SynapseModel_g_exp & STDPModel
     function SM = SynapseModel_g_exp_stdp(Neuron, CP, SimulationSettings, ...
                                      postID, number_in_post,number_in_pre,pre_group_ids,~)
       SM = SM@SynapseModel_g_exp(Neuron, CP, SimulationSettings,postID, number_in_post,number_in_pre,pre_group_ids );
-      SM = SM@STDPModel(CP,SimulationSettings,postID,number_in_pre);
+      SM = SM@STDPModel(CP, SimulationSettings, postID, number_in_post,number_in_pre,pre_group_ids);
 
     end
 

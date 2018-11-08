@@ -34,7 +34,11 @@
             resetRandomSeed()
 
         else 
-            dist = CP.(attribute){postID};
+            try
+                dist = CP.(attribute){postID};
+            catch
+                error(['error accessing synaptic attribute: ' attribute ' for post synaptic group: ' num2str(postID)]);
+            end
         end
         
     end
