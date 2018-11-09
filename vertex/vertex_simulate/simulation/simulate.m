@@ -86,7 +86,6 @@ for simStep = 1:simulationSteps
             for iGroup = 1:TP.numGroups
                 if  ~NeuronModel{iGroup}.incorporate_vext
                     stimulationOn(NeuronModel{iGroup});
-                    disp('stimulation on')
                 end
                 % For time varying stimulation, step through the time
                 % dimension of the vext matrix for each simStep where
@@ -109,16 +108,15 @@ for simStep = 1:simulationSteps
             if timeStimStep > size(TP.StimulationField.NodalSolution,2)
                 timeStimStep = 1;
             end
-        elseif current_time > TP.StimulationOff(stimcount)
+        elseif current_time >= TP.StimulationOff(stimcount)
             for iGroup = 1:TP.numGroups
                 if  NeuronModel{iGroup}.incorporate_vext
-                    stimulationOn(NeuronModel{iGroup});
-                    disp('stimulation off')
+                    %stimulationOn(NeuronModel{iGroup});
                     stimulationOff(NeuronModel{iGroup});
                 end
-                if stimcount < length(TP.StimulationOn)
-                    stimcount = stimcount+1;
-                end
+            end
+            if stimcount < length(TP.StimulationOn)
+               stimcount = stimcount+1;
             end
         end
     end

@@ -8,8 +8,8 @@ function [ v_ext ] = get_V_ext(locations,field,t)
 % whether it is specified as a gridded interpolant.
 
 v_ext = zeros(size(squeeze(locations(1,:,:))))';
-micrometersconversion = 1e-6;
-locations = locations.*micrometersconversion;
+%micrometersconversion = 1e-6;
+%locations = locations.*micrometersconversion;
 % locations=locations.*angle
 
 for iComp = 1:length(locations(1,:,1))
