@@ -23,7 +23,8 @@ RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/CSD/singlep
 %RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/no_synapses/singlepulsenosyn1003';
 %RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/paired_pulse/recfromstimulated/withcsd/withweights/pairedpulse1001';
 %RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/pairedpulse1001';
-%RecordingSettings.saveDir = '~/zero_magnesium//';
+RecordingSettings.saveDir = '~/zero_magnesium//';
+RecordingSettings.saveDir = '~/ratneocortex_test//';
 
 Results = loadResults(RecordingSettings.saveDir,0);
 

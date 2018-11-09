@@ -84,7 +84,7 @@ NeuronParams.apicalID = [4 5];
 NeuronParams.trunkID = 2;
 % Must provide list of names used for the different sections
 NeuronParams.labelNames = {'somaID', 'basalID', 'proximalID', 'distalID', 'obliqueID', 'apicalID',...
-    'trunkID', 'tuftID'};
+    'trunkID'};
 %% Specify the physiological properties of the neuron
 NeuronParams.C = 1.0*2.95;
 NeuronParams.R_M = 20000/2.95;
