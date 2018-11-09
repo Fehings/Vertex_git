@@ -24,9 +24,9 @@ RecordingSettings.minDistToElectrodeTip = 20;
  % RecordingSettings.I_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
 % RecordingSettings.I_syn_number = [50, 50, 50];
 % RecordingSettings.I_syn_group = [13, 14, 8];
-%  RecordingSettings.v_m_location = [[1150 1200];[1150 1200];[1150 1200]];
-% RecordingSettings.v_m_number = [50, 50, 50];
-% RecordingSettings.v_m_group = [13, 14, 8];
+RecordingSettings.v_m_location = [[1150 1200];[1150 1200];[1150 1200]];
+RecordingSettings.v_m_number = [50, 50, 50];
+RecordingSettings.v_m_group = [1, 14, 8];
 %Record pre synaptically
 %  RecordingSettings.stp_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
 % RecordingSettings.stp_syn_number = [50, 50, 50];
@@ -54,7 +54,7 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 500;
+SimulationSettings.simulationTime = 4000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 
