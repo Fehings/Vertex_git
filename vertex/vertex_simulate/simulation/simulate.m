@@ -58,8 +58,16 @@ timeStimStep = 1;
 
 % simulation loop
 %disp(['max: ' num2str(max(StimParams.activation))]);
-
-stdp = SS.stdp;
+stdp = false;
+for iPostGroup = 1:TP.numGroups
+    for iGroup = 1:size(SynModel,2)
+        if  ~isempty(SynModel{iPostGroup, iGroup})
+            if isa(SynModel{iPostGroup, iGroup}, 'STDPModel')
+                stdp = true;
+            end
+        end
+    end
+end
 revSynArr = [];
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
@@ -296,7 +304,8 @@ for simStep = 1:simulationSteps
                             relativeSpikeID = allSpike(iSpk) - TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
                             relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
                             processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup},relativeSpikeID,neuronInGroup(allSpike(iSpk)),relativepostneuronIDs,tBufferLoc(inGroup) );
-                        
+                        %else if ensures that only one is processing is
+                        %done (STDPModel_delays inherits from STDPModel)
                         elseif isa(SynModel{iPostGroup, iSpkSynGroup}, 'STDPModel')
                             %process spike as presynaptic spike, updating weights for
                             %post synaptic neurons in this synapse group.
@@ -328,8 +337,7 @@ for simStep = 1:simulationSteps
                         postGroup = neuronInGroup(allSpike(iSpk));
                         iSpkSynGroup = synMap{postGroup}(iPreGroup);
                         
-                        if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp') || isa(SynModel{postGroup, iSpkSynGroup}, 'SynapseModel_g_stdp_delays')
-                            
+                        if isa(SynModel{postGroup,iSpkSynGroup}, 'STDPModel') 
                            tBufferLoc =  cast(revSynArr{allSpike(iSpk), 3}, 'int16') - cast(SynModel{postGroup,iSpkSynGroup}.bufferCount,'int16')...
                             - cast(allSpikeTimes(iSpk), 'int16');
                     

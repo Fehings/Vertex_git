@@ -36,21 +36,7 @@ if isfield(SS,'spikeLoad')
     end
 end
 
-SS.stdp = false;
-for c = 1:length(CP)
-    for cc = 1:length(CP(c).synapseType)
-        if strcmp('g_stdp', CP(c).synapseType{cc})
-            SS.stdp = true;
-        end
-        if strcmp('g_mt_stdp', CP(c).synapseType{cc})
-            SS.stdp = true;
-        end
-        if strcmp('g_stdp_delays', CP(c).synapseType{cc})
-            SS.stdp = true;
-        end
-        
-    end
-end
+
 
 SS.recordingI_syn = false;
 if isfield(RS, 'I_syn') && ~isempty(RS.I_syn)

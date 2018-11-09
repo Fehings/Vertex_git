@@ -386,9 +386,9 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 
 RecordingSettings.saveDir = '~/VERTEX_results_tutorial_5/';
 RecordingSettings.LFP = true;
-RecordingSettings.weights_preN_IDs_location = [[1150 1200];[1150 1200];[1150 1200]];
-RecordingSettings.weights_preN_IDs_number = [5, 5, 5];
-RecordingSettings.weights_preN_IDs_group = [13, 14, 8];
+RecordingSettings.weights_preN_IDs = [1:100];
+RecordingSettings.weights_arr = [1 3000];
+RecordingSettings.weights_preN_IDs
 [meaX, meaY, meaZ] = meshgrid(0:500:2000, 200, 700:-100:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -461,6 +461,10 @@ set(gca, 'FontSize', 16);
 title('Tutorial 5: LFP at 4 electrode positions', 'FontSize', 16)
 xlabel('Time (ms)', 'FontSize', 16)
 ylabel('LFP (mV)', 'FontSize', 16)
+%%
+
+time1weights = getSparseConnectivityWeights(Results.weights_arr{1},Results.syn_arr,Results.params.TissueParams.N);%
+time2weights = getSparseConnectivityWeights(Results.weights_arr{2},Results.syn_arr,Results.params.TissueParams.N);%
 
 %%
 % Note that much of the high frequency content in these plots comes from
