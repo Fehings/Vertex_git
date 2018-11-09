@@ -9,7 +9,7 @@ classdef SynapseModel_i_exp_stdp < SynapseModel_i_exp & STDPModel
     function SM = SynapseModel_i_exp_stdp(Neuron, CP, SimulationSettings, ...
                                      postID, number_in_post,number_in_pre,pre_group_ids,~)
       SM = SM@SynapseModel_i_exp(Neuron, CP, SimulationSettings,postID, number_in_post,number_in_pre,pre_group_ids );
-      SM = SM@STDPModel(CP,SimulationSettings,postID,number_in_pre,pre_group_ids);
+      SM = SM@STDPModel(CP, SimulationSettings, postID, number_in_post,number_in_pre,pre_group_ids);
 
     end
 
@@ -19,7 +19,7 @@ classdef SynapseModel_i_exp_stdp < SynapseModel_i_exp & STDPModel
     function SM = updateSynapses(SM, NM, dt)
         
       updateSynapses@SynapseModel_i_exp(SM, NM, dt);
-      updateSynapses@STPModel_stdp(SM,dt);      
+      updateSynapses@STDPModel(SM,dt);      
       
     end
 
