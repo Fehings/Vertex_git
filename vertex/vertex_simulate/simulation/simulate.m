@@ -86,7 +86,7 @@ for simStep = 1:simulationSteps
             for iGroup = 1:TP.numGroups
                 if  ~NeuronModel{iGroup}.incorporate_vext
                     stimulationOn(NeuronModel{iGroup});
-                end
+                 end
                 % For time varying stimulation, step through the time
                 % dimension of the vext matrix for each simStep where
                 % stimulation is active. The vext matrix should have

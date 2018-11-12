@@ -17,6 +17,7 @@ classdef SynapseModel_g_exp_ab_stdp_delays < SynapseModel_g_exp_ab & STDPModel_d
                                  
       SM = SM@SynapseModel_g_exp_ab(Neuron, CP, SimulationSettings,postID, number_in_post,number_in_pre,pre_group_ids);
       SM = SM@STDPModel_delays(CP, SimulationSettings, postID, number_in_post,number_in_pre,pre_group_ids,GBA);
+      
 
       
     end

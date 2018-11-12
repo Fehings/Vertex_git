@@ -7,9 +7,9 @@ classdef SynapseModel_g_exp_stdp_delays < SynapseModel_g_exp & STDPModel_delays
   
   methods
     function SM = SynapseModel_g_exp_stdp_delays(Neuron, CP, SimulationSettings, ...
-                                     postID, number_in_post,number_in_pre,pre_group_ids,~)
+                                     postID, number_in_post,number_in_pre,pre_group_ids,GBA)
       SM = SM@SynapseModel_g_exp(Neuron, CP, SimulationSettings,postID, number_in_post,number_in_pre,pre_group_ids );
-      SM = SM@STDPModel_delays(CP,SimulationSettings,postID,number_in_pre);
+      SM = SM@STDPModel_delays(CP, SimulationSettings, postID, number_in_post,number_in_pre,pre_group_ids,GBA);
 
     end
 

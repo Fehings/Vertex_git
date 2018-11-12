@@ -4,7 +4,7 @@
 %% Tissue parameters
 % First we specify the same tissue parameters as in tutorial 1:
 
-stdprate=0.5;
+stdprate=0.01;
 
 TissueParams.X = 2500;
 TissueParams.Y = 400;
@@ -235,7 +235,7 @@ ConnectionParams(1).E_reversal{2} =0;
 % to these, they only send signals they dont recieve any.
 
 ConnectionParams(1).numConnectionsToAllFromOne{3} = 0;
-ConnectionParams(1).synapseType{3} = 'g_exp_stdp';
+ConnectionParams(1).synapseType{3} = 'g_exp_stdp_delays';
 ConnectionParams(1).targetCompartments{3} = {};
 ConnectionParams(1).weights{3} = 0;
 ConnectionParams(1).tau{3} = 1;
@@ -261,43 +261,25 @@ ConnectionParams(1).synapseReleaseDelay = 0.5;
 % We repeat this process for connections from group 2:
 
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
-ConnectionParams(2).synapseType{1} = 'g_exp_stdp';
+ConnectionParams(2).synapseType{1} = 'g_exp';
 ConnectionParams(2).targetCompartments{1} = {'somaID'};
 ConnectionParams(2).weights{1} = 0.2;
 ConnectionParams(2).tau{1} = 6;
-ConnectionParams(2).preRate{1} = -stdprate;%0.01;
-ConnectionParams(2).postRate{1} = stdprate;%0.01;
-ConnectionParams(2).tPre{1} = 2;
-ConnectionParams(2).tPost{1} = 6;
-ConnectionParams(2).wmin{1} = 0.01;
-ConnectionParams(2).wmax{1} = 100;
-ConnectionParams(2).E_reversal{1} =-70;
+
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 600;
-ConnectionParams(2).synapseType{2} = 'g_exp_stdp';
+ConnectionParams(2).synapseType{2} = 'g_exp';
 ConnectionParams(2).targetCompartments{2} = {'dendritesID'};
 ConnectionParams(2).weights{2} = 0.2;
 ConnectionParams(2).tau{2} = 3;
-ConnectionParams(2).preRate{2} = -stdprate;%0.01;
-ConnectionParams(2).postRate{2} = stdprate;%0.01;
-ConnectionParams(2).tPre{2} = 2;
-ConnectionParams(2).tPost{2} = 6;
-ConnectionParams(2).wmin{2} = 0.01;
-ConnectionParams(2).wmax{2} = 100;
-ConnectionParams(2).E_reversal{2} =-70;
+
 
 ConnectionParams(2).numConnectionsToAllFromOne{3} = 0;
-ConnectionParams(2).synapseType{3} = 'g_exp_stdp';
+ConnectionParams(2).synapseType{3} = 'g_exp';
 ConnectionParams(2).targetCompartments{3} = {};
 ConnectionParams(2).weights{3} = 0;
 ConnectionParams(2).tau{3} = 1;
-ConnectionParams(2).preRate{3} = stdprate;% 0.01;
-ConnectionParams(2).postRate{3} = stdprate;% 0.01;
-ConnectionParams(2).tPre{3} = 2;
-ConnectionParams(2).tPost{3} = 6;
-ConnectionParams(2).wmin{3} = 0.01;
-ConnectionParams(2).wmax{3} = 100;
-ConnectionParams(2).E_reversal{3} =-70;
+
 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
 ConnectionParams(2).sliceSynapses = true;

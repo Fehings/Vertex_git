@@ -21,12 +21,12 @@ RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000; 
 SimulationSettings.simulationTime = 100; % simulation time! Modify as you like.
 SimulationSettings.timeStep = 0.03125; 
-SimulationSettings.parallelSim = true; % run in parallel if you like, not neccessarily worth it for short simulations.
+SimulationSettings.parallelSim = false; % run in parallel if you like, not neccessarily worth it for short simulations.
 %SimultationSetings.onTopsy = true; % if running on a HPC use this option.
 %Otherwise ignore.
 
 % specify time points to take snapshots of the entire network weightings
-RecordingSettings.weights_arr = 1:10000:SimulationSettings.simulationTime/SimulationSettings.timeStep; % simulation steps
+RecordingSettings.weights_arr = [1 (SimulationSettings.simulationTime/SimulationSettings.timeStep)-1]; % simulation steps
 
 
 %%% optional - step current stimulation to neurons to see spread of activity
@@ -147,9 +147,9 @@ multiRegResults = loadResultsMultiregions(RecordingSettings.saveDir);
 % get the weights for the whole network at the first and last time
 % snapshots in a plottable form:
  r1time1weights=getSparseConnectivityWeights(multiRegResults(1).weights_arr{1},multiRegResults(1).syn_arr,multiRegResults(1).params.TissueParams.N);%
- r1time2weights=getSparseConnectivityWeights(multiRegResults(1).weights_arr{4},multiRegResults(1).syn_arr,multiRegResults(1).params.TissueParams.N);
+ r1time2weights=getSparseConnectivityWeights(multiRegResults(1).weights_arr{2},multiRegResults(1).syn_arr,multiRegResults(1).params.TissueParams.N);
  r2time1weights=getSparseConnectivityWeights(multiRegResults(2).weights_arr{1},multiRegResults(2).syn_arr,multiRegResults(2).params.TissueParams.N);
- r2time2weights=getSparseConnectivityWeights(multiRegResults(2).weights_arr{4},multiRegResults(2).syn_arr,multiRegResults(2).params.TissueParams.N);
+ r2time2weights=getSparseConnectivityWeights(multiRegResults(2).weights_arr{2},multiRegResults(2).syn_arr,multiRegResults(2).params.TissueParams.N);
 
 % plot the weight differences between the start and end of the simulation
 % for each network. Colours represent the weight changes.
