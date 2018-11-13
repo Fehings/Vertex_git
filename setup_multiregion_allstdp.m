@@ -265,21 +265,21 @@ ConnectionParams(2).synapseType{1} = 'g_exp';
 ConnectionParams(2).targetCompartments{1} = {'somaID'};
 ConnectionParams(2).weights{1} = 0.2;
 ConnectionParams(2).tau{1} = 6;
-
+ConnectionParams(2).E_reversal{1} =-70;
 
 ConnectionParams(2).numConnectionsToAllFromOne{2} = 600;
 ConnectionParams(2).synapseType{2} = 'g_exp';
 ConnectionParams(2).targetCompartments{2} = {'dendritesID'};
 ConnectionParams(2).weights{2} = 0.2;
 ConnectionParams(2).tau{2} = 3;
-
+ConnectionParams(2).E_reversal{2} =-70;
 
 ConnectionParams(2).numConnectionsToAllFromOne{3} = 0;
 ConnectionParams(2).synapseType{3} = 'g_exp';
 ConnectionParams(2).targetCompartments{3} = {};
 ConnectionParams(2).weights{3} = 0;
 ConnectionParams(2).tau{3} = 1;
-
+ConnectionParams(2).E_reversal{3} =-70;
 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
 ConnectionParams(2).sliceSynapses = true;
