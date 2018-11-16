@@ -3,8 +3,8 @@ function [NP] = calculatePassiveProperties(NP, TP)
 % Calculate passive neuron properties in correct units
 numGroups = TP.numGroups;
 for iGroup = 1:numGroups
-    if ~isfield(NP(iGroup), 'ax_id') || isempty(NP(iGroup).ax_id)
-        NP(iGroup).ax_id = 1;
+    if ~isfield(NP(iGroup), 'axon_ID') || isempty(NP(iGroup).axon_ID)
+        NP(iGroup).axon_ID = 1;
     end
   % Get the required parameters for the particular model
   modelName = generateNeuronModelName(NP(iGroup));

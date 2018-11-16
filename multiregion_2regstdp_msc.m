@@ -32,10 +32,10 @@ RecordingSettings.weights_arr = [1 (SimulationSettings.simulationTime/Simulation
 %%% optional - step current stimulation to neurons to see spread of activity
 %%% through region to region connections
 
-% NeuronParams(1).Input(2).inputType = 'i_step';
-% NeuronParams(1).Input(2).timeOn = 200;
-% NeuronParams(1).Input(2).timeOff = 250;
-% NeuronParams(1).Input(2).amplitude = 1000; 
+NeuronParams(1).Input(2).inputType = 'i_step';
+NeuronParams(1).Input(2).timeOn = 200;
+NeuronParams(1).Input(2).timeOff = 250;
+NeuronParams(1).Input(2).amplitude = 1000; 
 
 %%% optional - electric field stimulation 
 
