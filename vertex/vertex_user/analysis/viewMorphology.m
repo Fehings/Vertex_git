@@ -43,3 +43,4 @@ zlabel('z (micrometres)', 'FontSize', fsize);
 set(gca, 'FontSize', fsize);
 
 view([0, 0]);
+daspect([1 1 1])
