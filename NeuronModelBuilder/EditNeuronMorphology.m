@@ -390,6 +390,7 @@ function createNewCell_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 basemodels = load('neurons.mat');
+handles.filename = '';
 list = {};
 for n = 1:length(basemodels.NP)
     list{end+1} = basemodels.NP(n).name;
