@@ -45,7 +45,7 @@ stdp = false;
 for iPostGroup = 1:TP.numGroups
     for iGroup = 1:size(SynModel,2)
         synm = SynModel{1};
-        if  ~isempty(synm{iPostGroup, iGroup})
+        if  size(synm,1) >= iPostGroup && ~isempty(synm{iPostGroup, iGroup})
             if isa(synm{iPostGroup, iGroup}, 'STDPModel')
                 stdp = true;
             end

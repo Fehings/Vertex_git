@@ -400,7 +400,7 @@ RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 100;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim = true;
 
 %% Run simulation and load results
 % We run the simulation and load results as before. Note that this simulation
