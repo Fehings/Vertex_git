@@ -7,7 +7,6 @@
 %at any time after the simulation has finished by loading into memory the
 %Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
 %this.
-RecordingSettings.saveDir = '~/ratneocortex_test/';
 
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1200:-100:500, 300, 1800:-100:300);
@@ -54,9 +53,9 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 400;
+SimulationSettings.simulationTime = 2000;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim =false;
+SimulationSettings.parallelSim =true;
 
 
 %%
