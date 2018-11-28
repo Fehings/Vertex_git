@@ -33,7 +33,7 @@ TissueParams.neuron_names = {'L23_PC','L23_NBC','L23_LBC','L23_SBC','L23_MC',...
 %%
 %Calculating neuron proportions. 
 
-buildNeuronProperties;
+buildNeuronPropertiesFromFile;
 
 %Setting the random input currents (Ornstein–Uhlenbeck process)
 %For each group of neurons. 
@@ -43,6 +43,7 @@ NeuronParams(1).Input(1).inputType = 'i_ou';
 NeuronParams(1).Input(1).meanInput =390;
 NeuronParams(1).Input(1).stdInput = 90;
 NeuronParams(1).Input(1).tau = 2;
+
 
 
 %For layer 2/3 Inhibitory cells
@@ -171,7 +172,9 @@ for i = 28:29
     NeuronParams(i).Input(1).stdInput = 40;
     NeuronParams(i).Input(1).tau = 1;
 end
-
+for i = 1:29
+    NeuronParams(i).Input(1).compartments = 1:min(NeuronParams(i).axon_ID)-1;
+end
 
 %%
 

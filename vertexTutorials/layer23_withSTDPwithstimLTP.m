@@ -28,9 +28,9 @@ TissueParams.maxZOverlap = [-1 , -1];
 
 
 
-% TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100);
-% TissueParams.StimulationOn = [50:50:20000]; % Turn stimulation on at 50 ms
-% TissueParams.StimulationOff = [51:50:20000]; % Turn stimulation off at 55 ms
+TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100);
+TissueParams.StimulationOn = [50:50:20000]; % Turn stimulation on at 50 ms
+TissueParams.StimulationOff = [51:50:20000]; % Turn stimulation off at 55 ms
 
 %% Neuron parameters ; 
 % Next we will specify the parameters for our two neuron groups. We will

@@ -26,7 +26,7 @@ RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/CSD/singlep
 RecordingSettings.saveDir = '~/zero_magnesium//';
 RecordingSettings.saveDir = '~/ratneocortex_test//';
 
-Results = loadResults(RecordingSettings.saveDir,0);
+Results = loadResults(RecordingSettings.saveDir,1);
 
 %make sure no figures are open to keep things tidy
 %close all;

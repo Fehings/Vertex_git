@@ -84,8 +84,9 @@ NeuronParams(1).obliqueID = 3;
 NeuronParams(1).apicalID = 4;
 NeuronParams(1).trunkID = 2;
 NeuronParams(1).tuftID = 5;
+NeuronParams(1).axon_ID = [];
 NeuronParams(1).labelNames = {'somaID', 'basalID', 'proximalID', 'distalID', 'obliqueID', 'apicalID',...
-    'trunkID', 'tuftID'};
+    'trunkID', 'tuftID', 'axon_ID'};
 
 %Layer 23
 %Nest Basket Cell
@@ -141,7 +142,7 @@ NeuronParams(2).somaID = 1;
 NeuronParams(2).basalID = [3 4 5 6 7];
 NeuronParams(2).proximalID = [2 5];
 NeuronParams(2).distalID = [3 4 6 7];
-NeuronParams(2).labelNames = {'somaID','basalID', 'proximalID', 'distalID'};
+NeuronParams(2).labelNames = {'somaID','basalID', 'proximalID', 'distalID', 'axon_ID'};
 
 
 %Layer 23 
@@ -738,3 +739,9 @@ NeuronParams(28).modelProportion = modpropL6SBC;
 NeuronParams(29)=NeuronParams(5);
 NeuronParams(29).somaLayer = 5;
 NeuronParams(29).modelProportion = modpropL6MC;
+%%
+NP = NeuronParams;
+for iN = 1:29
+    NeuronParams = NP(iN);
+    save([TissueParams.neuron_names{iN} '.mat'],'NeuronParams');
+end
