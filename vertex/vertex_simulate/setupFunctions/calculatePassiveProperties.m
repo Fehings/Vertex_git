@@ -6,7 +6,7 @@ for iGroup = 1:numGroups
     if ~isfield(NP(iGroup), 'axon_ID') || isempty(NP(iGroup).axon_ID)
         NP(iGroup).axon_ID = 1;
     else
-        NP(iGroup).axon_ID = [NP(iGroup).axon_ID 1];
+        NP(iGroup).axon_ID(end+1) = 1;
     end
   % Get the required parameters for the particular model
   modelName = generateNeuronModelName(NP(iGroup));

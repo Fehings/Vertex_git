@@ -55,7 +55,7 @@ RecordingSettings.sampleRate = 5000;
 SimulationSettings.maxDelaySteps = 80;
 SimulationSettings.simulationTime = 2000;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim =true;
+SimulationSettings.parallelSim =false;
 
 
 %%

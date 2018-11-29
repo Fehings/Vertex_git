@@ -5,6 +5,7 @@ loadRatConnectionParams;
 setUpBipolarElectrodeStimulation
 tic;
 RecordingSettings.saveDir = '/nobackup/b3046588/with_axons/';
+%RecordingSettings.saveDir = '~/with_axons/';
 runRatSimulation
 toc
 
