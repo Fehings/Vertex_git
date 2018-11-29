@@ -172,7 +172,9 @@ for i = 28:29
     NeuronParams(i).Input(1).tau = 1;
 end
 for i = 1:29
-    NeuronParams(i).Input(1).compartments = 1:min(NeuronParams(i).axon_ID)-1;
+    if ~isfield(NeuronParams(i), 'axon_ID') || isempty(NeuronParams(i).axon_ID)
+        NeuronParams(i).Input(1).compartments = 1:min(NeuronParams(i).axon_ID)-1;
+    end
 end
 
 %%
