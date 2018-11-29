@@ -24,8 +24,8 @@ RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/CSD/singlep
 %RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/paired_pulse/recfromstimulated/withcsd/withweights/pairedpulse1001';
 %RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/pairedpulse1001';
 RecordingSettings.saveDir = '~/zero_magnesium//';
-RecordingSettings.saveDir = '~/ratneocortex_test//';
-RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/VERTEX_Results/with_axons';
+RecordingSettings.saveDir = '~/with_axons//';
+%RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/VERTEX_Results/with_axons';
 Results = loadResults(RecordingSettings.saveDir,1);
 
 %make sure no figures are open to keep things tidy

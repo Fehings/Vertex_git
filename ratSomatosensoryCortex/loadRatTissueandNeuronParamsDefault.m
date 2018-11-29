@@ -40,8 +40,10 @@ buildNeuronPropertiesFromFile;
 
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-NeuronParams(1).Input(1).meanInput =250;
-NeuronParams(1).Input(1).stdInput = 60;
+% NeuronParams(1).Input(1).meanInput =250;
+% NeuronParams(1).Input(1).stdInput = 60;
+ NeuronParams(1).Input(1).meanInput =290;
+ NeuronParams(1).Input(1).stdInput = 90;
 NeuronParams(1).Input(1).tau = 2;
 
 
@@ -108,13 +110,13 @@ for i = 13:14
 end
 for i = 15
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 520;
+    NeuronParams(i).Input(1).meanInput = 590;
     NeuronParams(i).Input(1).stdInput =260;
     NeuronParams(i).Input(1).tau = 2;
 end
 for i = 16
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 620;
+    NeuronParams(i).Input(1).meanInput = 690;
     NeuronParams(i).Input(1).stdInput =280;
     NeuronParams(i).Input(1).tau = 2;
 end
@@ -141,7 +143,7 @@ for i = 21:22
 end
 for i = 23
     NeuronParams(i).Input(1).inputType = 'i_ou';
-    NeuronParams(i).Input(1).meanInput = 530;
+    NeuronParams(i).Input(1).meanInput = 590;
     NeuronParams(i).Input(1).stdInput = 250;
     NeuronParams(i).Input(1).tau = 2;
 end
@@ -171,11 +173,11 @@ for i = 28:29
     NeuronParams(i).Input(1).stdInput = 40;
     NeuronParams(i).Input(1).tau = 1;
 end
-for i = 1:29
-    if ~isfield(NeuronParams(i), 'axon_ID') || isempty(NeuronParams(i).axon_ID)
-        NeuronParams(i).Input(1).compartments = 1:min(NeuronParams(i).axon_ID)-1;
-    end
-end
+% for i = 1:29
+%     if ~isfield(NeuronParams(i), 'axon_ID') || isempty(NeuronParams(i).axon_ID)
+%         NeuronParams(i).Input(1).compartments = 1:min(NeuronParams(i).axon_ID)-1;
+%     end
+% end
 
 %%
 

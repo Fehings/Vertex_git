@@ -740,8 +740,8 @@ NeuronParams(29)=NeuronParams(5);
 NeuronParams(29).somaLayer = 5;
 NeuronParams(29).modelProportion = modpropL6MC;
 %%
-NP = NeuronParams;
-for iN = 1:29
-    NeuronParams = NP(iN);
-    save([TissueParams.neuron_names{iN} '.mat'],'NeuronParams');
-end
+% NP = NeuronParams;
+% for iN = 1:29
+%     NeuronParams = NP(iN);
+%     save([TissueParams.neuron_names{iN} '.mat'],'NeuronParams');
+% end

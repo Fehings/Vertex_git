@@ -1,4 +1,4 @@
-addpath(genpath('~/Vertex_git'))
+%addpath(genpath('~/Vertex_git'))
 loadRatTissueandNeuronParamsDefault;
 TissueParams.neuronDensity = 103730;
 loadRatConnectionParams;
