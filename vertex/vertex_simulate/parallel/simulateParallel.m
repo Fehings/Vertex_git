@@ -153,8 +153,6 @@ spmd
     
     for simStep = 1:simulationSteps
         
-
-        
         
         %%%%
         % Stimulation code block

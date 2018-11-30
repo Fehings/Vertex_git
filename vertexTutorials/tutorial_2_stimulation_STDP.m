@@ -197,12 +197,13 @@ INScaler = 0.8;
 % 
 % 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
-ConnectionParams(1).synapseType{1} = 'g_stdp_delays';
+ConnectionParams(1).synapseType{1} = 'g_exp_stdp';
 ConnectionParams(1).targetCompartments{1} = {'basalID', ...
                                              'apicalID'};
  ConnectionParams(1).weights{1} = 0.05;
 ConnectionParams(1).tau{1} = 1;
-ConnectionParams(1).rate{1} = 0.004;
+ConnectionParams(1).preRate{1} = -0.004;
+ConnectionParams(1).postRate{1} = 0.004;
 ConnectionParams(1).tPre{1} = 15;
 ConnectionParams(1).tPost{1} = 20;
 ConnectionParams(1).wmin{1} = 0;

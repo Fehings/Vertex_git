@@ -33,7 +33,7 @@ TissueParams.neuron_names = {'L23_PC','L23_NBC','L23_LBC','L23_SBC','L23_MC',...
 %%
 %Calculating neuron proportions. 
 
-buildNeuronPropertiesFromFile;
+buildNeuronProperties;
 
 %Setting the random input currents (Ornstein–Uhlenbeck process)
 %For each group of neurons. 

@@ -14,7 +14,7 @@
 TissueParams.X = 2500;
 TissueParams.Y = 500;
 TissueParams.Z = 200;
-TissueParams.neuronDensity = 25000;
+TissueParams.neuronDensity = 20000;
 TissueParams.numLayers = 1;
 TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
@@ -195,13 +195,19 @@ ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 %Here we specify the synapse type, g_stp is the type for exponential
 %conductance based synapses with short term plasticity. 
 %g_exp is for the same synapses without plasticity. 
-ConnectionParams(1).synapseType{1} = 'g_exp';
+ConnectionParams(1).synapseType{1} = 'g_exp_mt';
 ConnectionParams(1).targetCompartments{1} = [NeuronParams(1).basalID, ...
                                              NeuronParams(1).apicalID];
  ConnectionParams(1).weights{1} = 0.05;
 ConnectionParams(1).tau_mu{1} = 1;
  ConnectionParams(1).tau_distribution{1} = 'Normal';
 ConnectionParams(1).tau_sigma{1} = 0.2;
+ConnectionParams(1).preRate{1} = -0.004;
+ConnectionParams(1).postRate{1} = 0.004;
+ConnectionParams(1).tPre{1} = 15;
+ConnectionParams(1).tPost{1} = 20;
+ConnectionParams(1).wmin{1} = 0;
+ConnectionParams(1).wmax{1} = 100;
 %Here we specify the parameters for the plasticity,
 %facilitation is a unitless parameter with no biological correlate that
 %indicates the rate at which facilitation occurs. It should be a value
@@ -287,7 +293,7 @@ RecordingSettings.sampleRate = 5000;
 
 SimulationSettings.simulationTime = 200;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim = false;
+SimulationSettings.parallelSim = true;
 
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
