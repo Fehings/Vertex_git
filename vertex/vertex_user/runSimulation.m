@@ -36,6 +36,13 @@ if isfield(SS,'spikeLoad')
     end
 end
 
+if ~isfield(SS,'stdp')
+    SS.stdp = false;
+end
+
+if ~isfield(TP, 'scale')
+    TP.scale = 1;
+end
 
 
 SS.recordingI_syn = false;
@@ -46,6 +53,7 @@ end
 %NP = NeuronParams;
 % Calculate passive neuron properties in correct units
 NP = calculatePassiveProperties(NP, TP);
+
 
 
 % If using pre-calculated spike times with the loadspiketimes neuron model,
@@ -110,14 +118,14 @@ if isfield(TP, 'StimulationField')
             if isa(TP.StimulationField,'pde.TimeDependentResults')
                 for iGroup = 1:length(NeuronModelArr)
                     for iStimTime = 1:size(TP.StimulationField.NodalSolution,2)
-                        paraStimParam(iGroup).V_ext_mat(:,:,iStimTime) = get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,iStimTime);
+                        paraStimParam(iGroup).V_ext_mat(:,:,iStimTime) = get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,iStimTime,TP.scale);
                     end
                     setVext(NeuronModelArr{iGroup},paraStimParam(iGroup).V_ext_mat(:,:,1));
                 end
                 nsaves = 0;
             else
                 for iGroup = 1:length(NeuronModelArr)
-                    setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1));
+                    setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1, TP.scale));
                 end
                 if isfield(TP,'tRNS')
                     setVext(NeuronModelArr{iGroup},NeuronModelArr{iGroup}.v_ext*TP.tRNS);
@@ -132,7 +140,7 @@ if isfield(TP, 'StimulationField')
                     NeuronModelArr{iGroup}.midpoints = rotloc(NeuronModelArr{iGroup}.midpoints,SS.RotateField.angle,SS.RotateField.axis);
                  end
                 for iStimTime = 1:size(TP.StimulationField.NodalSolution,2)
-                    NP(iGroup).V_ext_mat(:,:,iStimTime) = get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,iStimTime);
+                    NP(iGroup).V_ext_mat(:,:,iStimTime) = get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,iStimTime,TP.scale);
                 end
                 setVext(NeuronModelArr{iGroup},NP(iGroup).V_ext_mat(:,:,1));
             end
@@ -141,10 +149,10 @@ if isfield(TP, 'StimulationField')
                 if isfield(SS, 'RotateField')
                     locs = rotlocs(NeuronModelArr{iGroup}.midpoints,SS.RotateField.angle,SS.RotateField.axis);
                     disp('Rotating neurons in the field')
-                    setVext(NeuronModelArr{iGroup},get_V_ext(locs, TP.StimulationField,1));
+                    setVext(NeuronModelArr{iGroup},get_V_ext(locs, TP.StimulationField,1,TP.scale));
                 
                 else
-                setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1));
+                setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1,TP.scale));
                 end
                 
             end

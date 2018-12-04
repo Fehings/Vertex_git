@@ -70,8 +70,8 @@ hold on;
 
 neuronInGroup = createGroupsFromBoundaries(TP.groupBoundaryIDArr);
 dimensionscaler = 1;
-if isfield(pars, 'dimensionscaler')
-    dimensionscaler = pars.dimensionscaler;
+if isfield(TP, 'scale')
+    dimensionscaler = TP.scale;
 end
 for iGroup=1:TP.numGroups
   inGroup = neuronInGroup == iGroup & ...

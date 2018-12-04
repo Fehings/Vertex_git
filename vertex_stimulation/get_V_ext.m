@@ -1,4 +1,4 @@
-function [ v_ext ] = get_V_ext(locations,field,t)
+function [ v_ext ] = get_V_ext(locations,field,t, scale)
 %get_V_ext Returns the extracellular potential for the locations specified.
 %   Detailed explanation goes here
 
@@ -7,9 +7,12 @@ function [ v_ext ] = get_V_ext(locations,field,t)
 % by a function (passed as a function handle string) or
 % whether it is specified as a gridded interpolant.
 
+if nargin == 4
+    micrometersconversion = scale;
+    locations = locations.*micrometersconversion;
+end
+
 v_ext = zeros(size(squeeze(locations(1,:,:))))';
-%micrometersconversion = 1e-6;
-%locations = locations.*micrometersconversion;
 % locations=locations.*angle
 
 for iComp = 1:length(locations(1,:,1))

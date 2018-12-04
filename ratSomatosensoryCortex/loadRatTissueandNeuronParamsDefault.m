@@ -40,10 +40,10 @@ buildNeuronProperties;
 
 %For layer 2/3 Excitatory cells
 NeuronParams(1).Input(1).inputType = 'i_ou';
-% NeuronParams(1).Input(1).meanInput =250;
-% NeuronParams(1).Input(1).stdInput = 60;
- NeuronParams(1).Input(1).meanInput =290;
- NeuronParams(1).Input(1).stdInput = 90;
+NeuronParams(1).Input(1).meanInput =250;
+NeuronParams(1).Input(1).stdInput = 60;
+% NeuronParams(1).Input(1).meanInput =290;
+% NeuronParams(1).Input(1).stdInput = 90;
 NeuronParams(1).Input(1).tau = 2;
 
 

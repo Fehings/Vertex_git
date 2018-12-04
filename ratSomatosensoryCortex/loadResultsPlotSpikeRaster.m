@@ -61,5 +61,6 @@ pars.markers = {'^','x','x','x','s', ...
     '^','^','^','v','p','x','x','x','s'};
 pars.figureID =1;
 pars.toPlot = 1:5:N;
-pars.dimensionscaler = 0.000001;
+%pars.dimensionscaler = 0.000001;
+Results.params.TissueParams.scale = 1e-6;
 plotSomaPositions(Results.params.TissueParams,pars);

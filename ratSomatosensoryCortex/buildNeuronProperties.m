@@ -84,7 +84,7 @@ NeuronParams(1).obliqueID = 3;
 NeuronParams(1).apicalID = 4;
 NeuronParams(1).trunkID = 2;
 NeuronParams(1).tuftID = 5;
-NeuronParams(1).axon_ID = [];
+NeuronParams(1).axon_ID = 1;
 NeuronParams(1).labelNames = {'somaID', 'basalID', 'proximalID', 'distalID', 'obliqueID', 'apicalID',...
     'trunkID', 'tuftID', 'axon_ID'};
 
@@ -139,6 +139,7 @@ NeuronParams(2).R_A = 150;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).somaID = 1;
+NeuronParams(2).axon_ID = 1;
 NeuronParams(2).basalID = [3 4 5 6 7];
 NeuronParams(2).proximalID = [2 5];
 NeuronParams(2).distalID = [3 4 6 7];
@@ -191,7 +192,7 @@ NeuronParams(4).somaID = 1;
 NeuronParams(4).basalID = [3 4 5 6 7];
 NeuronParams(4).proximalID = [2 5];
 NeuronParams(4).distalID = [3 4 6 7];
-
+NeuronParams(4).axon_ID = 1;
 %Layer 23
 %Martinotti Cell
 NeuronParams(5) = NeuronParams(2);
@@ -406,7 +407,7 @@ NeuronParams(13).obliqueID = 3;
 NeuronParams(13).apicalID = [4 5];
 NeuronParams(13).trunkID = 2;
 NeuronParams(13).tuftID = [6 7];
-
+NeuronParams(13).axon_ID = 1;
 
 %Layer 5 Thick tufted pyramidal 1
 NeuronParams(14) = NeuronParams(13);
@@ -473,7 +474,7 @@ NeuronParams(15).obliqueID = 3;
 NeuronParams(15).apicalID = [4 5];
 NeuronParams(15).trunkID = 2;
 NeuronParams(15).tuftID = 6;
-
+NeuronParams(15).axon_ID = 1;
 %Layer 5 Slender tufted pyramidal cell
 NeuronParams(16)=NeuronParams(13);
 NeuronParams(16).modelProportion = modpropL5STPC;
@@ -538,7 +539,7 @@ NeuronParams(16).obliqueID = 3;
 NeuronParams(16).apicalID = [4 5];
 NeuronParams(16).trunkID = 2;
 NeuronParams(16).tuftID = [6 7];
-
+NeuronParams(16).axon_ID = 1;
 %Layer 5 Nest Basket Cell
 NeuronParams(17)=NeuronParams(2);
 NeuronParams(17).somaLayer = 4;
@@ -645,7 +646,7 @@ NeuronParams(24).obliqueID = 3;
 NeuronParams(24).apicalID = 4;
 NeuronParams(24).trunkID = 2;
 NeuronParams(24).tuftID = 5;
-
+NeuronParams(24).axon_ID = 1;
 %L6_BPC
 NeuronParams(25) = NeuronParams(24);
 NeuronParams(25).somaLayer = 5;
@@ -718,7 +719,7 @@ NeuronParams(25).obliqueID = [3 10];
 NeuronParams(25).apicalID = [11 12];
 NeuronParams(25).trunkID = 2;
 NeuronParams(25).tuftID = 13;
-
+NeuronParams(25).axon_ID = 1;
 %Layer 6 Nest Basket Cell
 NeuronParams(26)=NeuronParams(2);
 NeuronParams(26).somaLayer = 5;

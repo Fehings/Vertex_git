@@ -41,17 +41,17 @@ else
     ns = nsaves;
 end
 % set field inputs
-stdp = false;
-for iPostGroup = 1:TP.numGroups
-    for iGroup = 1:size(SynModel,2)
-        synm = SynModel{1};
-        if  size(synm,1) >= iPostGroup && size(synm,2) >= iGroup && ~isempty(synm{iPostGroup, iGroup})
-            if isa(synm{iPostGroup, iGroup}, 'STDPModel')
-                stdp = true;
-            end
-        end
-    end
-end
+stdp = SS.stdp;
+% for iPostGroup = 1:TP.numGroups
+%     for iGroup = 1:size(SynModel,2)
+%         synm = SynModel{1};
+%         if  ~isempty(synm{iPostGroup, iGroup})
+%             if isa(synm{iPostGroup, iGroup}, 'STDPModel')
+%                 stdp = true;
+%             end
+%         end
+%     end
+% end
 
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
@@ -150,7 +150,7 @@ spmd
     
     stimcount = 1;
     timeStimStep = 1;
-    
+    disp('Entering simulation loop')
     for simStep = 1:simulationSteps
         
         
