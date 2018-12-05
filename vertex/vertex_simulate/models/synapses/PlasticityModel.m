@@ -1,8 +1,10 @@
 classdef (Abstract) PlasticityModel < handle
-  %SynapseModel_g_exp Conductance-based single exponential synapses
-  %   Parameters to set in ConnectionParams:
-  %   - E_reversal, the reversal potential (in mV)
-  %   - tau, the synaptic decay time constant (in ms)
+  %PlasticityModel Abstract plasticity model
+  % The base class for both STDP and STP models.
+  % Defines the properties inherent in both - more presynaptic details are needed for plastic synapse models.
+  %   preBoundaryArr - The group boundaries of presynaptic neurons.
+  %   preGroupIDs - The IDs of presynaptic neurons.
+
 
   properties (SetAccess = protected)
     preBoundaryArr
@@ -11,9 +13,6 @@ classdef (Abstract) PlasticityModel < handle
   
   methods
     function SM = PlasticityModel(number_in_pre,pre_group_ids)
-      
-      % short term plasticity involves variables that are dependent on pre
-      % synaptic activity.
       
       SM.preBoundaryArr = [0; cumsum(number_in_pre)];
       SM.preGroupIDs = pre_group_ids;

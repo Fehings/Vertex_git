@@ -1,8 +1,8 @@
 classdef (Abstract) STPModel < PlasticityModel
-  %SynapseModel_g_exp Conductance-based single exponential synapses
-  %   Parameters to set in ConnectionParams:
-  %   - E_reversal, the reversal potential (in mV)
-  %   - tau, the synaptic decay time constant (in ms)
+  %STPModel Abstact short term plasticity model
+  % Defines the interface that STPModels must adhere to.
+
+
 
 
   
