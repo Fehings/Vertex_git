@@ -1,8 +1,9 @@
 classdef SynapseModel_g_2exp < SynapseModel_g_exp
-  %SynapseModel_g_exp Conductance-based single exponential synapses
+  %SynapseModel_g_2exp Conductance-based double exponential synapses
   %   Parameters to set in ConnectionParams:
-  %   - E_reversal, the reversal potential (in mV)
-  %   - tau, the synaptic decay time constant (in ms)
+  %   - scaler_2, the strength of the second component relative to the
+  %   first.
+  %   - tau_2, the synaptic decay time constant of the second component (in ms)
 
   properties (SetAccess = protected)
 
@@ -24,9 +25,6 @@ classdef SynapseModel_g_2exp < SynapseModel_g_exp
 
       SM.g_exp_2 = zeros(number_in_post, numComparts);
   
-      
-      %for each connection group an event buffer stores the spike accumulation at
-      %each compartment for each time step of each post synaptic neuron. 
 
       if SM.tau_2 <= 0
         error('vertex:SynapseModel_g_2exp', ...

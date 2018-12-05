@@ -1,8 +1,7 @@
 classdef SynapseModel_g_exp_mt < SynapseModel_g_exp & STPModel_mt
-  %SynapseModel_g_exp Conductance-based single exponential synapses
-  %   Parameters to set in ConnectionParams:
-  %   - E_reversal, the reversal potential (in mV)
-  %   - tau, the synaptic decay time constant (in ms)
+  %SynapseModel_g_exp_mt Conductance-based single exponential synapses with
+  %STP
+
 
   
   methods
@@ -14,14 +13,11 @@ classdef SynapseModel_g_exp_mt < SynapseModel_g_exp & STPModel_mt
     end
 
     
-    
-    
     function SM = updateSynapses(SM, NM, dt)
         
       updateSynapses@SynapseModel_g_exp(SM, NM, dt);
       updateSynapses@STPModel_mt(SM,dt);
-
-      
+    
       
     end
 

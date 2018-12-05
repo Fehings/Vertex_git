@@ -1,8 +1,7 @@
 classdef SynapseModel_g_2exp_mt < SynapseModel_g_2exp & STPModel_mt
-  %SynapseModel_g_exp Conductance-based single exponential synapses
-  %   Parameters to set in ConnectionParams:
-  %   - E_reversal, the reversal potential (in mV)
-  %   - tau, the synaptic decay time constant (in ms)
+  %SynapseModel_g_2exp_mt Conductance-based double exponential synapses
+  %with Markram Tsodyks STP
+
 
   
   methods
@@ -27,20 +26,10 @@ classdef SynapseModel_g_2exp_mt < SynapseModel_g_2exp & STPModel_mt
 
     function [SM] = bufferIncomingSpikes(SM, synIndeces, weightsToAdd, preInd,groupID)
         
-        
-        %In stp the changes to facilitation and depression depend only on
-        %the presynaptic activity. When this function is called we know
-        %that a spike has been generated in the neurons identified by
-        %preInd, an index then made relative to each synapse group by
-        %subtracting the presynaptic group boundary.
-        %update the facilitation variable by adding the facilitation rate
         SM.applySpikes2STPVars( preInd,groupID);
         SM.g_expEventBuffer(synIndeces) = ...
             SM.g_expEventBuffer(synIndeces) + (weightsToAdd).*(SM.y(preInd));
         
-        %Add the weights multiplied by the plasticity variables to the
-        %spike accumulator at the postsynaptic neuron (and compartment and
-        %time) determined by synIndeces.
 
     end
 

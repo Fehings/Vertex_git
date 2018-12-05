@@ -1,8 +1,10 @@
 classdef (Abstract) STPModel_mt < STPModel
-  %SynapseModel_g_exp Conductance-based single exponential synapses
+  %STPModel_mt Markram Tsodyks model of short term plasticity. 
   %   Parameters to set in ConnectionParams:
-  %   - E_reversal, the reversal potential (in mV)
-  %   - tau, the synaptic decay time constant (in ms)
+  %   - fac_tau, the decay time constant for facilitation (in ms)
+  %   - rec_tau, the decay time constant for recovery from depression (in ms)
+  %   - tau_s, the synaptic decay time constant (in ms)
+  %   - U, the transmitter release probability
 
   properties (SetAccess = protected)
     x
