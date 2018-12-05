@@ -1,9 +1,11 @@
 classdef (Abstract) STPModel_ab < STPModel
-  %SynapseModel_g_exp Conductance-based single exponential synapses
+  %STPModel_ab Short term plasticity model based on (Abbott et.al 1997)
   %   Parameters to set in ConnectionParams:
-  %   - E_reversal, the reversal potential (in mV)
-  %   - tau, the synaptic decay time constant (in ms)
-
+  %   - tD, the decay time constant for Depression (in ms)
+  %   - tD, the decay time constant for Facilitation (in ms)
+  %   - facilitation, the rate of Facilitation (nS/ms)
+  %   - depression, the rate of Depression (nS/ms)
+  
   properties (SetAccess = public)
     facilitation
     F
