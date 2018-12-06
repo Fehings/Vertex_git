@@ -1,11 +1,9 @@
-addpath(genpath('~/Vertex_git'))
-loadRatTissueandNeuronParamsDefault;
-TissueParams.neuronDensity = 103730;
+loadRatTissueandNeuronParams;
 loadRatConnectionParams;
 setUpBipolarElectrodeStimulation
+loadSimulationSettings
 tic;
-RecordingSettings.saveDir = '/nobackup/b3046588/with_axons/';
+RecordingSettings.saveDir = '/nobackup/b3046588/without_axons/';
+
 runRatSimulation
 toc
-
-disp('finished running rat neocortex')
