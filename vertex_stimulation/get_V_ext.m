@@ -8,8 +8,7 @@ function [ v_ext ] = get_V_ext(locations,field,t, scale)
 % whether it is specified as a gridded interpolant.
 
 if nargin == 4
-    micrometersconversion = scale;
-    locations = locations.*micrometersconversion;
+    locations = locations.*scale;
 end
 
 v_ext = zeros(size(squeeze(locations(1,:,:))))';

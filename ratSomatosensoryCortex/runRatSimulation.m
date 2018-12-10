@@ -64,7 +64,7 @@ SimulationSettings.maxDelaySteps = 80;
 SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
-
+SimulationSettings.stdp =false;
 
 %%
 %This initialises the network and sets up other variables. 

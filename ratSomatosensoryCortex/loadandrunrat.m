@@ -1,3 +1,5 @@
+
+addpath(genpath('~/Vertex_git'))
 loadRatTissueandNeuronParams;
 loadRatConnectionParams;
 setUpBipolarElectrodeStimulation

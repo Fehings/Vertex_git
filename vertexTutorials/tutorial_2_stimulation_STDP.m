@@ -1,13 +1,10 @@
-%% VERTEX TUTORIAL 2
-% In the previous tutorial we looked at a network of 5000 layer 2/3
-% pyramidal cells, connected to each other and firing randomly. In this
-% tutorial, we will create a more interesting model containing excitatory
-% and inhibitory neurons with intrinsic spiking dynamics. We will stimulate
-% the neurons using random input currents, resulting in the generation of a
-% network oscillation.
+%% VERTEX TUTORIAL STDP and Electric Field stimulation.
+% In this tutorial we will extend the tutorial_2 so that it
+% includes synapses with spike timing dependent plasticity 
+% and electric field stimulation.
 % 
 %% Tissue parameters
-% First we specify the same tissue parameters as in tutorial 1:
+% First we specify the same tissue parameters as in tutorial 2:
 
 TissueParams.X = 2500;
 TissueParams.Y = 400;
@@ -18,12 +15,13 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
-% TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100);
-% TissueParams.StimulationOn = [250:50:300000]; % Turn stimulation on at 50 ms
-% TissueParams.StimulationOff = [250.5:50:300001]; % Turn stimulation off at 55 ms
+
+%% Adding the electric field
+% invitroSliceStim loads the PDE model and calculates the field.
 TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
-TissueParams.StimulationOn = [10 40];
-TissueParams.StimulationOff = [15 45];
+TissueParams.StimulationOn = [300:25:400]; %specify the times when stimulation is turned on
+TissueParams.StimulationOff = [305:25:405]; %specify the times when stimulation is turned off
+
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
 % use the neuron models described in (Tomsett et al. 2014) for layer 2/3
@@ -187,23 +185,32 @@ NeuronParams(2).Input(1).stdInput = 40;
 
 
 %% Connectivity parameters
-% We set the connectivity parameters in the same way as in tutorial 1, but
-% this time we need to specify the parameters for connections between the
-% two groups. First we set the parameters for connections from group 1 (the
-% pyramidal cells) to itself:
-
-PYScaler = 0.1;
-INScaler = 0.8;
-% 
-% 
+% We set the connectivity parameters in the same way as in tutorial 2, but
+% this time we need to specify the parameters for plasticity on the
+% connection between group 1 and group 1. We will also use conductance
+% based synapses, so the weights will be in nS and we will also need to
+% specify a reversal potential.
+ 
+% We use the g_exp_stdp_delays class for the synapse type. This will
+% give use synapses with spike timing dependent plasticity that takes into
+% account the delay from presynaptic spike to post synaptic potential.
+% We need to specify a preRate and postRate and also
+% specify two time constants (tPre and tPost) that determine the rate at which the Apre and
+% Apost variables decay.
+% Apre is increased by preRate when a presynaptic spike occurs, and is applied to  and Apost
+% (increased by postRate , the preRate specifies the rate
+% at which synapses will strengthen when a postsynaptic spike occurs after
+% a presynaptic spike and postRate will specify the weakening of a synapse
+% when a postsynaptic spike occurs before a presynaptic spike. 
+% Apost variables
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
-ConnectionParams(1).synapseType{1} = 'g_exp_stdp';
+ConnectionParams(1).synapseType{1} = 'g_exp_stdp_delays';
 ConnectionParams(1).targetCompartments{1} = {'basalID', ...
                                              'apicalID'};
  ConnectionParams(1).weights{1} = 0.05;
 ConnectionParams(1).tau{1} = 1;
-ConnectionParams(1).preRate{1} = -0.004;
-ConnectionParams(1).postRate{1} = 0.004;
+ConnectionParams(1).preRate{1} = 0.004;
+ConnectionParams(1).postRate{1} = -0.004;
 ConnectionParams(1).tPre{1} = 15;
 ConnectionParams(1).tPost{1} = 20;
 ConnectionParams(1).wmin{1} = 0;
@@ -222,7 +229,7 @@ ConnectionParams(1).sliceSynapses = true;
 ConnectionParams(1).axonArborRadius = 25;
 ConnectionParams(1).axonArborLimit = 50; 
 ConnectionParams(1).axonConductionSpeed = 0.3;
-ConnectionParams(1).synapseReleaseDelay = 0.5;
+ConnectionParams(1).synapseReleaseDelay = 5;
 ConnectionParams(1).E_reversal{1} = -0;
 ConnectionParams(1).E_reversal{2} = -0;
 % 
@@ -275,11 +282,12 @@ RecordingSettings.v_m = [1:1000, 4300:4500];
 RecordingSettings.maxRecTime = 500;
 RecordingSettings.sampleRate = 1000;
 RecordingSettings.weights_preN_IDs = [1:5:1000, 4300:4500];
+RecordingSettings.stdpvars = [1:5:1000];
 RecordingSettings.weights_arr = [1000:1000:6000];
 SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim =false;
-
+SimulationSettings.parallelSim =true;
+SimulationSettings.stdp = true;
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
 % calling the |initNetwork| function:
@@ -343,7 +351,7 @@ set(gca,'FontSize',16)
 title('Tutorial 2: LFP at all electrodes', 'FontSize', 16)
 xlabel('Time (ms)', 'FontSize', 16)
 ylabel('LFP (mV)', 'FontSize', 16)
-
+plotstdpchangesandspikes(1,6,Results)
 %%
 % Plotting the LFP from all electrodes also reveals a phase inversion,
 % which depends on the location of the electrodes in relation to the

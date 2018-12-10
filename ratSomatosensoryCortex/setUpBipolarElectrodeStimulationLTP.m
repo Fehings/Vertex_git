@@ -14,6 +14,7 @@ TissueParams.StimulationOff = [ 1500.5];
 meterstomicrons = 1e-6;
 mmtomicron = 1e-3;
 
+% electrode coordinates
 x1 = 0.79839*mmtomicron;
 x2 = 0.80639*mmtomicron;
 y1 = 0.181*mmtomicron;
