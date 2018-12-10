@@ -108,7 +108,7 @@ classdef (Abstract) STDPModel_delays < STDPModel
 
         preInd = preInd + SM.preBoundaryArr(ismember(SM.preGroupIDs,groupID));
 
-            ind = sub2ind(size(SM.Apre), delay, preInd);
+        ind = sub2ind(size(SM.Apre), delay, preInd);
 
 
         weightsArr = weightsArr + SM.Apre(ind)';
