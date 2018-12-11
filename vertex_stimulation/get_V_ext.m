@@ -10,8 +10,11 @@ function [ v_ext ] = get_V_ext(locations,field,t, scale)
 if nargin == 4
     locations = locations.*scale;
 end
-
-v_ext = zeros(size(squeeze(locations(1,:,:))))';
+if size(locations,3) == 1
+    v_ext = zeros(size(squeeze(locations(1,:,:))));
+else
+    v_ext = zeros(size(squeeze(locations(1,:,:))))';
+end
 % locations=locations.*angle
 
 for iComp = 1:length(locations(1,:,1))

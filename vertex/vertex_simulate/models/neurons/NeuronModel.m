@@ -3,20 +3,25 @@ classdef NeuronModel < handle
     v
     I_ax
     treeChildren
-    v_ext
     midpoints
     incorporate_vext
     %doUpdate
   end
+ properties (SetAccess = private)
+
+    v_ext
+
+    %doUpdate
+ end
   
   methods
     function NM = NeuronModel(Neuron, number)
       NM.v = zeros(number, Neuron.numCompartments);
       NM.I_ax = zeros(number, Neuron.numCompartments);
       NM.treeChildren = length(Neuron.adjCompart);
-      
+      NM.v_ext = zeros(number, Neuron.numCompartments);
       if isfield(Neuron, 'v_ext')
-        NM.v_ext = Neuron.v_ext;
+        setVext(NM,Neuron.v_ext);
       end
       NM.incorporate_vext = false;
       %NM.doUpdate = true(size(NM.v, 1));
@@ -58,22 +63,22 @@ classdef NeuronModel < handle
       end
      %disp('initial axial current')
      %max(max(NM.I_ax))
-      
-      if NM.incorporate_vext
-            %tree children is max number of children (neighbours) a node can have
-            %so vectorised over all compartments for each connecting neighbour
-          for iTree = 1:NM.treeChildren
-              %Additional Axial current caused by temporary v_ext change is proportional to the difference between the
-              %external potential in adjacent compartments
-              
-              NM.I_ax(:, N.adjCompart{iTree}(1, :)) = ...
-                  NM.I_ax(:, N.adjCompart{iTree}(1, :)) + ...
-                  bsxfun(@times, N.g_ax{iTree}, ...
-                  (NM.v_ext(:, N.adjCompart{iTree}(1, :)) - ...
-                  NM.v_ext(:, N.adjCompart{iTree}(2, :))));
-              
-          end
-      end
+         if NM.incorporate_vext
+             %tree children is max number of children (neighbours) a node can have
+             %so vectorised over all compartments for each connecting neighbour
+             for iTree = 1:NM.treeChildren
+                 %Additional Axial current caused by temporary v_ext change is proportional to the difference between the
+                  %external potential in adjacent compartments
+                  NM.I_ax(:, N.adjCompart{iTree}(1, :)) = ...
+                      NM.I_ax(:, N.adjCompart{iTree}(1, :)) + ...
+                      bsxfun(@times, N.g_ax{iTree}, ...
+                      (NM.v_ext(:, N.adjCompart{iTree}(1, :)) - ...
+                      NM.v_ext(:, N.adjCompart{iTree}(2, :))));
+
+              end
+         end
+
+         
 
     end
 
@@ -87,7 +92,9 @@ classdef NeuronModel < handle
     function I_ax = get.I_ax(NM)
       I_ax = NM.I_ax;
     end
-    
+    function v_ext = get.v_ext(NM)
+      v_ext = NM.v_ext;
+    end
     %function NM = setSilentNeurons(NM, IDs)
     %  NM.doUpdate(IDs) = false;
     %end
@@ -100,6 +107,12 @@ classdef NeuronModel < handle
     NM.v_ext = V_ext;
     NM.v_ext(NM.v_ext>100) = 100;
     NM.v_ext(NM.v_ext<-100) = -100;
+
+    if min(size(NM.v_ext) ~= size(NM.I_ax))
+        throw(MException('NeuronModel:setVextError', ...
+            ['V_ext should be of the same size as I_ax: size(I_ax) = '...
+            num2str(size(NM.I_ax)) ' size(I_ax) = '  num2str(size(NM.v_ext))] ));
+    end
 
   end
   
