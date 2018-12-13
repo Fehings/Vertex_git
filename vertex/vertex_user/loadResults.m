@@ -546,7 +546,7 @@ if SS.parallelSim && ~isempty(CSD)
     end
 end
 if SS.parallelSim && ~isempty(I_synComp)
-    if I_synComp
+    if iscell(I_synComp)
         for iGroup = 1:length(RS.I_synComp_groups)
            I_synComp{iGroup}(I_synCompIDMap{iGroup}, :,:) = I_synComp{iGroup};
         end
