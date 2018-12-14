@@ -1,4 +1,3 @@
-path = '/media/b3046588/Elements/pairedPulse/pairedpulse_';
 intervals = 50:50:250;
 inh = cell(length(intervals),5);
 for iInterval = 1:length(intervals)

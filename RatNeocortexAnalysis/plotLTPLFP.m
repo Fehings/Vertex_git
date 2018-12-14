@@ -1,4 +1,3 @@
-path = '/media/b3046588/Elements/VERTEX_STDPResults/tbs/tbs_';
 LFP = cell(5,1);
     for iRun = 1:5
         results = loadResults([path '100' num2str(iRun)]);

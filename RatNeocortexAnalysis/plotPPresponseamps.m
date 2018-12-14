@@ -1,5 +1,5 @@
 intervals = 50:50:250;
-location = '/media/b3046588/Elements/pairedPulse/pairedpulse_';
+location = path;
 LFPs = cell(length(intervals),5);
 params = cell(length(intervals),5);
 times =  cell(length(intervals),5);

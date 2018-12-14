@@ -3,6 +3,7 @@
 TissueParams.StimulationOn = [1500 ];
 TissueParams.StimulationOff = [ 1500.5 ];
 TissueParams.scale = 1e-6;
+
 %%
 % 
 
