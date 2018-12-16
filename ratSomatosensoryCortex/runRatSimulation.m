@@ -22,7 +22,7 @@ RecordingSettings.minDistToElectrodeTip = 20;
 % The specific cells to record the variables from can be specified by NeuronID, by location (a 
 % triple of a location in the XZ plane, a number of nearest cells to record from, and groups to
 % record from). 
-% Depending on how much RAM we have we may not be able to record
+% Depending on how much RAM you have you may not be able to record
 % everything. 
 %% I_syn required for figures 11 (B) and 13
 %Record synaptic currents from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
@@ -40,12 +40,12 @@ RecordingSettings.I_synComp_number = [50,50];
 RecordingSettings.I_synComp_groups = [13,14];
 
 %Record the transmembrane currents for cells within box specified.
-% for iGroup = 1:29
-%     RecordingSettings.CSD_groups(iGroup) = iGroup;
-%     RecordingSettings.CSD_Xboundary(iGroup,:) = [1100 1200];
-%     RecordingSettings.CSD_Yboundary(iGroup,:) = [150 200];
-%     RecordingSettings.CSD_Zboundary(iGroup,:) = [300 1800];
-% end
+for iGroup = 1:29
+    RecordingSettings.CSD_groups(iGroup) = iGroup;
+    RecordingSettings.CSD_Xboundary(iGroup,:) = [1100 1200];
+    RecordingSettings.CSD_Yboundary(iGroup,:) = [150 200];
+    RecordingSettings.CSD_Zboundary(iGroup,:) = [300 1800];
+end
 
 %% Comment in to record the synaptic current for neurons in the box
 %for iGroup = 1:29

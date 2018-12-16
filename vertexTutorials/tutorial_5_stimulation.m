@@ -387,7 +387,7 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 % parameters are set to be empty matrices.
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-[TissueParams.StimulationField, TissueParams.StimulationModel] = invitroSliceStim('catvisblend1.stl',100);
+[TissueParams.StimulationField, TissueParams.StimulationModel] = invitroSliceStim('6layermodelstiml4placedinnobacktrueunits.stl',100);
 TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
 TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
 %% Recording and simulation settings

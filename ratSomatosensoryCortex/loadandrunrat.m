@@ -1,3 +1,5 @@
+% To run full simulation will require a high performance computing node.
+% This has been run on 12 cores with 200GB RAM.
 %% May have to add the path 
 % addpath(genpath('~/Vertex_git'))
 loadRatTissueandNeuronParams;
@@ -14,11 +16,11 @@ setUpBipolarElectrodeStimulation
 % TissueParams.StimulationOff = [1500.50000000000,2700.50000000000,2710.50000000000,2720.50000000000,2730.50000000000,2740.50000000000,2900.50000000000,2910.50000000000,2920.50000000000,2930.50000000000,2940.50000000000,3100.50000000000,3110.50000000000,3120.50000000000,3130.50000000000,3140.50000000000,3300.50000000000,3310.50000000000,3320.50000000000,3330.50000000000,3340.50000000000,3500.50000000000,3510.50000000000,3520.50000000000,3530.50000000000,3540.50000000000,3700.50000000000,3710.50000000000,3720.50000000000,3730.50000000000,3740.50000000000,4940.50000000000]
 
 loadSimulationSettings
-tic;
 %% Set the location to save results.
 RecordingSettings.saveDir = '~/Results';
 %% Set the random seed, this should go from 1001 to 1005 to reproduce results in the paper.
 SimulationSettings.randomSeed = 1001;
-
+%% For single or paired pulse
 runRatSimulation
-toc
+% For theta burst stimulation
+% runRatSimulationTBS
