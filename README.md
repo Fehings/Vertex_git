@@ -6,12 +6,20 @@ To explore these options try out the tutorial_5_TBSStimulation and tutorial_5_PP
 The code to setup and run the rat neocortex model from the paper:
 "The Virtual Electrode Recording Tool for EXtracellular Potentials (VERTEX) Version 2.0: 
 Modelling \emph{in vitro} electrical stimulation of brain tissue"
-can be found in the ratSomatosensoryCortex directory. To run these simulations you will run the 
-loadandrunrat.m script. This will setup the model and run the simulation. 
+can be found in the ratSomatosensoryCortex directory. 
 
-You will need to modify this code where specified to set the parameters for the simulation,
-so comment in the correct lines for a single pulse stimulation run, a paired pulse run, 
-and a theta burst stimulation run.
+To run these simulations you can run the singlePulse.m script to run a 
+simulation with a single pulse, pairedPulse.m to run a script with a paired of pulses (you will need to modify this
+for different pulse intervals), and thetaburststimulation.m to run the simulation with TBS (this simulation
+will also have STDP applied at synapses).
 
-You will also need to specify the 
+All three scripts do the same things - set up the model (same model for each), set up the stimulation (different stimulation times, 
+but same model), and set up the run parameters (the variables to record, length of simulation etc.)
+There are three runRatSimulation files that correspond to each stimulation paradigm. They specify the 
+variables we with to record from the stimulation and the simulation duration, time step etc. 
+
+Running these models at full density will require significant computational and memory resources (we used 12 cores and 200 GB RAM). 
+If you wish to run these on a desktop computer then we suggest reducing the neuron density by a factor of ten. 
+
+
 
