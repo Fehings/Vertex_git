@@ -8,7 +8,11 @@ The code to setup and run the rat neocortex model from the paper:
 Modelling \emph{in vitro} electrical stimulation of brain tissue"
 can be found in the ratSomatosensoryCortex directory. 
 
-To run these simulations you can run the singlePulse.m script to run a 
+The simulation results used in this paper can be found at 10.5281/zenodo.2423857
+
+To reproduce the figures, download these results then point the generatePaperFigures script to them. 
+
+To run the simulations themselves you can run the singlePulse.m script to run a 
 simulation with a single pulse, pairedPulse.m to run a script with a paired of pulses (you will need to modify this
 for different pulse intervals), and thetaburststimulation.m to run the simulation with TBS (this simulation
 will also have STDP applied at synapses).
@@ -20,6 +24,5 @@ variables we with to record from the stimulation and the simulation duration, ti
 
 Running these models at full density will require significant computational and memory resources (we used 12 cores and 200 GB RAM). 
 If you wish to run these on a desktop computer then we suggest reducing the neuron density by a factor of ten. 
-
 
 
