@@ -22,9 +22,9 @@ if nargin >=4
             gcolour(iiC,:) = cmap(iGroup,:);
         end
         if length(iC) > 1
-            plot(timevec,squeeze(sum(sum(CSD(:,iC,times(1):times(2))))), 'LineWidth', 2,'DisplayName', compartmentGroup,'Color',cmap(iGroup,:),'LineStyle', '-');
+            plot(timevec,squeeze(sum(mean(CSD(:,iC,times(1):times(2))))), 'LineWidth', 2,'DisplayName', compartmentGroup,'Color',cmap(iGroup,:),'LineStyle', '-');
         else
-            plot(timevec,squeeze(sum(CSD(:,iC,times(1):times(2)))), 'LineWidth', 2, 'DisplayName', compartmentGroup,'Color',cmap(iGroup,:),'LineStyle', '-');
+            plot(timevec,squeeze(mean(CSD(:,iC,times(1):times(2)))), 'LineWidth', 2, 'DisplayName', compartmentGroup,'Color',cmap(iGroup,:),'LineStyle', '-');
         end
         if length(iC) > 1
             if plotAll
@@ -50,7 +50,7 @@ if nargin >=4
     end
     if nargin ==5
         hold on;
-        plot(timevec,squeeze(sum(sum(CSD(:,:,times(1):times(2))))),'k--');
+        plot(timevec,squeeze(sum(mean(CSD(:,:,times(1):times(2))))),'k--');
         hold off;
     end
     hold off;
@@ -62,7 +62,7 @@ if nargin >=4
 else
     if nargin ==5
         hold on;
-        plot(timevec,squeeze(sum(sum(CSD(:,:,times(1):times(2))))),'k--');
+        plot(timevec,squeeze(sum(mean(CSD(:,:,times(1):times(2))))),'k--');
         hold off;
     end
     hold on;

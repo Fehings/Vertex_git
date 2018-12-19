@@ -33,10 +33,10 @@ end
 end
 function [proportion, spikeIDs] = calculateProportion(spikes, groupID, times)
     spikeIDs = spikes((spikes(:,1)>groupID(1) & spikes(:,1)<groupID(2)& ...
-        (spikes(:,2)>times(1) & spikes(:,2)<times(2))),1);
+        (spikes(:,2)>=times(1) & spikes(:,2)<=times(2))),1);
     [spikeIDs, ind] = unique(spikeIDs);
     spikeIDsbase = spikes((spikes(:,1)>groupID(1) & spikes(:,1)<groupID(2)& ...
-        (spikes(:,2)<times(1) & spikes(:,2)>(times(1)-diff([times(1) times(2)])))),1);
+        (spikes(:,2)<=times(1) & spikes(:,2)>=(times(1)-diff([times(1) times(2)])))),1);
     [spikeIDsbase, indbase] = unique(spikeIDsbase);
     proportion = length(spikeIDs);
 end

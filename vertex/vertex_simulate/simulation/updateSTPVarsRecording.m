@@ -13,7 +13,7 @@ if sum(inGroup) ~= 0
     
     %For each post synaptic group
     for i = 1:length(SynapseModel(:,1))
-        if isa(SynapseModel{i,synMap{i}(iGroup)},'SynapseModel_g_stp')
+        if isa(SynapseModel{i,synMap{i}(iGroup)},'STPModel')
 
           RecVar.stp_synRecording{i}(inGroupCell,:, recTimeCounter) = ...
             getSTPVars(SynapseModel{i,synMap{i}(iGroup)}, NeurontoRecord,iGroup);

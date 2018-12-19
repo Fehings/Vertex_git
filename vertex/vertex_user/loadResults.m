@@ -343,7 +343,7 @@ for iSaves = 1:numSaves
             if SS.parallelSim
                 if isfield(RecordingVars, 'stp_synRecording')
                     stp_Syn = RecordingVars.stp_synRecording;
-                    for itype = 1:4
+                    for itype = 1:size(stp_Syn{1},2)
                         for iPostGroup = 1:TP.numGroups
                             stp_syn_recording{iPostGroup,itype}(stp_synCount+1:stp_synCount+size(stp_Syn{iPostGroup},1), ...
                                 sampleCount+1:sampleCount+size(stp_Syn{iPostGroup}, 3)) = ...
@@ -357,7 +357,7 @@ for iSaves = 1:numSaves
                 end
             else
                 stp_Syn = RecordingVars.stp_synRecording;
-                for itype = 1:2
+                for itype = 1:size(stp_Syn{1},2)
                     size(stp_Syn)
                     stp_syn_recording{itype, iPostGroup}(:, sampleCount+1:sampleCount+size(stp_Syn{itype}, 3)) = ...
                         squeeze(stp_Syn{itype}(:,iPostGroup,:));

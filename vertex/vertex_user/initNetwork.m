@@ -171,31 +171,31 @@ if control.init
   % now
   if isfield(RS, 'I_syn_location')
       RS.I_syn = [];
-      for i = 1:length(RS.I_syn_location)
+      for i = 1:length(RS.I_syn_number)
         RS.I_syn = [RS.I_syn getNeuronsNear(TP, RS.I_syn_location(i,:), RS.I_syn_number(i), RS.I_syn_group(i))'];
       end
   end
   if isfield(RS, 'v_m_location')
       RS.v_m = [];
-      for i = 1:length(RS.v_m_location)
+      for i = 1:length(RS.v_m_number)
         RS.v_m = [RS.v_m getNeuronsNear(TP, RS.v_m_location(i,:), RS.v_m_number(i), RS.v_m_group(i))'];
       end
   end
   if isfield(RS, 'stp_syn_location')
       RS.stp_syn = [];
-      for i = 1:length(RS.stp_syn_location)
+      for i = 1:length(RS.stp_syn_number)
         RS.stp_syn = [RS.stp_syn getNeuronsNear(TP, RS.stp_syn_location(i,:), RS.stp_syn_number(i), RS.stp_syn_group(i))'];
       end
   end
   if isfield(RS, 'stdpvars_location')
       RS.stdpvars = [];
-      for i = 1:length(RS.stdpvars_location)
+      for i = 1:length(RS.stdpvars_number)
         RS.stdpvars = [RS.stdpvars getNeuronsNear(TP, RS.stdpvars_location(i,:), RS.stdpvars_number(i), RS.stdpvars_group(i))'];
       end
   end
   if isfield(RS, 'weights_preN_IDs_location')
       RS.weights_preN_IDs = [];
-      for i = 1:length(RS.weights_preN_IDs_location)
+      for i = 1:length(RS.weights_preN_IDs_number)
         RS.weights_preN_IDs = [RS.weights_preN_IDs getNeuronsNear(TP, RS.weights_preN_IDs_location(i,:), RS.weights_preN_IDs_number(i), RS.weights_preN_IDs_group(i))'];
       end
   end
