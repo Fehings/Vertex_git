@@ -11,7 +11,8 @@ for iN = 1:length(intervals)
         % directly by VERTEX.
          %[lfp, times{iN,iRun},params{iN,iRun}] = getLFPOnly([location num2str(intervals(iN)) '100' num2str(iRun)]);
          results = load([location num2str(intervals(iN)) '100' num2str(iRun) 'R.mat']);
-         lfp = results.lfp;
+         results = results.Results;
+         lfp = results.LFP;
          times{iN,iRun} = getTimeVector(results);
          params{iN,iRun} = results.params;
          LFPs{iN,iRun} = lfp(2,:);

@@ -6,6 +6,7 @@ for iInterval = 1:length(intervals)
         % directly by VERTEX.
         %results = loadResults([path num2str(intervals(iInterval)) '100' num2str(iRun)]);
         results = load([path num2str(intervals(iInterval)) '100' num2str(iRun) 'R.mat']);
+        results = results.Results;
         recr{iInterval,iRun} = getStimulusRecruitment(results,false);
     end
 end

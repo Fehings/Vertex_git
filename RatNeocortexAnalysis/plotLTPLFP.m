@@ -1,6 +1,8 @@
+% Requires bounded line from matlab fine exchange.
 LFP = cell(5,1);
     for iRun = 1:5
         results = load([path '100' num2str(iRun) 'R']);
+        results = results.Results;
         LFP{iRun} = results.LFP;
     end
 %%
