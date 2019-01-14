@@ -8,7 +8,7 @@
 % figures in the paper.
 
 %% Recording LFP
-RecordingSettings.LFP = true;
+RecordingSettings.LFP = false;
 [meaX, meaY, meaZ] = meshgrid(1200:-100:500, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -30,8 +30,8 @@ RecordingSettings.minDistToElectrodeTip = 20;
 % Group 13 and group 14 cells are close to the electrode and so directly
 % recruited. Group 20 cells are secondarily recruited.
 RecordingSettings.weights_preN_IDs_location = [[775 1225];[775 1225];[1150 1225]];
-RecordingSettings.weights_preN_number = [25, 25,25];
-RecordingSettings.weights_preN_group = [13, 14,20];
+RecordingSettings.weights_preN_IDs_number = [25, 25,25];
+RecordingSettings.weights_preN_IDs_group = [13, 14,20];
 
 %Record membrane potentials from 25 group 13 and 25 group 14 cells nearest to X = 775, Z = 1225.
 %Record membrane potentials from 25 group 20  cells nearest to X = 1150, Z = 1225.
@@ -55,7 +55,7 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 5000;
+SimulationSettings.simulationTime = 100;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 SimulationSettings.stdp =true;
