@@ -1,16 +1,9 @@
 % This script will reproduce the results figures in the VERTEX 2.0 paper. 
-% However, it will omit those that involve plotting the LFP for multiple
-% runs as the data files for these are very large.
-% multiple runs indicates that we have run repetitions and have the results
-% of these. Multiple LFPs indicates that these contain LFP recordings
-% (which take up the most space).
 
-multipleRuns = true;
-multipleLFPs = false;
 %% Data file locations
 F1000_data_dir = '/media/b3046588/Elements/F1000_Data/';
 %% Uncomment this if you are analysing the data provided 
-singlePulseDir = [F1000_data_dir filesep 'singlepulse' filesep 'multipleRuns' filesep 'singlepulse_1001'];
+singlePulseDir = [F1000_data_dir filesep 'singlepulse' filesep 'singlepulse_1001'];
 multipleRunsDir = [F1000_data_dir filesep 'singlepulse' filesep 'multipleRuns' filesep];
 nosynapseDir = [F1000_data_dir filesep 'singlepulse' filesep 'no_synapses' filesep  'singlepulse_1001'];
 synapticcurrentsDir = [F1000_data_dir filesep 'singlepulse' filesep 'singlepulse_1001_I_synComp'];
@@ -65,17 +58,15 @@ rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 %% Figure 10 B and D
 % Figure 10(B) Mean and STD of proportion of each cell type recruited
 % directly by stimulation.
-if multipleRuns
-    path = [multipleRunsDir 'singlepulse_100'];
-    figure;
-    plotMeanRecruitment; 
-end
+path = [multipleRunsDir 'singlepulse_100'];
+figure;
+plotMeanRecruitment; 
 %
 %Figure 10(D) Breakdown of the LFP produced by the response to stimulus.
 % Showing the contribution of each neuron type.
 RecordingSettings.saveDir = singlePulseDir;
 Results = loadResults(RecordingSettings.saveDir,0);
-RecordingSettings.saveDir = nosynapseDir ;
+RecordingSettings.saveDir = nosynapseDir;
 ResultsNoSyn = loadResults(RecordingSettings.saveDir,0);
 getContributions(Results.LFP, 2, [7500 9800], ResultsNoSyn.LFP, getTimeVector(Results,'ms'));
 
@@ -106,22 +97,21 @@ plotCellCurrents(Results,1:50,1,[7500 9800]);
 plotLFPbycompartment;
 
 %% Figure 12
-if multipleRuns
-    path = [pairedPulseDir filesep 'multipleRuns' filesep 'pairedPulse' filesep 'pairedpulse_'];
-    % (C) Mean recruitment of TTPC cells during stimulation
-    figure;
-    plotMeanRecruitmentPP;
-    % (D) Mean levels of residual inhibitory current received by the population
-    % of TTPC cells recruited directly by the first stimulus.
-    figure;
-    plotMeanResidualInhibitionPP;
-    figure;
-    % (B) Mean amplitude difference between first and second pulse for two
-    % components of the response.
-    if multipleLFPs
-        plotPPresponseamps;
-    end
-end
+
+path = [pairedPulseDir filesep 'multipleRuns' filesep 'pairedpulse_'];
+% (C) Mean recruitment of TTPC cells during stimulation
+figure;
+plotMeanRecruitmentPP;
+% (D) Mean levels of residual inhibitory current received by the population
+% of TTPC cells recruited directly by the first stimulus.
+figure;
+plotMeanResidualInhibitionPP;
+figure;
+% (B) Mean amplitude difference between first and second pulse for two
+% components of the response.
+
+plotPPresponseamps;
+
 %% Figure 13 
 RecordingSettings.saveDir = pairedPulseDetailed;
 Results = loadResults(RecordingSettings.saveDir,1);
@@ -174,14 +164,13 @@ Results = loadResults(RecordingSettings.saveDir,1);
 figure;
 plotstdpchangesandspikes(50000,100000, Results);
 % (C) 
-figure
+figure;
 plotweightchangespatial;
 figure;
 plotweightchangesbygroup;
 
 %% Figure 15 A
-if multipleLFPs
-    path = [tbsDir filesep 'multipleRuns' filesep 'tbs_'];
-    figure;
-    plotLTPLFP;
-end
+path = [tbsDir filesep 'multipleRuns' filesep 'tbs_'];
+figure;
+plotLTPLFP;
+

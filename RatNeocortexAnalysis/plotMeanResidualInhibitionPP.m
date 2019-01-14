@@ -2,7 +2,10 @@ intervals = 50:50:250;
 inh = cell(length(intervals),5);
 for iInterval = 1:length(intervals)
     for iRun = 1:5
-        results = loadResults([path num2str(intervals(iInterval)) '100' num2str(iRun)]);
+        % Use loadResults for loading from Results folder generated
+        % directly by VERTEX.
+        %results = loadResults([path num2str(intervals(iInterval)) '100' num2str(iRun)]);
+        results = load([path num2str(intervals(iInterval)) '100' num2str(iRun) 'R.mat']);
         inh{iInterval,iRun} = getCurrents(results,[9:12 17:20],50:100);
     end
 end

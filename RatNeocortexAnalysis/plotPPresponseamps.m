@@ -7,7 +7,13 @@ peaks =  cell(length(intervals),5);
 troughs = cell(length(intervals),5);
 for iN = 1:length(intervals)
     for iRun = 1:5
-         [lfp, times{iN,iRun},params{iN,iRun}] = getLFPOnly([location num2str(intervals(iN)) '100' num2str(iRun)]);
+        % Use loadResults for loading from Results folder generated
+        % directly by VERTEX.
+         %[lfp, times{iN,iRun},params{iN,iRun}] = getLFPOnly([location num2str(intervals(iN)) '100' num2str(iRun)]);
+         results = load([location num2str(intervals(iN)) '100' num2str(iRun) 'R.mat']);
+         lfp = results.lfp;
+         times{iN,iRun} = getTimeVector(results);
+         params{iN,iRun} = results.params;
          LFPs{iN,iRun} = lfp(2,:);
          [peaks{iN,iRun}, troughs{iN,iRun}] = getpeaksofresponse(LFPs{iN,iRun}, params{iN,iRun});
     end

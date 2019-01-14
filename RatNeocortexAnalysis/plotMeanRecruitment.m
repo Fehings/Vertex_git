@@ -1,5 +1,6 @@
 for iRun = 1:5
-    results = loadResults([path num2str(iRun)]);
+    %results = loadResults([path num2str(iRun)]);
+    results = load([path num2str(iRun) 'R']);
     recr(iRun,:) = getStimulusRecruitment(results,false);
 end
 %%

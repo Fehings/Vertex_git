@@ -12,7 +12,7 @@
 % connectionslayers23to6.mat, rat_no_neurons.mat, and ratlayerthickness.mat
 
 loadRatTissueandNeuronParams;
-TissueParams.neuronDensity = 13730;
+TissueParams.neuronDensity = 103730;
 loadRatConnectionParams;
 %% Load the stimulating electrode field and set on and off times
 % Default times are for single pulse at 1500 ms.

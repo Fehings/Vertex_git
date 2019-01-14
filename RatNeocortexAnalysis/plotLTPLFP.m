@@ -1,6 +1,6 @@
 LFP = cell(5,1);
     for iRun = 1:5
-        results = loadResults([path '100' num2str(iRun)]);
+        results = load([path '100' num2str(iRun) 'R']);
         LFP{iRun} = results.LFP;
     end
 %%
