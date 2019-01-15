@@ -28,11 +28,14 @@ for i = 1:length(ConnectivityNames)
             ConnectionParams(i).weights_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4});
             ConnectionParams(i).weights_distribution{j} = 'Normal';
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
+            ConnectionParams(i).tau_s{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
+
             %ConnectionParams(i).tau_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){6});
             %ConnectionParams(i).tau_distribution{j} = 'Normal';
             if ismember(i, excitatory)
-                ConnectionParams(i).synapseType{j} = 'g_mt_stdp';
-                ConnectionParams(i).rate{j} = 0.05;
+                ConnectionParams(i).synapseType{j} = 'g_exp_mt_stdp';
+                ConnectionParams(i).preRate{j} = 0.05;
+                ConnectionParams(i).postRate{j} = -0.05;
                 ConnectionParams(i).wmin{j} = 0;
                 ConnectionParams(i).wmax{j} = 100;
                 if ismember(i, superficialPY)
@@ -43,7 +46,7 @@ for i = 1:length(ConnectivityNames)
                     ConnectionParams(i).tPost{j} = 25;
                 end
             else
-                ConnectionParams(i).synapseType{j} = 'g_stp_mt';
+                ConnectionParams(i).synapseType{j} = 'g_exp_mt';
             end
             ConnectionParams(i).fac_tau_mu{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){7});
             ConnectionParams(i).fac_tau_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){8});

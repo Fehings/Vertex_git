@@ -458,13 +458,7 @@ spmd
                                     processAsPostSynSpike(SynModel{postGroup, iSpkSynGroup},relativeind);
                                     processed = [processed iSpkSynGroup];
                                 end
-                                tBufferLoc =  cast(revSynArr{allSpike(iSpk), 3}, 'int16') - cast(SynModel{postGroup,iSpkSynGroup}.bufferCount,'int16')...
-                            - cast(allSpikeTimes(iSpk), 'int16');
-                    
-                            tBufferLoc(tBufferLoc > bufferLength) = ...
-                                tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
-                    
-                            tBufferLoc(tBufferLoc<1) = bufferLength + tBufferLoc(tBufferLoc<1) ;
+
                                 %logical array specifying which presynaptic
                                 %neurons are in the current group
                                 inGroup = preInGroup == iPreGroup;
@@ -511,13 +505,25 @@ spmd
                                     for synInd = 1:length(presyningroup)
                                         wMat(synInd) = wArr{presyningroup(synInd)}(postsynlocingroup(synInd));
                                     end
-                                    
-                                    wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
-                                        wMat,relativepreID, neuronInGroup(presyningroup),tBufferLoc(inGroup));
+                                    %calculate delay for synapses with
+                                    %delay
+                                    if isa(SynModel{postGroup,iSpkSynGroup}, 'STDPModel_delays')
+                                        tBufferLoc =  cast(revSynArr{allSpike(iSpk), 3}, 'int16') + cast(SynModel{postGroup,iSpkSynGroup}.bufferCount,'int16')...
+                                            - cast(allSpikeTimes(iSpk), 'int16');
+                                        
+                                        tBufferLoc(tBufferLoc > bufferLength) = ...
+                                            tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
+                                        
+                                        tBufferLoc(tBufferLoc<1) = bufferLength + tBufferLoc(tBufferLoc<1) ;
+                                        wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
+                                            wMat,relativepreID, neuronInGroup(presyningroup),tBufferLoc(inGroup));
+                                    else
+                                        wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
+                                            wMat,relativepreID, neuronInGroup(presyningroup));
+                                    end
                                     for synInd = 1:length(presyningroup)
                                         wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
                                     end
-                                    %disp('updating weights 1')
                                     
                                 end
                             end

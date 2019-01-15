@@ -13,17 +13,15 @@
 
 loadRatTissueandNeuronParams;
 TissueParams.neuronDensity = 103730;
-loadRatConnectionParams;
+loadRatConnectionParamsNoSyn;
 %% Load the stimulating electrode field and set on and off times
 % Default times are for single pulse at 1500 ms.
 setUpBipolarElectrodeStimulation
 
 loadSimulationSettings
-
 %% Set the random seed, this should go from 1001 to 1005 to reproduce results in the paper where they are based on repeated simulations. 
 SimulationSettings.randomSeed = 1001;
 %% Set the location to save results.
-RecordingSettings.saveDir = ['~/F1000_Data/singlepulse_' num2str(SimulationSettings.randomSeed)];
-
+RecordingSettings.saveDir = ['~/F1000_Data/nosynapse' num2str(SimulationSettings.randomSeed)];
 runRatSimulationSP;
 

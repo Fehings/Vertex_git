@@ -3,11 +3,12 @@
 %Recording settings
 %These describe which variables to record, we are interested in membrane
 %potentials and local field potentials. 
-% This file is for single pulse and paired pulse
-% A separate file has been set up for theta burst stimulation.
+% This file is for theta burst stimulation.
+% It will result in the recording of all variables needed to produce the
+% figures in the paper.
 
 %% Recording LFP
-RecordingSettings.LFP = true;
+RecordingSettings.LFP = false;
 [meaX, meaY, meaZ] = meshgrid(1200:-100:500, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -25,28 +26,22 @@ RecordingSettings.minDistToElectrodeTip = 20;
 % Depending on how much RAM you have you may not be able to record
 % everything. 
 %% I_syn required for figures 11 (B) and 13
-%Record synaptic currents from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
-RecordingSettings.I_syn_location = [[1150 1200];[1150 1200]];
-RecordingSettings.I_syn_number = [50, 50];
-RecordingSettings.I_syn_group = [13, 14];
-RecordingSettings.I_syn_preGroups = [6:20];
-%Record membrane potentials from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
-RecordingSettings.v_m_location = [[1150 1200]; [1150 1200]];
-RecordingSettings.v_m_number = [50,50];
-RecordingSettings.v_m_group = [13,14];
+%Record synaptic weights from 25 group 13 and 25 group 14 and 25 group 20 cells.
+% Group 13 and group 14 cells are close to the electrode and so directly
+% recruited. Group 20 cells are secondarily recruited.
+RecordingSettings.weights_preN_IDs_location = [[775 1225];[775 1225];[1150 1225]];
+RecordingSettings.weights_preN_IDs_number = [25, 25,25];
+RecordingSettings.weights_preN_IDs_group = [13, 14,20];
 
-%Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
-% This is required for figure 11 C
-RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
-RecordingSettings.I_synComp_number = [50,50];
-RecordingSettings.I_synComp_groups = [13,14];
+%Record membrane potentials from 25 group 13 and 25 group 14 cells nearest to X = 775, Z = 1225.
+%Record membrane potentials from 25 group 20  cells nearest to X = 1150, Z = 1225.
+RecordingSettings.v_m_location = [[775 1225]; [775 1225];[1150 1225]];
+RecordingSettings.v_m_number = [25,25,25];
+RecordingSettings.v_m_group = [13,14,20];
 
-%Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
-%This is required for figure 11 C
-RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
-RecordingSettings.I_synComp_number = [50,50];
-RecordingSettings.I_synComp_groups = [13,14];
-
+% Record 4 snapshots of the weights, one a the beggning, one just before
+% TBS, one just after TBS and one at the end.
+RecordingSettings.weights_arr = [1,38000,89000,155000];
 
 RecordingSettings.maxRecTime = 2500;
 RecordingSettings.sampleRate = 5000;
@@ -60,10 +55,10 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2500;
+SimulationSettings.simulationTime = 100;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
-SimulationSettings.stdp =false;
+SimulationSettings.stdp =true;
 
 %%
 %This initialises the network and sets up other variables. 

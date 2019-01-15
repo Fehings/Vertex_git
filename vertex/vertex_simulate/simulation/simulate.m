@@ -336,13 +336,7 @@ for simStep = 1:simulationSteps
                         iSpkSynGroup = synMap{postGroup}(iPreGroup);
                         
                         if isa(SynModel{postGroup,iSpkSynGroup}, 'STDPModel') 
-                           tBufferLoc =  cast(revSynArr{allSpike(iSpk), 3}, 'int16') - cast(SynModel{postGroup,iSpkSynGroup}.bufferCount,'int16')...
-                            - cast(allSpikeTimes(iSpk), 'int16');
-                    
-                            tBufferLoc(tBufferLoc > bufferLength) = ...
-                                tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
-                    
-                            tBufferLoc(tBufferLoc<1) = bufferLength + tBufferLoc(tBufferLoc<1) ;
+
                             relativeind = allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
                             processAsPostSynSpike(SynModel{postGroup,iSpkSynGroup},relativeind);
                             %if the synapses from the preSynaptic group to the
@@ -373,9 +367,23 @@ for simStep = 1:simulationSteps
                                 wMat(synInd) = wArr{presyningroup(synInd)}(postsynlocingroup(synInd));
                             end
                             
-                            wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
-                                wMat, presyningroup...
-                                -TP.groupBoundaryIDArr(neuronInGroup(presyningroup))',neuronInGroup(presyningroup),tBufferLoc(inGroup) );
+                            if isa(SynModel{postGroup,iSpkSynGroup}, 'STDPModel_delays')
+                                tBufferLoc =  cast(revSynArr{allSpike(iSpk), 3}, 'int16') + cast(SynModel{postGroup,iSpkSynGroup}.STDPbufferCount,'int16')...
+                                    - cast(allSpikeTimes(iSpk), 'int16');
+                                
+                                tBufferLoc(tBufferLoc > bufferLength) = ...
+                                    tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
+                                
+                                tBufferLoc(tBufferLoc<1) = bufferLength + tBufferLoc(tBufferLoc<1);
+                                
+                                wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
+                                    wMat, presyningroup...
+                                    -TP.groupBoundaryIDArr(neuronInGroup(presyningroup))',neuronInGroup(presyningroup),tBufferLoc(inGroup) );
+                            else
+                                wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
+                                    wMat, presyningroup...
+                                    -TP.groupBoundaryIDArr(neuronInGroup(presyningroup))',neuronInGroup(presyningroup));
+                            end
                             
                             for synInd = 1:length(presyningroup)
                                 wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
@@ -383,8 +391,8 @@ for simStep = 1:simulationSteps
                             
                         end
                     end
+                    end
                 end
-            end
             
             
         end

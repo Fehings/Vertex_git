@@ -387,7 +387,7 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 % parameters are set to be empty matrices.
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-[TissueParams.StimulationField, TissueParams.StimulationModel] = invitroSliceStim('catvisblend1.stl',100);
+[TissueParams.StimulationField, TissueParams.StimulationModel] = invitroSliceStim('6layermodelstiml4placedinnobacktrueunits.stl',100);
 TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
 TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
 %% Recording and simulation settings
@@ -462,24 +462,3 @@ time1weights = getSparseConnectivityWeights(Results.weights_arr{1},Results.syn_a
 time2weights = getSparseConnectivityWeights(Results.weights_arr{2},Results.syn_arr,Results.params.TissueParams.N);%
 figure;imagesc(time2weights-time1weights);
 
-%
-% Finally let's check the mean firing rate of each neuron group using the
-% |groupRates()| function. We will ask for the rates to be calculated from
-% 100 ms to 500 ms, so that spikes in the initial model population spike are not
-% counted.
-
-firingRates = groupRates(Results, 100, 500);
-%%
-% If you have experienced any problems when trying to run this tutorial,
-% or if you have any suggestions for improvements, please email Richard
-% Tomsett: r _at_ autap _dot_ se
-
-%% References
-% Binzegger T, Douglas RJ, Martin KAC (2004) A quantitative map of the circuit
-% of cat primary visual cortex. J Neurosci 24(39):8441?8453
-%
-% Tomsett RJ, Ainsworth M, Thiele A, Sanayei M, Chen X et al. (2014)
-% Virtual Electrode Recording Tool for EXtracellular potentials (VERTEX):
-% comparing multi-electrode recordings from simulated and biological
-% mammalian cortical tissue, Brain Structure and Function.
-% doi:10.1007/s00429-014-0793-x

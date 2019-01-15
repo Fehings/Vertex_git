@@ -24,25 +24,26 @@ RecordingSettings.minDistToElectrodeTip = 20;
 % record from). 
 % Depending on how much RAM you have you may not be able to record
 % everything. 
-%% I_syn required for figures 11 (B) and 13
-%Record synaptic currents from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
-RecordingSettings.I_syn_location = [[1150 1200];[1150 1200]];
-RecordingSettings.I_syn_number = [50, 50];
-RecordingSettings.I_syn_group = [13, 14];
-RecordingSettings.I_syn_preGroups = [6:20];
-%Record membrane potentials from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
-RecordingSettings.v_m_location = [[1150 1200]; [1150 1200]];
-RecordingSettings.v_m_number = [50,50];
-RecordingSettings.v_m_group = [13,14];
+
+% For Figure 13 Record stp_syn (short term plasticity synaptic variables).
+% The recording location of these is specified to be around the location of
+% the stimulating electrode.
+% To reproduce recording pairedpulse1001_detailed
+RecordingSettings.stp_syn_location = [[775 1225]; [775 1225];[1150 1225]];
+RecordingSettings.stp_syn_number = [50,50,50];
+RecordingSettings.stp_syn_group = [13,14,20];
+
+% Record synaptic currents per pre synaptic group. This is required for
+% generating the results files in /pairedPulse/multipleRuns/. It allows us
+% to measure the residual inhibitory current arriving during the second
+% pulse.
+RecordingSettings.I_syn_location = [[775 1225]; [775 1225];[1150 1225]];
+RecordingSettings.I_syn_number = [50,50,50];
+RecordingSettings.I_syn_group = [13,14,20];
 
 %Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
-% This is required for figure 11 C
-RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
-RecordingSettings.I_synComp_number = [50,50];
-RecordingSettings.I_synComp_groups = [13,14];
-
-%Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
-%This is required for figure 11 C
+%This is required for figure 13. This records the synaptic current on the
+%post synaptic side near the recording electrode.
 RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
 RecordingSettings.I_synComp_number = [50,50];
 RecordingSettings.I_synComp_groups = [13,14];
@@ -52,15 +53,8 @@ RecordingSettings.maxRecTime = 2500;
 RecordingSettings.sampleRate = 5000;
 
 %Simulation settings:
-%Keep max delay steps at 80, 
-%Simulation time can be varied, it is in milliseconds, currently running
-%for 500 ms.
-%We want to run this simulation in parallel, this means that all cpu cores
-%will be utilised in the simulations, with the neurons being distributed
-%across them, as this simulation is large this is necessary to minimize the
-%run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2500;
+SimulationSettings.simulationTime = 1400;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 SimulationSettings.stdp =false;

@@ -23,9 +23,8 @@ for i = 1:length(ConnectivityNames)
             ConnectionParams(i).weights_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4});
             ConnectionParams(i).weights_distribution{j} = 'Normal';
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
-            %ConnectionParams(i).tau_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){6});
-            %ConnectionParams(i).tau_distribution{j} = 'Normal';
             ConnectionParams(i).tau_s{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
+
             ConnectionParams(i).synapseType{j} = 'g_exp_mt';
             ConnectionParams(i).fac_tau_mu{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){7});
             ConnectionParams(i).fac_tau_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){8});
