@@ -86,6 +86,9 @@ classdef (Abstract) STPModel_ab < STPModel
       function params = getPreSynapticParams()
           params =  {'tD','tF','facilitation','depression'};
       end
+      function params = getSTPParams()
+          params =  {'tD','tF','facilitation','depression'};
+      end
   end
 
 end % classdef
