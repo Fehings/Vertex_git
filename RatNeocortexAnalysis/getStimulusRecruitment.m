@@ -22,6 +22,7 @@ for iStim = 1:length(stimOn)
             [proportion_recruited(iStim,iGroup),recruited_ids{iStim,iGroup}] = calculateProportion(Results.spikes,...
                 [groupBoundaries(iGroup)+1,groupBoundaries(iGroup+1)], ...
                 [stimOn(iStim), stimOff(iStim)]);
+            
         else
             proportion_recruited(iStim,iGroup) = calculateRateChange(Results.spikes,...
                 [groupBoundaries(iGroup)+1,groupBoundaries(iGroup+1)], ...
@@ -38,7 +39,7 @@ function [proportion, spikeIDs] = calculateProportion(spikes, groupID, times)
     spikeIDsbase = spikes((spikes(:,1)>groupID(1) & spikes(:,1)<groupID(2)& ...
         (spikes(:,2)<=times(1) & spikes(:,2)>=(times(1)-diff([times(1) times(2)])))),1);
     [spikeIDsbase, indbase] = unique(spikeIDsbase);
-    proportion = length(spikeIDs);
+    proportion = length(spikeIDs)./diff(groupID);
 end
 function [ratechange,spikeIDs]= calculateRateChange(spikes, groupID, times)
 

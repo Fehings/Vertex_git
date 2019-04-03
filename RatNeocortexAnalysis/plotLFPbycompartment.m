@@ -14,7 +14,8 @@ iGroup = 14;
 % spikes seen here, in the trunk and soma.
 NP = Results.params.NeuronParams(14);
 NP.labelnames = {'somaID','basalID','obliqueID','apicalID','trunkID','tuftID'};
+times = [7500 9500];
 figure;
-plotCSDSingleNeuron(Results,-(Results.csd{14}-ResultsNoSyn.csd{14}),times,NP);
+plotCSDSingleNeuron(Results,(Results.csd{14}),times,NP);
 figure;
-plotCSDSingleNeuron(Results,(Results.csd{14}-ResultsNoSyn.csd{14}),times,NP,LSM);
+plotCSDSingleNeuron(Results,(Results.csd{14}),times,NP,LSM);

@@ -29,7 +29,7 @@ if nargin >=4
         if length(iC) > 1
             if plotAll
                 for iiC = iC
-                    p = plot(timevec,-squeeze(CSD(:,iiC,times(1):times(2))), 'LineWidth', 0.1,'Color',cmap(iGroup,:),'LineStyle', '-');
+                    p = plot(timevec,squeeze(CSD(:,iiC,times(1):times(2))), 'LineWidth', 0.1,'Color',cmap(iGroup,:),'LineStyle', '-');
                     for ip = 1:length(p)
 
                         p(ip).Annotation.LegendInformation.IconDisplayStyle = 'off';
@@ -39,7 +39,7 @@ if nargin >=4
             end
         else
             if plotAll
-                p = plot(timevec,-squeeze(CSD(:,iC,times(1):times(2))), 'LineWidth', 0.1, 'Color',cmap(iGroup,:),'LineStyle', '-');
+                p = plot(timevec,squeeze(CSD(:,iC,times(1):times(2))), 'LineWidth', 0.1, 'Color',cmap(iGroup,:),'LineStyle', '-');
                 for ip = 1:length(p)
 
                     p(ip).Annotation.LegendInformation.IconDisplayStyle = 'off';
@@ -55,10 +55,10 @@ if nargin >=4
     end
     hold off;
      legend();
-    axes('Position',[ .85, .55, .2, .4]);
-    box on;
-    viewMorphologyXcolour(NP,gcolour);
-    box off;
+    %axes('Position',[ .85, .55, .2, .4]);
+    %box on;
+    %viewMorphologyXcolour(NP,gcolour);
+    %box off;
 else
     if nargin ==5
         hold on;

@@ -30,6 +30,7 @@ pars.figureID =1;
 pars.toPlot = 1:10:params.TissueParams.N;
 pars.opacity = 0;
 pars.dimensionscaler = 1;
+params.TissueParams.scale =1 ;
 [fig] = plotSomaPositions(params.TissueParams,pars);
 
  pars.figureID = fig;
