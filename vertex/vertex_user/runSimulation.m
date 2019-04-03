@@ -172,7 +172,9 @@ if SS.parallelSim
     %[NeuronModelArr, SynapseModelArr, InputModelArr, numSaves] = ...
     
     parameterCell = {TP, NP, CP, RS, SS,SynapseModelArr};
-    fname = [outputDirectory 'parameters.mat'];
+   fname = [outputDirectory 'parameters.mat'];
+   parameterCell{1}.compartmentlocations = [];
+   parameterCell{6}= [];
     save(fname, 'parameterCell','-v7.3');
     
     if isfield(TP, 'StimulationField') && isa(TP.StimulationField,'pde.TimeDependentResults')
