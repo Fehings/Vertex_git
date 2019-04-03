@@ -21,7 +21,7 @@ while sum(NeuronParams.compartmentLengthArr > NeuronParams.spaceconstant*NParams
     NeuronParams.spaceconstant = NParams.spaceconstant;
 end
 
-disp(['Mean compartment length:' num2str(mean(NeuronParams.compartmentLengthArr))]);
-disp(['Number of compartments: ' num2str(length(NeuronParams.compartmentLengthArr))]);
+%disp(['Mean compartment length:' num2str(mean(NeuronParams.compartmentLengthArr))]);
+%disp(['Number of compartments: ' num2str(length(NeuronParams.compartmentLengthArr))]);
 end
 
