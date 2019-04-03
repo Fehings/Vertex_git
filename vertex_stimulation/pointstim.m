@@ -2,15 +2,16 @@ function [ Ve ] = pointstim( fiberposition)
 %pointstim Describes a point stimulation analytically. 
 %   Calculate the strength of a field at position(s) specified by
 %   fiberposition.
-stim_I = (0.1 *10^-6);
+load('electrodeposition.mat');
+stim_I = (100 *10^-3);
 fiberx = fiberposition(1);
 fibery = fiberposition(2);
 fiberz = fiberposition(3);
-stimx = 100;
-stimy = 0;
-stimz = 500;
-r = (fiberx - stimx)^2 + (fibery - stimy)^2 + (fiberz - stimz)^2; %distance between electrode and fiber
+stimx = location.x;
+stimy = location.y;
+stimz = location.z;
+r = sqrt((fiberx - stimx)^2 + (fibery - stimy)^2 + (fiberz - stimz)^2); %distance between electrode and fiber
 p= 0.3; %conductivity
-Ve = p .* stim_I ./ 4*pi*r  ;
+Ve = (p .* stim_I) ./ 4*pi*r  ;
 end
 
