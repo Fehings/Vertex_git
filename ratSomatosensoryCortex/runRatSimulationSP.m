@@ -8,7 +8,7 @@
 % pulse stimulation.
 
 %% Recording LFP
-RecordingSettings.LFP = true;
+RecordingSettings.LFP = false;
 [meaX, meaY, meaZ] = meshgrid(1200:-100:500, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -30,25 +30,25 @@ RecordingSettings.minDistToElectrodeTip = 20;
 % from the paper.
 
 %% I_syn required for figures 11 (B) 
-%Record synaptic currents from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
-RecordingSettings.I_syn_location = [[1150 1200];[1150 1200]];
-RecordingSettings.I_syn_number = [50, 50];
-RecordingSettings.I_syn_group = [13, 14];
-RecordingSettings.I_syn_preGroups = [6:20];
-
-%Record membrane potentials from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
-RecordingSettings.v_m_location = [[1150 1200]; [1150 1200]];
-RecordingSettings.v_m_number = [50,50];
-RecordingSettings.v_m_group = [13,14];
-
-%Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
-% This is required for figure 11 C
-RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
-RecordingSettings.I_synComp_number = [50,50];
-RecordingSettings.I_synComp_groups = [13,14];
-
-%Record the transmembrane currents for cells within box specified.
-% Required for figure 11 D and E
+% %Record synaptic currents from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
+% RecordingSettings.I_syn_location = [[1150 1200];[1150 1200]];
+% RecordingSettings.I_syn_number = [50, 50];
+% RecordingSettings.I_syn_group = [13, 14];
+% RecordingSettings.I_syn_preGroups = [6:20];
+% 
+% %Record membrane potentials from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
+% RecordingSettings.v_m_location = [[1150 1200]; [1150 1200]];
+% RecordingSettings.v_m_number = [50,50];
+% RecordingSettings.v_m_group = [13,14];
+% 
+% %Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
+% % This is required for figure 11 C
+% RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
+% RecordingSettings.I_synComp_number = [50,50];
+% RecordingSettings.I_synComp_groups = [13,14];
+% 
+% %Record the transmembrane currents for cells within box specified.
+% % Required for figure 11 D and E
 for iGroup = 1:29
     RecordingSettings.CSD_groups(iGroup) = iGroup;
     RecordingSettings.CSD_Xboundary(iGroup,:) = [1100 1200];

@@ -25,7 +25,7 @@ RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/CSD/singlep
 %RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/pairedpulse1001';
 RecordingSettings.saveDir = '~/zero_magnesium//';
 RecordingSettings.saveDir = '~/with_axons//';
-RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/F1000_VERTEX/Results/without_axons';
+RecordingSettings.saveDir = '/media/b3046588/Elements/LRDs/OldParamsAndOldConn_1002';
 Results = loadResults(RecordingSettings.saveDir,1);
 
 %make sure no figures are open to keep things tidy
@@ -42,11 +42,12 @@ rasterParams.groupBoundaryLines = 'c';
 rasterParams.title = 'Spike Raster';
 
 
+
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
 N = Results.params.TissueParams.N;
 
-rasterParams.neuronsToPlot = 1:N;
+rasterParams.neuronsToPlot = 1:10:N;
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
 %%
@@ -54,7 +55,10 @@ ConnectivityNames = {'L23_PC','L23_NBC','L23_LBC','L23_SBC','L23_MC',...
     'L4_SS','L4_SP','L4_PC','L4_NBC','L4_SBC','L4_LBC','L4_MC',...
     'L5_TTPC2','L5_TTPC1','L5_UTPC','L5_STPC','L5_LBC','L5_SBC','L5_NBC','L5_MC'...
     'L6_TPC_L1', 'L6_TPC_L4', 'L6_UTPC','L6_IPC','L6_BPC', 'L6_LBC', 'L6_NBC', 'L6_SBC', 'L6_MC'};
-pars.colors = rasterParams.colors;
+
+
+N = Results.params.TissueParams.N;
+
 pars.markers = {'^','x','x','x','s', ...
     'd','*','^','x','x','x','m',...
     '^','^','^','*','x','x','x','s'...
@@ -62,5 +66,5 @@ pars.markers = {'^','x','x','x','s', ...
 pars.figureID =1;
 pars.toPlot = 1:5:N;
 %pars.dimensionscaler = 0.000001;
-Results.params.TissueParams.scale = 1e-6;
+Results.params.TissueParams.scale = 1;
 plotSomaPositions(Results.params.TissueParams,pars);

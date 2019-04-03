@@ -66,6 +66,7 @@ for i = 6
     NeuronParams(i).Input(1).stdInput = 60;
     NeuronParams(i).Input(1).tau = 2;
 end
+
 for i = 7
     NeuronParams(i).Input(1).inputType = 'i_ou';
     NeuronParams(i).Input(1).meanInput =250;
@@ -172,6 +173,14 @@ for i = 28:29
     NeuronParams(i).Input(1).tau = 1;
 end
 
+% for i = 1:29
+%     NeuronParams(i).Input(1).compartments = setdiff(1:NeuronParams(i).numCompartments, NeuronParams(i).axon_ID);
+% end
+% 
+% for i = [6:8 13:16 25]
+%     NeuronParams(i).Input(1).meanInput = NeuronParams(i).Input(1).meanInput+NeuronParams(i).Input(1).meanInput.*0.1;
+%     NeuronParams(i).Input(1).stdInput = NeuronParams(i).Input(1).stdInput+NeuronParams(i).Input(1).stdInput.*0.1;
+% end
 %%
 
 
