@@ -345,7 +345,7 @@ for iSaves = 1:numSaves
                     stp_Syn = RecordingVars.stp_synRecording;
                     for itype = 1:size(stp_Syn{1},2)
                         for iPostGroup = 1:TP.numGroups
-                            stp_syn_recording{iPostGroup,itype}(stp_synCount+1:stp_synCount+size(stp_Syn{iPostGroup},1), ...
+                            stp_syn_recording{itype,iPostGroup}(stp_synCount+1:stp_synCount+size(stp_Syn{iPostGroup},1), ...
                                 sampleCount+1:sampleCount+size(stp_Syn{iPostGroup}, 3)) = ...
                                 squeeze(stp_Syn{iPostGroup}(:,itype,:));
                         end
@@ -358,7 +358,6 @@ for iSaves = 1:numSaves
             else
                 stp_Syn = RecordingVars.stp_synRecording;
                 for itype = 1:size(stp_Syn{1},2)
-                    size(stp_Syn)
                     stp_syn_recording{itype, iPostGroup}(:, sampleCount+1:sampleCount+size(stp_Syn{itype}, 3)) = ...
                         squeeze(stp_Syn{itype}(:,iPostGroup,:));
                 end
@@ -527,9 +526,16 @@ if SS.parallelSim && ~isempty(I_syn_recording)
     end
 end
 if SS.parallelSim && ~isempty(stp_syn_recording)
+    
     for iPostGroup = 1:TP.numGroups
         for itype = 1:2
-            stp_syn_recording{itype,iPostGroup}(stp_synIDmap, :) = stp_syn_recording{itype,iPostGroup};
+            temp = zeros(max(stp_synIDmap),size(stp_syn_recording{itype,iPostGroup},2));
+            count = 1;
+            for i = stp_synIDmap
+                temp(i,:) = temp(i,:) + stp_syn_recording{itype,iPostGroup}(count,:);
+                count = count+1;
+            end
+            stp_syn_recording{itype,iPostGroup} = temp;
         end
     end
 end
