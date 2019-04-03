@@ -363,7 +363,6 @@ if RS.LFP
             else
                 for iGroup = 1:TP.numGroups
                     LFPRecording{iGroup} = zeros(numElectrodes, round(RS.maxRecSamples));
-                    disp(size(LFPRecording{iGroup}));
                 end
             end
             for iGroup = 1:TP.numGroups
