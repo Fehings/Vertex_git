@@ -8,25 +8,7 @@ end
 
 model = createpde;
 importGeometry(model,geometryloc);
-% slicebound.P1 = [100, 10 , 100];
-% slicebound.P2 = [1900, 10 , 100];
-% slicebound.P4 = [100, 390 , 100];
-% slicebound.P5 = [100, 10 , 1000];
-%conductivity = makeCondFunc(slicebound, 0.3, 0.03);
- pdegplot(model,'FaceLabels', 'on')
 
-<<<<<<< HEAD
-=======
-figure(1)
-pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
-%pdegplot(model,'FaceLabels', 'off','FaceAlpha',0.3)
-disp(model.IsTimeDependent)
-%Outer, insulating boundaries
-%applyBoundaryCondition(model,'face',1:12,'g',0.0,'q',0.0); % for the
-
-%initial point stimulation stl
-%applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
->>>>>>> parent of a466741... minor tweaks!
 
 % Specify the boundary conditions
 % We have specified conditions for many models here, if you add a new model
@@ -124,9 +106,6 @@ generateMesh(model);
 %solve the pde
 result = solvepde(model);
 
-%  u = result.NodalSolution;
-figure(2)
- pdeplot3D(model,'ColorMapData', result.NodalSolution,'FaceAlpha',0.3);
 
 
 

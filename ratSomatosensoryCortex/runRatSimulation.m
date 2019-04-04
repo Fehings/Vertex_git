@@ -65,8 +65,6 @@ SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
 SimulationSettings.stdp =false;
 
-
-
 %%
 %This initialises the network and sets up other variables. 
 [params, connections, electrodes] = ...
