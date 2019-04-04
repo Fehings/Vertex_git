@@ -17,12 +17,16 @@ RecordingSettings.saveDir = '/data/Spontaneous/VERTEX_rat_somatosensory_slice_0M
 %RecordingSettings.saveDir = '//data/IEDsFullNetworkWithCurrentRec/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
 %RecordingSettings.saveDir = '/data/pps/VERTEX_rat_somatosensory_slice_100msPP';
 RecordingSettings.saveDir = '/data/IEDswithsynapseVars/VERTEX_rat_somatosensory_slice_0MGLSPhigherconn';
-RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/STDPAugust/VERTEX_rat_somatosensory_sliceSTDPLTP';
-RecordingSettings.saveDir = '~/Rocket_Results/SinglePulse/longer_no_synapses/singlepulse_1001/';
-%RecordingSettings.saveDir = '~/Rocket_Results/pairedPulse/pairedpulse_501001';
-%RecordingSettings.saveDir = '~/Rocket_Results/STDP/pulse_stdp/';
-%RecordingSettings.saveDir = '~/pulse_stdp/';
-Results = loadResults(RecordingSettings.saveDir,0);
+RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/Rocket_Results/SinglePulse/CSD/singlepulse_1001_nosyn';
+RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/CSD/singlepulse_1001_wsyn';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_STDPResults/tbs_weights1001';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/no_synapses/singlepulsenosyn1003';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/paired_pulse/recfromstimulated/withcsd/withweights/pairedpulse1001';
+%RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/pairedpulse1001';
+RecordingSettings.saveDir = '~/zero_magnesium//';
+RecordingSettings.saveDir = '~/with_axons//';
+RecordingSettings.saveDir = '/home/campus.ncl.ac.uk/b3046588/F1000_VERTEX/Results/without_axons';
+Results = loadResults(RecordingSettings.saveDir,1);
 
 %make sure no figures are open to keep things tidy
 %close all;
@@ -57,5 +61,6 @@ pars.markers = {'^','x','x','x','s', ...
     '^','^','^','v','p','x','x','x','s'};
 pars.figureID =1;
 pars.toPlot = 1:5:N;
-pars.dimensionscaler = 0.000001;
+%pars.dimensionscaler = 0.000001;
+Results.params.TissueParams.scale = 1e-6;
 plotSomaPositions(Results.params.TissueParams,pars);

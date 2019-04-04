@@ -1,7 +1,6 @@
 function [ NM ] = get_compartment_midpoints(TP, NM, SS, endpoints)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
-disp('getting compartment midpoints')
 if SS.parallelSim
     subsetInLab = find(SS.neuronInLab == labindex);
 else

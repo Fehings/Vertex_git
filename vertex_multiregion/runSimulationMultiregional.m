@@ -215,7 +215,7 @@ for rn=1:ROI_N
     iterator(rn).stdp = false;
     for iPostGroup = 1:length(SynapseModelArr{rn}(:,1))
         for iSpkSynGroup = 1:length(SynapseModelArr{rn}(iPostGroup,:))
-            if isa(SynapseModelArr{rn}{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
+            if isa(SynapseModelArr{rn}{iPostGroup, iSpkSynGroup}, 'STDPModel')
                 iterator(rn).stdp = true;
             end
         end

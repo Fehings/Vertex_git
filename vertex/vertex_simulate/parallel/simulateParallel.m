@@ -41,8 +41,17 @@ else
     ns = nsaves;
 end
 % set field inputs
-
 stdp = SS.stdp;
+% for iPostGroup = 1:TP.numGroups
+%     for iGroup = 1:size(SynModel,2)
+%         synm = SynModel{1};
+%         if  ~isempty(synm{iPostGroup, iGroup})
+%             if isa(synm{iPostGroup, iGroup}, 'STDPModel')
+%                 stdp = true;
+%             end
+%         end
+%     end
+% end
 
 if stdp
     disp('Using stdp, so calculating postsynaptic to presynaptic map');
@@ -141,10 +150,8 @@ spmd
     
     stimcount = 1;
     timeStimStep = 1;
-    
+    disp('Entering simulation loop')
     for simStep = 1:simulationSteps
-        
-
         
         
         %%%%
@@ -252,13 +259,18 @@ spmd
                     RecVar = ...
                         updateLFPRecording(RS,NeuronModel,RecVar,lineSourceModCell,iGroup,recTimeCounter);
                 end
-                
+                if RS.CSD 
+                    RecVar = updateCSDRecording(RS, NeuronModel, RecVar, iGroup, recTimeCounter);
+                end
                 if recordstp_syn
                     RecVar = updateSTPVarsRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,neuronInGroup,TP);
                 end
                 
                 if recordstdpvars
                     RecVar = updateSTDPVarsRecording(SynModel,RecVar,iGroup,recTimeCounter,synMap,neuronInGroup,TP);
+                end
+                if RS.I_synComp
+                    RecVar = updateI_synCompRecording(RS,SynModel,synMap, RecVar,iGroup,recTimeCounter);
                 end
                 
             end
@@ -349,7 +361,7 @@ spmd
                                 uint32(1)) .* ...
                                 uint32(groupComparts(iPostGroup)) .* ...
                                 uint32(numInGroup(iPostGroup, labindex()));
-                            if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stp') || isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stpnmda')
+                            if isa(SynModel{iPostGroup, iSpkSynGroup}, 'STPModel') 
                                 %synapse model function updates the stp variables and adds
                                 %spikes to the buffers.
                                 %we pass the id of the presynaptic neuron: allSpike(iSpk)
@@ -372,7 +384,7 @@ spmd
                             %Update synapse vars on presynaptic side
                             %Each lab only has the weights of synapses onto
                             %neurons in its group
-                            if  isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp_delays')
+                            if  isa(SynModel{iPostGroup, iSpkSynGroup}, 'STDPModel_delays')
                                 %process spike as presynaptic spike, updating weights for
                                 %post synaptic neurons in this synapse group.
                                 %passing weights and group relative ids of post synaptic neurons.
@@ -383,7 +395,7 @@ spmd
                                 relativeSpikeID = allSpike(iSpk) - TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
                                 relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
                                 processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup},relativeSpikeID,neuronInGroup(allSpike(iSpk)),relativepostneuronIDs,tBufferLoc(inGroup) );
-                            elseif isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp') || isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_mt_stdp')
+                            elseif isa(SynModel{iPostGroup, iSpkSynGroup}, 'STDPModel')
                                 processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))),neuronInGroup(allSpike(iSpk)));
                                 relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
                                 wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs);
@@ -429,7 +441,7 @@ spmd
                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                         iSpkSynGroup = synMap{postGroup}(iPreGroup);
                         
-                        if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp') || isa(SynModel{postGroup, iSpkSynGroup}, 'SynapseModel_g_stdp_delays')  || isa(SynModel{postGroup, iSpkSynGroup}, 'SynapseModel_g_mt_stdp')
+                        if isa(SynModel{postGroup,iSpkSynGroup}, 'STDPModel') 
                             % if the spiking neuron is on this lab
                             % then it is our responsibility to update its
                             % Apost value - it is a postsynaptic spike on
@@ -446,13 +458,7 @@ spmd
                                     processAsPostSynSpike(SynModel{postGroup, iSpkSynGroup},relativeind);
                                     processed = [processed iSpkSynGroup];
                                 end
-                                tBufferLoc =  cast(revSynArr{allSpike(iSpk), 3}, 'int16') - cast(SynModel{postGroup,iSpkSynGroup}.bufferCount,'int16')...
-                            - cast(allSpikeTimes(iSpk), 'int16');
-                    
-                            tBufferLoc(tBufferLoc > bufferLength) = ...
-                                tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
-                    
-                            tBufferLoc(tBufferLoc<1) = bufferLength + tBufferLoc(tBufferLoc<1) ;
+
                                 %logical array specifying which presynaptic
                                 %neurons are in the current group
                                 inGroup = preInGroup == iPreGroup;
@@ -499,13 +505,25 @@ spmd
                                     for synInd = 1:length(presyningroup)
                                         wMat(synInd) = wArr{presyningroup(synInd)}(postsynlocingroup(synInd));
                                     end
-                                    
-                                    wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
-                                        wMat,relativepreID, neuronInGroup(presyningroup),tBufferLoc(inGroup));
+                                    %calculate delay for synapses with
+                                    %delay
+                                    if isa(SynModel{postGroup,iSpkSynGroup}, 'STDPModel_delays')
+                                        tBufferLoc =  cast(revSynArr{allSpike(iSpk), 3}, 'int16') + cast(SynModel{postGroup,iSpkSynGroup}.bufferCount,'int16')...
+                                            - cast(allSpikeTimes(iSpk), 'int16');
+                                        
+                                        tBufferLoc(tBufferLoc > bufferLength) = ...
+                                            tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
+                                        
+                                        tBufferLoc(tBufferLoc<1) = bufferLength + tBufferLoc(tBufferLoc<1) ;
+                                        wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
+                                            wMat,relativepreID, neuronInGroup(presyningroup),tBufferLoc(inGroup));
+                                    else
+                                        wMat = updateweightsaspostsynspike(SynModel{postGroup,iSpkSynGroup},...
+                                            wMat,relativepreID, neuronInGroup(presyningroup));
+                                    end
                                     for synInd = 1:length(presyningroup)
                                         wArr{presyningroup(synInd)}(postsynlocingroup(synInd)) = wMat(synInd);
                                     end
-                                    %disp('updating weights 1')
                                     
                                 end
                             end
@@ -540,7 +558,6 @@ spmd
             end
             
             spikeRecCounter = 1;
-            
             if S.spikeLoad
                 if numSaves <= length(RS.dataWriteSteps)
                     fName = sprintf('%sRecordings%d_.mat',inputDirectory,numSaves+ns);

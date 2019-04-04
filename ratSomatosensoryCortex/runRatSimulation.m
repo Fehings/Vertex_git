@@ -3,12 +3,10 @@
 %Recording settings
 %These describe which variables to record, we are interested in membrane
 %potentials and local field potentials. 
-%We save the results of the simulation in this folder, they can be loaded
-%at any time after the simulation has finished by loading into memory the
-%Results file. Use Results = loadResults(RecordingSettings.saveDir); to do
-%this.
-%RecordingSettings.saveDir = '~/pulse_test/';
+% This file is for single pulse and paired pulse
+% A separate file has been set up for theta burst stimulation.
 
+%% Recording LFP
 RecordingSettings.LFP = true;
 [meaX, meaY, meaZ] = meshgrid(1200:-100:500, 300, 1800:-100:300);
 RecordingSettings.meaXpositions = meaX;
@@ -16,20 +14,39 @@ RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 
-%RecordingSettings.v_m = 1:100:33312;
-%RecordingSettings.stp_syn = 1:100:33312;
-%RecordingSettings.I_syn = 1:100:33312;
-%post synaptic recruitment 1450 1200
-%  RecordingSettings.I_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
-% RecordingSettings.I_syn_number = [50, 50, 50];
-% RecordingSettings.I_syn_group = [13, 14, 8];
-%  RecordingSettings.v_m_location = [[1150 1200];[1150 1200];[1150 1200]];
-% RecordingSettings.v_m_number = [50, 50, 50];
-% RecordingSettings.v_m_group = [13, 14, 8];
-%  RecordingSettings.stp_syn_location = [[1150 1200];[1150 1200];[1150 1200]];
-% RecordingSettings.stp_syn_number = [50, 50, 50];
-% RecordingSettings.stp_syn_group = [13, 14, 8];
-% RecordingSettings.I_syn_preGroups = [6:20];
+
+% We can record a number of variables from each cell such as membrane potential (v_m), 
+% synaptic current (I_syn for total, I_synComp to record compartment currents seperately), 
+% the transmembrane current for each compartment, and
+% the synaptic variables (e.g. x,y,u for the MT model).
+% The specific cells to record the variables from can be specified by NeuronID, by location (a 
+% triple of a location in the XZ plane, a number of nearest cells to record from, and groups to
+% record from). 
+% Depending on how much RAM you have you may not be able to record
+% everything. 
+%% I_syn required for figures 11 (B) and 13
+%Record synaptic currents from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
+RecordingSettings.I_syn_location = [[1150 1200];[1150 1200]];
+RecordingSettings.I_syn_number = [50, 50];
+RecordingSettings.I_syn_group = [13, 14];
+RecordingSettings.I_syn_preGroups = [6:20];
+%Record membrane potentials from 50 group 13 and 50 group 14 cells nearest to X = 1150, Z = 1200.
+RecordingSettings.v_m_location = [[1150 1200]; [1150 1200]];
+RecordingSettings.v_m_number = [50,50];
+RecordingSettings.v_m_group = [13,14];
+
+%Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
+% This is required for figure 11 C
+RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
+RecordingSettings.I_synComp_number = [50,50];
+RecordingSettings.I_synComp_groups = [13,14];
+
+%Record synaptic currents per compartment from 50 group 13 and 50 group 14 cells nearest to X 1150, Z = 1200.
+%This is required for figure 11 C
+RecordingSettings.I_synComp_location = [[1150 1200]; [1150 1200]];
+RecordingSettings.I_synComp_number = [50,50];
+RecordingSettings.I_synComp_groups = [13,14];
+
 
 RecordingSettings.maxRecTime = 2500;
 RecordingSettings.sampleRate = 5000;
@@ -43,9 +60,11 @@ RecordingSettings.sampleRate = 5000;
 %across them, as this simulation is large this is necessary to minimize the
 %run time of the simulation. 
 SimulationSettings.maxDelaySteps = 80;
-SimulationSettings.simulationTime = 2400;
+SimulationSettings.simulationTime = 2500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
+SimulationSettings.stdp =false;
+
 
 
 %%

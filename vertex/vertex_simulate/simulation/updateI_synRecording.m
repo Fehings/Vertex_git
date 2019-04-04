@@ -4,6 +4,7 @@ function [RecVar] = ...
 inGroup = RecVar.I_synRecCellIDArr(:, 2) == iPostGroup;
 if sum(inGroup) ~= 0
     RecVar.I_synRecording(inGroup, :, recTimeCounter) = 0;
+    
     if RecVar.recAllI_syn
         for iSynType = 1:size(SynapseModel, 2)
             if ~isempty(SynapseModel{iPostGroup, synMap{iPostGroup}(iSynType)})
@@ -12,12 +13,14 @@ if sum(inGroup) ~= 0
             end
         end
     else
-        for iSynType = RecVar.I_syn_pregroups 
+        for iSynType = RecVar.I_syn_pregroups
             if ~isempty(SynapseModel{iPostGroup, synMap{iPostGroup}(iSynType)})
                 RecVar.I_synRecording(inGroup, iSynType, recTimeCounter) = ...
                     sum(-SynapseModel{iPostGroup, synMap{iPostGroup}(iSynType)}.I_syn(RecVar.I_synRecCellIDArr(inGroup, 1), :), 2);
             end
         end
     end
+    
+    
 end
 end

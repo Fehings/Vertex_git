@@ -1,7 +1,7 @@
 %%
 %Runs a simulation of rat somatosensory cortex constructed using neuron density
-% andconnectivity data from the Neocortical collaborative portal
-%(https://bbp.epfl.ch/nmc-portal/welcome), stored in the connections.mat
+% and connectivity data from the Neocortical collaborative portal
+%(https://bbp.epfl.ch/nmc-portal/welcome), stored in the rat_no_neurons.mat, ratlayerthickness.mat, and connections23to6.mat
 %file.
 %With appropriate input parameters (random input current modelled by the
 %Ornstein–Uhlenbeck process) the slice will produce oscillatory activity. 
@@ -9,16 +9,14 @@
 %with a parameter set for regular spiking pyramidal cells and fast spiking
 %interneurons.
 %%
-%Tissue parameters describe a slice 2000 x 400 x 1217 microns in size.
+%Tissue parameters describe a slice 2000 x 400 x 2082 microns in size.
 neuronnumbers = load('rat_no_neurons.mat');
 lThick = load('ratlayerthickness.mat');
 
 TissueParams.X = 2000;
 TissueParams.Y = 400;
 TissueParams.Z = 2082;
-TissueParams.neuronDensity = 20000;
-%TissueParams.neuronDensity = 8000;
-%TissueParams.neuronDensity = 103730;
+TissueParams.neuronDensity = 103730;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];

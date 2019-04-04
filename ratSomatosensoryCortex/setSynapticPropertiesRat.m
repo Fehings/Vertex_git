@@ -194,31 +194,31 @@ for i = 13:16
     ConnectionParams(i).axonArborRadius = [50,200, 300, 300,400];
     ConnectionParams(i).axonArborLimit = [100,300, 400, 600,500];
     
-    ConnectionParams(i).targetCompartments{1} = {'apicalID', 'tuftID'};
+    ConnectionParams(i).targetCompartments{1} = {'basalID', 'proximalID', 'obliqueID'};
     ConnectionParams(i).targetCompartments{2} = {'distalID'};
     ConnectionParams(i).targetCompartments{3} = {'distalID'};
     ConnectionParams(i).targetCompartments{4} = {'distalID'};
     ConnectionParams(i).targetCompartments{5} = {'distalID'};
     ConnectionParams(i).targetCompartments{6} = {'distalID'};
-    ConnectionParams(i).targetCompartments{7} = {'apicalID', 'tuftID'};
-    ConnectionParams(i).targetCompartments{8} = {'apicalID', 'tuftID'};
+    ConnectionParams(i).targetCompartments{7} = {'basalID', 'proximalID', 'obliqueID'};
+    ConnectionParams(i).targetCompartments{8} = {'basalID', 'proximalID', 'obliqueID'};
     ConnectionParams(i).targetCompartments{9} = {'distalID'};
     ConnectionParams(i).targetCompartments{10} = {'distalID'};
     ConnectionParams(i).targetCompartments{11} = {'distalID'};
     ConnectionParams(i).targetCompartments{12} = {'distalID'};
-    ConnectionParams(i).targetCompartments{13} = {'basalID','obliqueID','apicalID','trunkID'};
-    ConnectionParams(i).targetCompartments{14} = {'basalID','obliqueID','apicalID','trunkID'};
-    ConnectionParams(i).targetCompartments{15} = {'basalID','obliqueID','apicalID','trunkID'};
-    ConnectionParams(i).targetCompartments{16} = {'basalID','obliqueID','apicalID','trunkID'};
+    ConnectionParams(i).targetCompartments{13} = {'basalID','obliqueID','trunkID'};
+    ConnectionParams(i).targetCompartments{14} = {'basalID','obliqueID','trunkID'};
+    ConnectionParams(i).targetCompartments{15} = {'basalID','obliqueID','trunkID'};
+    ConnectionParams(i).targetCompartments{16} = {'basalID','obliqueID','trunkID'};
     ConnectionParams(i).targetCompartments{17} = {'distalID'};
     ConnectionParams(i).targetCompartments{18} = {'distalID'};
     ConnectionParams(i).targetCompartments{19} = {'distalID'};
     ConnectionParams(i).targetCompartments{20} = {'distalID'};
-    ConnectionParams(i).targetCompartments{21} = {'basalID','obliqueID','apicalID','trunkID','tuftID'};
-    ConnectionParams(i).targetCompartments{22} = {'basalID','obliqueID','apicalID','trunkID','tuftID'};
-    ConnectionParams(i).targetCompartments{23} = {'basalID','obliqueID','apicalID','trunkID','tuftID'};
+    ConnectionParams(i).targetCompartments{21} = {'basalID','obliqueID','apicalID','trunkID'};
+    ConnectionParams(i).targetCompartments{22} = {'basalID','obliqueID','apicalID','trunkID'};
+    ConnectionParams(i).targetCompartments{23} = {'basalID','obliqueID','apicalID','trunkID'};
     ConnectionParams(i).targetCompartments{24} = {'basalID','obliqueID','apicalID','trunkID','proximalID'};
-    ConnectionParams(i).targetCompartments{25} = {'basalID','obliqueID','apicalID','trunkID','tuftID'};
+    ConnectionParams(i).targetCompartments{25} = {'basalID','obliqueID','apicalID','trunkID'};
     ConnectionParams(i).targetCompartments{26} = {'distalID'};
     ConnectionParams(i).targetCompartments{27} = {'distalID'};
     ConnectionParams(i).targetCompartments{28} = {'distalID'};
@@ -238,6 +238,16 @@ end
 %For basket cells
 for i = 17:19
     ConnectionParams(i).targetCompartments = ConnectionParams(2).targetCompartments;
+    ConnectionParams(i).targetCompartments{13} = {'somaID', 'proximalID','trunkID'};
+    ConnectionParams(i).targetCompartments{14} = {'somaID', 'proximalID','trunkID'};
+    ConnectionParams(i).targetCompartments{15} = {'somaID', 'proximalID'};
+    ConnectionParams(i).targetCompartments{16} = {'somaID', 'proximalID'};
+    ConnectionParams(i).targetCompartments{21} = {'somaID', 'proximalID'};
+    ConnectionParams(i).targetCompartments{22} = {'somaID', 'proximalID'};
+    ConnectionParams(i).targetCompartments{23} = {'somaID', 'proximalID'};
+    ConnectionParams(i).targetCompartments{24} = {'somaID','proximalID'};
+    ConnectionParams(i).targetCompartments{25} = {'somaID', 'proximalID'};
+    
     for j = 1:29
        
         %ConnectionParams(i).tau{j} = 6;
@@ -247,6 +257,16 @@ end
 
 %for martinotti cells
 ConnectionParams(20).targetCompartments = ConnectionParams(5).targetCompartments;
+
+    ConnectionParams(20).targetCompartments{13} = {'basalID','obliqueID','trunkID'};
+    ConnectionParams(20).targetCompartments{14} = {'basalID','obliqueID','trunkID'};
+    ConnectionParams(20).targetCompartments{15} = {'basalID','obliqueID','trunkID'};
+    ConnectionParams(20).targetCompartments{16} = {'basalID','obliqueID','trunkID'};
+    ConnectionParams(20).targetCompartments{21} =  {'obliqueID', 'apicalID', 'distalID'};
+ConnectionParams(20).targetCompartments{22} =  {'obliqueID', 'apicalID', 'distalID'};
+ConnectionParams(20).targetCompartments{23} =  {'obliqueID', 'apicalID', 'distalID'};
+ConnectionParams(20).targetCompartments{24} =  {'obliqueID', 'apicalID', 'distalID'};
+ConnectionParams(20).targetCompartments{25} =  {'obliqueID', 'apicalID', 'distalID'};
 for j = 1:29
     %ConnectionParams(20).tau{j} = 6;
     ConnectionParams(20).E_reversal{j} = -70;
@@ -298,14 +318,14 @@ for i = 26:29
 end
 
 for i = 26:28
-    ConnectionParams(i).targetCompartments = ConnectionParams(2).targetCompartments;
+    ConnectionParams(i).targetCompartments = ConnectionParams(19).targetCompartments;
     for j = 1:29
         %ConnectionParams(i).tau{j} = 6;
         ConnectionParams(i).E_reversal{j} = -70;
         
     end
 end
-ConnectionParams(29).targetCompartments = ConnectionParams(5).targetCompartments;
+ConnectionParams(29).targetCompartments = ConnectionParams(20).targetCompartments;
 for j = 1:29
     %ConnectionParams(29).tau{j} = 6;
     ConnectionParams(29).E_reversal{j} = -70;

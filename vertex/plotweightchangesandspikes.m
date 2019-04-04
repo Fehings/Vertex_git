@@ -7,8 +7,8 @@ if isempty(postRecID )
     return
 end
 preRecID = find(Results.params.RecordingSettings.weights_preN_IDs== preABSID);
-if isempty(postRecID )
-    disp('Pre synaptic neuron not recorded.')
+if isempty(preRecID )
+    disp('Weights of pre synaptic neuron not recorded.')
     return
 end
 postlocation = find(Results.synapsePostIDs{preRecID}==postABSID);

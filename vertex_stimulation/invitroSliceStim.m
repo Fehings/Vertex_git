@@ -1,5 +1,5 @@
 function [ result, model ] = invitroSliceStim(geometryloc,stimstrength)
-%invitroSliceStim Loads the gemortry and calculates the 
+%invitroSliceStim Loads the geometry and calculates the electric field
 
 if nargin < 2
     stimstrength = -1; %give a default if stimstrength isn't given as an argument
@@ -8,13 +8,15 @@ end
 
 model = createpde;
 importGeometry(model,geometryloc);
-slicebound.P1 = [100, 10 , 100];
-slicebound.P2 = [1900, 10 , 100];
-slicebound.P4 = [100, 390 , 100];
-slicebound.P5 = [100, 10 , 1000];
+% slicebound.P1 = [100, 10 , 100];
+% slicebound.P2 = [1900, 10 , 100];
+% slicebound.P4 = [100, 390 , 100];
+% slicebound.P5 = [100, 10 , 1000];
 %conductivity = makeCondFunc(slicebound, 0.3, 0.03);
  pdegplot(model,'FaceLabels', 'on')
 
+<<<<<<< HEAD
+=======
 figure(1)
 pdegplot(model,'FaceLabels', 'on','FaceAlpha',0.3)
 %pdegplot(model,'FaceLabels', 'off','FaceAlpha',0.3)
@@ -24,8 +26,12 @@ disp(model.IsTimeDependent)
 
 %initial point stimulation stl
 %applyBoundaryCondition(model,'face',[2 5 3 6],'g',0.0,'q',0.0);
+>>>>>>> parent of a466741... minor tweaks!
 
-%Electrode-tissue boundary
+% Specify the boundary conditions
+% We have specified conditions for many models here, if you add a new model
+% then add a new condition to out wonderfully large if then elseif
+% construct. (Should really have used a switch statement :P)
 
 if isequal(geometryloc,'chrismodelmod9.stl') 
     applyBoundaryCondition(model,'face',[9,14:17],'h',1.0,'r',stimstrength); % r value is the input in mv. This is what to vary to change field strenght
@@ -109,14 +115,13 @@ end
 disp(model.IsTimeDependent)
 
 %conductivity of brain tissue is around 0.3 S m^-1 
-%As vertex is in units of micrometers c --> 0.3/1000000
 specifyCoefficients(model,'m',0, 'd',0, 'c',0.3, 'a',0, 'f',0);
 
 
-
+%generate the model
 generateMesh(model);
-disp(model.IsTimeDependent)
 
+%solve the pde
 result = solvepde(model);
 
 %  u = result.NodalSolution;
@@ -146,12 +151,6 @@ figure(2)
 
 %contourslice(X,Y,Z,V,1:10:1000,1,500:10:1500)
 
-xlabel('x')
-ylabel('y')
-zlabel('z')
 
-colorbar
-view(-11,14)
-axis equal
 
 end

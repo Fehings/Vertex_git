@@ -3,7 +3,11 @@ function [NP] = calculatePassiveProperties(NP, TP)
 % Calculate passive neuron properties in correct units
 numGroups = TP.numGroups;
 for iGroup = 1:numGroups
-  
+    if ~isfield(NP(iGroup), 'axon_ID') || isempty(NP(iGroup).axon_ID)
+        NP(iGroup).axon_ID = 1;
+    else
+        NP(iGroup).axon_ID(end+1) = 1;
+    end
   % Get the required parameters for the particular model
   modelName = generateNeuronModelName(NP(iGroup));
   requiredParams = eval([modelName '.getRequiredParams()']);
@@ -56,9 +60,9 @@ for iGroup = 1:numGroups
         end
       end
     end
-    
     NP(iGroup).adjCompart = axialConnectionCell;
     NP(iGroup).g_ax = axialConductanceCell;
+    
   end
 
   % TODO: implement heterogeneous group dynamics

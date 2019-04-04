@@ -1,4 +1,4 @@
-function [ v_ext ] = get_V_ext(locations,field,t)
+function [ v_ext ] = get_V_ext(locations,field,t, scale)
 %get_V_ext Returns the extracellular potential for the locations specified.
 %   Detailed explanation goes here
 
@@ -7,12 +7,15 @@ function [ v_ext ] = get_V_ext(locations,field,t)
 % by a function (passed as a function handle string) or
 % whether it is specified as a gridded interpolant.
 
-v_ext = zeros(size(squeeze(locations(1,:,:))))';
-
-%microMtoMconversion=1e-3;
-% convert locations to metres to match the field solution units. (They are
-% in micrometeres according to VERTEX)
-% locations=locations.*microMtoMconversion;
+if nargin == 4
+    locations = locations.*scale;
+end
+if size(locations,3) == 1
+    v_ext = zeros(size(squeeze(locations(1,:,:))));
+else
+    v_ext = zeros(size(squeeze(locations(1,:,:))))';
+end
+% locations=locations.*angle
 
 for iComp = 1:length(locations(1,:,1))
     if isa(field, 'pde.TimeDependentResults')
@@ -28,7 +31,6 @@ for iComp = 1:length(locations(1,:,1))
     else
         v_ext(:,iComp) = interp3(field.x, field.y, field.z, field.v, locations(1,:),locations(2,:),locations(3,:));
     end
-    
 v_ext(isnan(v_ext(:,iComp)),iComp) = 0;
 end
 
@@ -39,6 +41,7 @@ elseif any(v_ext(:)<-100)
 elseif nnz(v_ext(:))==0
     disp('The field is zero valued, just so you know. If this was unintended then you may need to troubleshoot.') 
 end
+
 
 end
 

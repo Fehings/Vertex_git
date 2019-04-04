@@ -148,7 +148,7 @@ if iterator.comCount == 1
                         uint32(1)) .* ...
                         uint32(iterator.groupComparts(iPostGroup)) .* ...
                         uint32(iterator.numInGroup(iPostGroup));
-                    if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stp')
+                    if isa(SynModel{iPostGroup, iSpkSynGroup}, 'STPModel')
                         %synapse model function updates the stp variables and adds
                         %spikes to the buffers.
                         %we pass the id of the presynaptic neuron: allSpike(iSpk)
@@ -165,16 +165,18 @@ if iterator.comCount == 1
                             SynModel{iPostGroup, iSpkSynGroup}, ...
                             ind, wArr{allSpike(iSpk)}(inGroup));
                     end
-                    if isa(SynModel{iPostGroup, iSpkSynGroup}, 'SynapseModel_g_stdp')
+                    if isa(SynModel{iPostGroup, iSpkSynGroup}, 'STDPModel_delays')
+                        relativeSpikeID = allSpike(iSpk) - TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
+                        relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
+                        processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup},relativeSpikeID,neuronInGroup(allSpike(iSpk)),relativepostneuronIDs,tBufferLoc(inGroup) );
+                        
+                    elseif isa(SynModel{iPostGroup, iSpkSynGroup}, 'STDPModel')
                         %process spike as presynaptic spike, updating weights for
                         %post synaptic neurons in this synapse group.
                         %passing weights and group relative ids of post synaptic neurons.
                         processAsPreSynSpike(SynModel{iPostGroup, iSpkSynGroup}, allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk))),neuronInGroup(allSpike(iSpk)));
-                        %postneurons = synArr{allSpike(iSpk),1}(inGroup);
                         relativepostneuronIDs = IDMap.modelIDToCellIDMap(synArr{allSpike(iSpk), 1}(inGroup), 1)';
                         wArr{allSpike(iSpk)}(inGroup) = updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),relativepostneuronIDs);
-                        %updateweightsaspresynspike(SynModel{iPostGroup, iSpkSynGroup}, wArr{allSpike(iSpk)}(inGroup),postneurons -...
-                        %    TP.groupBoundaryIDArr(neuronInGroup(postneurons(1))) );
                     end
                 end
             end
@@ -199,7 +201,7 @@ if iterator.comCount == 1
                   postGroup = neuronInGroup(allSpike(iSpk));
                   iSpkSynGroup = synMap{postGroup}(iPreGroup);
 
-                  if isa(SynModel{postGroup,iSpkSynGroup}, 'SynapseModel_g_stdp')
+                  if isa(SynModel{postGroup,iSpkSynGroup}, 'STDPModel')
                       
                       relativeind = allSpike(iSpk) -TP.groupBoundaryIDArr(neuronInGroup(allSpike(iSpk)));
                       processAsPostSynSpike(SynModel{postGroup,iSpkSynGroup},relativeind);

@@ -10,7 +10,7 @@
 TissueParams.X = 2200; %2000
 TissueParams.Y = 400;
 TissueParams.Z = 1240; %650
-TissueParams.neuronDensity = 20000;
+TissueParams.neuronDensity = 2000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
@@ -386,12 +386,12 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 250:250:4750;
+%RecordingSettings.v_m = 250:250:4750;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
 SimulationSettings.simulationTime = 100;
-SimulationSettings.timeStep = 0.001;%0.03125;
+SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = false;
 
 %% Run simulation and load results

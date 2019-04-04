@@ -25,8 +25,7 @@ else
 end
 
 numGroups = params.TissueParams.numGroups;
-convergent = zeros(numGroups, numGroups);
-divergent = zeros(numGroups, numGroups);
+
 total = zeros(numGroups, numGroups);
 
 disp('Calculating mean group connectivity ...');

@@ -1,13 +1,10 @@
-%% VERTEX TUTORIAL 2
-% In the previous tutorial we looked at a network of 5000 layer 2/3
-% pyramidal cells, connected to each other and firing randomly. In this
-% tutorial, we will create a more interesting model containing excitatory
-% and inhibitory neurons with intrinsic spiking dynamics. We will stimulate
-% the neurons using random input currents, resulting in the generation of a
-% network oscillation.
+%% VERTEX TUTORIAL STDP and Electric Field stimulation.
+% In this tutorial we will extend the tutorial_2 so that it
+% includes synapses with spike timing dependent plasticity 
+% and electric field stimulation.
 % 
 %% Tissue parameters
-% First we specify the same tissue parameters as in tutorial 1:
+% First we specify the same tissue parameters as in tutorial 2:
 
 TissueParams.X = 2500;
 TissueParams.Y = 400;
@@ -18,12 +15,13 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
-% TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100);
-% TissueParams.StimulationOn = [250:50:300000]; % Turn stimulation on at 50 ms
-% TissueParams.StimulationOff = [250.5:50:300001]; % Turn stimulation off at 55 ms
-TissueParams.StimulationField = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
-TissueParams.StimulationOn = [10 40];
-TissueParams.StimulationOff = [15 45];
+
+%% Adding the electric field
+% invitroSliceStim loads the PDE model and calculates the field.
+[TissueParams.StimulationField, TissueParams.model] = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
+TissueParams.StimulationOn = [300:25:400]; %specify the times when stimulation is turned on
+TissueParams.StimulationOff = [305:25:405]; %specify the times when stimulation is turned off
+
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
 % use the neuron models described in (Tomsett et al. 2014) for layer 2/3
@@ -107,7 +105,6 @@ NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
 NeuronParams(1).labelNames = {'somaID', 'basalID','apicalID'};
-NeuronParams(1).minCompartmentSize = 1.5;
 %%
 % In order to generate spikes, we need to provide the neurons with some
 % input. We set the inputs to our neuron group in another structure array,
@@ -179,7 +176,6 @@ NeuronParams(2).R_A = 350;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).labelNames = {'dendritesID'};
-NeuronParams(2).minCompartmentSize = 1.5;
 NeuronParams(2).Input(1).inputType = 'i_ou';
 NeuronParams(2).Input(1).meanInput = 160;
 NeuronParams(2).Input(1).tau = 0.8;
@@ -187,22 +183,28 @@ NeuronParams(2).Input(1).stdInput = 40;
 
 
 %% Connectivity parameters
-% We set the connectivity parameters in the same way as in tutorial 1, but
-% this time we need to specify the parameters for connections between the
-% two groups. First we set the parameters for connections from group 1 (the
-% pyramidal cells) to itself:
+% We set the connectivity parameters in the same way as in tutorial 2, but
+% this time we need to specify the parameters for plasticity on the
+% connection between group 1 and group 1. We will also use conductance
+% based synapses, so the weights will be in nS and we will also need to
+% specify a reversal potential.
+ 
+% We use the g_exp_stdp class for the synapse type. This will
+% give us conductance based synapses with spike timing dependent plasticity.
+% We need to specify a preRate and postRate and also
+% specify two time constants (tPre and tPost) that determine the rate at which the Apre and
+% Apost variables decay.
+% Apre is increased by preRate when a presynaptic spike occurs, and is added to the weight when a post synaptic spike occurs.
+% Apost is increased by postRate (usually negative) and added (usually a subtraction) to the weight when a pre synaptic spike occurs. 
 
-PYScaler = 0.1;
-INScaler = 0.8;
-% 
-% 
 ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
-ConnectionParams(1).synapseType{1} = 'g_stdp_delays';
+ConnectionParams(1).synapseType{1} = 'g_exp_stdp';
 ConnectionParams(1).targetCompartments{1} = {'basalID', ...
                                              'apicalID'};
  ConnectionParams(1).weights{1} = 0.05;
 ConnectionParams(1).tau{1} = 1;
-ConnectionParams(1).rate{1} = 0.004;
+ConnectionParams(1).preRate{1} = 0.004;
+ConnectionParams(1).postRate{1} = -0.004;
 ConnectionParams(1).tPre{1} = 15;
 ConnectionParams(1).tPost{1} = 20;
 ConnectionParams(1).wmin{1} = 0;
@@ -252,10 +254,9 @@ ConnectionParams(2).E_reversal{1} = -70;
 ConnectionParams(2).E_reversal{2} = -70;
 
 %%
-% Note that for the weights in |ConnectionParams(2)| we use negative
-% values, as basket interneurons are inhibitory. Of course, if we used
-% conductance-based synapses instead, then we would use positive weights as
-% the inhibitory nature of the synapses would be controlled by the
+% Note that for the weights in |ConnectionParams(2)| we use positive
+% values, even though basket interneurons are inhibitory.
+% This is because the inhibitory nature of the synapses would be controlled by the
 % synapses' reversal potential.
 
 %% Recording and simulation settings
@@ -273,12 +274,22 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.v_m = [1:1000, 4300:4500];
 RecordingSettings.maxRecTime = 500;
 RecordingSettings.sampleRate = 1000;
+% Specifying which neurons to record the weights for 
+% weights_preN_IDs specifies the presynaptic neuron IDs of the connections
+% we are interested in. This will record the weights over time for all
+% connections for which there are the pre synaptic ID.
 RecordingSettings.weights_preN_IDs = [1:5:1000, 4300:4500];
+% Recording the variables related to the STDP model. This
+% will record Apre and Apost for all connections where the specified IDs
+% are the presynaptic neuron.
+RecordingSettings.stdpvars = [1:5:1000];
+% Recording a snapshot of the weights of the entire network at the
+% specified timestep. 
 RecordingSettings.weights_arr = [1000:1000:6000];
 SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
-SimulationSettings.parallelSim =false;
-
+SimulationSettings.parallelSim =true;
+SimulationSettings.stdp = true; % We need to tell the simulation to make the weight changes.
 %% Generate the network
 % We generate the network in exactly the same way as in tutorial 1, by
 % calling the |initNetwork| function:
@@ -302,16 +313,6 @@ Results = loadResults(RecordingSettings.saveDir);
 % parameters that set some properties of the figure. It returns a handle to
 % the created figure.
 %
-% The minimal parameter structure simply contains a cell array of color
-% values that set the color of each neuron group:
-
-rasterParams.colors = {'k', 'm'};
-
-% Using these parameters, we obtain the following figure:
-
-rasterFigure = plotSpikeRaster(Results, rasterParams);
-
-%%
 % We can add some further fields to the parameter structure for enhanced
 % prettiness. |groupBoundaryLines| is a color value, which if set will make
 % |plotSpikeRaster| draw separating lines between the neuron groups in this
@@ -320,10 +321,10 @@ rasterFigure = plotSpikeRaster(Results, rasterParams);
 % a new figure window will be opened.
 
 rasterParams.groupBoundaryLines = [0.7, 0.7, 0.7];
-rasterParams.title = 'Tutorial 2 Spike Raster';
+rasterParams.title = 'Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
-rasterParams.figureID = 2;
+rasterParams.figureID = 1;
 
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
@@ -335,26 +336,33 @@ rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 % (seeding random numbers in VERTEX is covered in tutorial 5). The
 % oscillation can be seen in the LFP:
 
-figure(3)
+figure(2)
 plot(Results.LFP', 'LineWidth', 2)
 set(gcf,'color','w');
 set(gca,'FontSize',16)
-title('Tutorial 2: LFP at all electrodes', 'FontSize', 16)
+title('LFP at all electrodes', 'FontSize', 16)
 xlabel('Time (ms)', 'FontSize', 16)
 ylabel('LFP (mV)', 'FontSize', 16)
-
 %%
-% Plotting the LFP from all electrodes also reveals a phase inversion,
-% which depends on the location of the electrodes in relation to the
-% pyramidal neuron somas (Tomsett et al. 2014).
-%
-% If you have experienced any problems when trying to run this tutorial,
-% or if you have any suggestions for improvements, please email Richard
-% Tomsett: r _at_ autap _dot_ se
-%
-%% References
-% Tomsett RJ, Ainsworth M, Thiele A, Sanayei M, Chen X et al. (2014)
-% Virtual Electrode Recording Tool for EXtracellular potentials (VERTEX):
-% comparing multi-electrode recordings from simulated and biological
-% mammalian cortical tissue, Brain Structure and Function.
-% doi:10.1007/s00429-014-0793-x
+% For simulations involving spike timing depedent plasticity, we can plot 
+% the synaptic weight changes for a given connection over time. 
+% We can do this for connections from cells that we have specified in weights_preN_IDs
+% If the post synaptic connection requested does not exist then the 
+% plotstdpchangesandspikes function will tell us which post synaptic IDs
+% this presynaptic cell does connect to.
+figure(3)
+plotstdpchangesandspikes(1,6,Results)
+%%
+% We can also plot the snapshots of the entire network of connections,
+% recorded at the time points specified in weights_arr.
+% To get the first snapshot we can do:
+w1 = getSparseConnectivityWeights(Results.weights_arr{1}, Results.syn_arr, Results.params.TissueParams.N);
+figure(4);
+imagesc(w1);
+% To get the second snaptshot we can do:
+w2 = getSparseConnectivityWeights(Results.weights_arr{2}, Results.syn_arr, Results.params.TissueParams.N);
+figure(5);
+imagesc(w2);
+% We then might wish to show the weight change between these two times:
+figure(6);
+imagesc(w2-w1);

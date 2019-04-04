@@ -51,7 +51,11 @@ for iNGroup = 1:length(CP)
                         end
                     end
                 end
-                weight_distributions{iNGroup,iP} = truncate(weight_distributions{iNGroup,iP},0.001,inf);
+                if isfield(CP(iNGroup), 'weights_mu') && CP(iNGroup).weights_mu{iP} > 0
+                    weight_distributions{iNGroup,iP} = truncate(weight_distributions{iNGroup,iP},0.001,inf);
+                elseif isfield(CP(iNGroup), 'weights_mu') && CP(iNGroup).weights_mu{iP} < 0
+                    weight_distributions{iNGroup,iP} = truncate(weight_distributions{iNGroup,iP},-inf,-0.001);
+                end
             end
         end
 

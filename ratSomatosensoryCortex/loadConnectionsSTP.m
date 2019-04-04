@@ -1,4 +1,4 @@
-volumemultiplier =1;
+
 connections = load('connectionslayers23to6.mat');
 ConnectivityNamesnounderscore = {'L23PC','L23NBC','L23LBC','L23SBC','L23MC',...
     'L4SS','L4SP','L4PC','L4NBC','L4LBC','L4SBC','L4MC',...
@@ -18,14 +18,14 @@ for i = 1:length(ConnectivityNames)
     for j = 1:length(ConnectivityNames)
         try
             connectivities(i,j) = max(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
-            ConnectionParams(i).numConnectionsToAllFromOne{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1}) * volumemultiplier;
+            ConnectionParams(i).numConnectionsToAllFromOne{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){1});
             ConnectionParams(i).weights_mu{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){3});
             ConnectionParams(i).weights_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){4});
             ConnectionParams(i).weights_distribution{j} = 'Normal';
             ConnectionParams(i).tau{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
-            %ConnectionParams(i).tau_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){6});
-            %ConnectionParams(i).tau_distribution{j} = 'Normal';
-            ConnectionParams(i).synapseType{j} = 'g_stp_mt';
+            ConnectionParams(i).tau_s{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){5});
+
+            ConnectionParams(i).synapseType{j} = 'g_exp_mt';
             ConnectionParams(i).fac_tau_mu{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){7});
             ConnectionParams(i).fac_tau_sigma{j} = double(connections.([ConnectivityNames{i} '_' ConnectivityNames{j}]){8});
             ConnectionParams(i).fac_tau_distribution{j} = 'Normal';
