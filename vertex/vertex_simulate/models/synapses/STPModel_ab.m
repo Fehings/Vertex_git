@@ -70,8 +70,9 @@ classdef (Abstract) STPModel_ab < STPModel
 
     
     
-    function [F, D] = getSTPVars(SM, preInd, groupID)
+    function [VAR] = getSTPVars(SM, preInd, groupID)
         preInd = preInd + SM.preBoundaryArr(SM.preGroupIDs==groupID);
+        VAR = [SM.F(preInd), SM.D(preInd), zeros(length(preInd),1), zeros(length(preInd),1)];
         F = SM.F(preInd);
         D = SM.D(preInd);
     end
@@ -84,6 +85,9 @@ classdef (Abstract) STPModel_ab < STPModel
       
       % Synaptic attributes defined on the pre synaptic side.
       function params = getPreSynapticParams()
+          params =  {'tD','tF','facilitation','depression'};
+      end
+      function params = getSTPParams()
           params =  {'tD','tF','facilitation','depression'};
       end
   end

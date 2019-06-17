@@ -387,9 +387,9 @@ ConnectionParams(6).synapseReleaseDelay = 0.5;
 % parameters are set to be empty matrices.
 %% Set up stimulation field
 %Stimulation amplitude 100 mV
-[TissueParams.StimulationField, TissueParams.StimulationModel] = invitroSliceStim('6layermodelstiml4placedinnobacktrueunits.stl',100);
-TissueParams.StimulationOn = [1000:50:1500];% 20 Hz stimulation
-TissueParams.StimulationOff = [1025:50:1525];% pulse width of 25 ms
+[TissueParams.StimulationField, TissueParams.StimulationModel] = invitroSliceStim('6layermodelstiml4placedinnobacktrueunits.stl',10000);
+TissueParams.StimulationOn = [100:50:1500];% 20 Hz stimulation
+TissueParams.StimulationOff = [125:50:1525];% pulse width of 25 ms
 %% Recording and simulation settings
 % These are set in the same way as previous tutorials. This time we
 % position the electrodes so as to cover the larger z-depth of the model.
@@ -425,7 +425,7 @@ SimulationSettings.parallelSim = false;
 [params, connections, electrodes] = ...
   initNetwork(TissueParams, NeuronParams, ConnectionParams, ...
               RecordingSettings, SimulationSettings);
-
+%%
 runSimulation(params, connections, electrodes);
 Results = loadResults(RecordingSettings.saveDir);
 

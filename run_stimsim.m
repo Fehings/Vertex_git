@@ -4,7 +4,7 @@ load('neuroandstimparams.mat')
 
 %% Set simulation settings
 SimulationParams.timeStep = 0.01;
-SimulationParams.simulationTime = 10.5;
+SimulationParams.simulationTime = 50;
 SimulationParams.TP = TissueParams;
 %% Simulate model
 [v_m, I_input,NM] = neuronDynamicsStimPost(NP, SimulationParams);
@@ -20,7 +20,8 @@ vdiff = max(abs(-70-(v_m')));
 
 vmax = max(abs(-70-(v_m')));
 %% View results
-viewMorphologyColour(NP, v_m(:,end),0);
+
+%viewMorphologyColour(NP, v_m(:,end),0);
 
 %
 %%

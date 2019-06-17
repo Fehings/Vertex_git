@@ -49,9 +49,11 @@ classdef (Abstract) STDPModel < PlasticityModel
     
     
     function SM = updateSynapses(SM, dt)
-
+      %disp(['Apre before: ' num2str(mean(SM.Apre))]);
       SM.Apre = SM.Apre + (( - SM.Apre)./SM.tPre).*dt;
       SM.Apost = SM.Apost + ((- SM.Apost)./SM.tPost).*dt;
+      %disp(['Apre after: ' num2str(mean(SM.Apre))]);
+
     end
     
     %This is called when spikes are generated in a neuron of the presynatpic group of this SynapseModel object.
@@ -71,11 +73,15 @@ classdef (Abstract) STDPModel < PlasticityModel
     function weightsArr = updateweightsaspostsynspike(SM, weightsArr, preInd,groupID,~)
         %update the weight array for all connections from spiking neuron to
         %all pre synaptic neurons.
+        %presynaptic indices come in as group relative indices, we add the
+        %corresponding value in the boundary array to bring them up to
+        %their synGroup indice.
         
         preInd = preInd + SM.preBoundaryArr(ismember(SM.preGroupIDs,groupID));
 
-        
         weightsArr = weightsArr +SM.Apre(preInd)';
+
+        
         weightsArr(weightsArr<SM.wmin) = SM.wmin;
         weightsArr(weightsArr>SM.wmax) = SM.wmax;
     end

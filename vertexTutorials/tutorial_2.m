@@ -61,11 +61,11 @@ NeuronParams(1).v_cutoff = -45;
 %
 % The remaining parameters defining the structure and passive properties
 % are the same as in Tutorial 1:
-NeuronParams(1).numCompartments = 9;
-NeuronParams(1).compartmentParentArr = [0, 1, 2, 2, 4, 1, 6, 6, 1];
-NeuronParams(1).compartmentLengthArr = [13 48 124 145 137 40 143 143 100];
+NeuronParams(1).numCompartments = 8;
+NeuronParams(1).compartmentParentArr = [0, 1, 2, 2, 4, 1, 6, 6];
+NeuronParams(1).compartmentLengthArr = [13 48 124 145 137 40 143 143];
 NeuronParams(1).compartmentDiameterArr = ...
-  [29.8, 3.75, 1.91, 2.81, 2.69, 2.62, 1.69, 1.69, 1];
+  [29.8, 3.75, 1.91, 2.81, 2.69, 2.62, 1.69, 1.69];
 NeuronParams(1).compartmentXPositionMat = ...
 [   0,    0;
     0,    0;
@@ -74,11 +74,9 @@ NeuronParams(1).compartmentXPositionMat = ...
     0,    0;
     0,    0;
     0, -139;
-    0,  139;
-    0,  0];
+    0,  139];
 NeuronParams(1).compartmentYPositionMat = ...
 [   0,    0;
-    0,    0;
     0,    0;
     0,    0;
     0,    0;
@@ -94,9 +92,7 @@ NeuronParams(1).compartmentZPositionMat = ...
   193,  330;
   -13,  -53;
   -53, -139;
-  -53, -139
-  -13, -113];
-NeuronParams(1).ax_id = [1, 9];
+  -53, -139];
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
@@ -322,7 +318,7 @@ rasterFigure = plotSpikeRaster(Results, rasterParams);
 % a new figure window will be opened.
 
 rasterParams.groupBoundaryLines = [0.7, 0.7, 0.7];
-rasterParams.title = 'Tutorial 2 Spike Raster';
+rasterParams.title = 'Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
 rasterParams.figureID = 2;

@@ -43,7 +43,7 @@ classdef SynapseModel_g_exp_ab < SynapseModel_g_exp & STPModel_ab
   
   methods(Static)
       function params = getRequiredParams()
-          params = [SynapseModel_g_exp.getRequiredParams STPModel_mt.getSTPParams()];
+          params = [SynapseModel_g_exp.getRequiredParams() STPModel_ab.getSTPParams()];
       end
            
   end

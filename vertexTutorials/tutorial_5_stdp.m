@@ -10,7 +10,7 @@
 TissueParams.X = 2200; %2000
 TissueParams.Y = 400;
 TissueParams.Z = 1240; %650
-TissueParams.neuronDensity = 2000;
+TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
@@ -269,19 +269,19 @@ ConnectionParams(1).numConnectionsToAllFromOne{6} = [   0,    0,   25];
 % The other connection parameters are specified as before:
 
 ConnectionParams(1).synapseType = ...
-  {'i_exp_stdp_delays', 'i_exp', 'i_exp', 'i_exp', 'i_exp', 'i_exp'};
+  {'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp'};
 ConnectionParams(1).targetCompartments = ...
   {NeuronParams(1).dendritesID, NeuronParams(2).dendritesID, ...
    NeuronParams(3).dendritesID, NeuronParams(4).dendritesID, ...
    NeuronParams(5).dendritesID, NeuronParams(6).dendritesID};
 ConnectionParams(1).weights = {2, 30, 1, 15, 1, 15};
 ConnectionParams(1).tau = {2, 1, 2, 1, 2, 1};
-ConnectionParams(1).preRate{1} = 0.01;% 0.01;
-ConnectionParams(1).postRate{1} = 0.01;% 0.01;
-ConnectionParams(1).tPre{1} = 2;
-ConnectionParams(1).tPost{1} = 6;
-ConnectionParams(1).wmin{1} = 0.01;
-ConnectionParams(1).wmax{1} = 100;
+ConnectionParams(1).preRate = {0.01, 0.01, 0.01, 0.01, 0.01, 0.01};% 0.01;
+ConnectionParams(1).postRate = {0.01, 0.01, 0.01, 0.01, 0.01, 0.01};% 0.01;
+ConnectionParams(1).tPre = {2,2,2,2,2,2};
+ConnectionParams(1).tPost = {6,6,6,6,6,6};
+ConnectionParams(1).wmin = {0.01,0.01,0.01,0.01,0.01,0.01};
+ConnectionParams(1).wmax = {100,100,100,100,100,100};
 ConnectionParams(1).axonArborSpatialModel = 'gaussian';
 ConnectionParams(1).sliceSynapses = true;
 ConnectionParams(1).axonConductionSpeed = 0.3;
@@ -312,13 +312,19 @@ ConnectionParams(3).axonArborLimit = [400, 600, 400];
 ConnectionParams(3).numConnectionsToAllFromOne = ...
   {[50, 0, 0], [5, 0, 0], [0, 500, 0], [0, 100, 0], [0, 10, 40], [0, 0, 5]};
 ConnectionParams(3).synapseType = ...
-  {'i_exp', 'i_exp', 'i_exp', 'i_exp', 'i_exp', 'i_exp'};
+  {'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp'};
 ConnectionParams(3).targetCompartments = ...
   {NeuronParams(1).dendritesID, NeuronParams(2).dendritesID, ...
    NeuronParams(3).dendritesID, NeuronParams(4).dendritesID, ...
    NeuronParams(5).dendritesID, NeuronParams(6).dendritesID};
 ConnectionParams(3).weights = {1, 15, 2, 30, 2, 30};
 ConnectionParams(3).tau = {2, 1, 2, 1, 2, 1};
+ConnectionParams(3).preRate = {0.01, 0.01, 0.01, 0.01, 0.01, 0.01};% 0.01;
+ConnectionParams(3).postRate = {0.01, 0.01, 0.01, 0.01, 0.01, 0.01};% 0.01;
+ConnectionParams(3).tPre = {2,2,2,2,2,2};
+ConnectionParams(3).tPost = {6,6,6,6,6,6};
+ConnectionParams(3).wmin = {0.01,0.01,0.01,0.01,0.01,0.01};
+ConnectionParams(3).wmax = {100,100,100,100,100,100};
 ConnectionParams(3).axonArborSpatialModel = 'gaussian';
 ConnectionParams(3).sliceSynapses = true;
 ConnectionParams(3).axonConductionSpeed = 0.3;
@@ -346,13 +352,19 @@ ConnectionParams(5).axonArborLimit = [200, 400, 600];
 ConnectionParams(5).numConnectionsToAllFromOne = ...
   {[250, 0, 0], [30, 0, 0], [0, 50, 0], [0, 20, 0], [15, 0, 200], [0, 0, 100]};
 ConnectionParams(5).synapseType = ...
-  {'i_exp', 'i_exp', 'i_exp', 'i_exp', 'i_exp', 'i_exp'};
+  {'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp', 'i_exp_stdp'};
 ConnectionParams(5).targetCompartments = ...
   {NeuronParams(1).dendritesID, NeuronParams(2).dendritesID, ...
    NeuronParams(3).dendritesID, NeuronParams(4).dendritesID, ...
    NeuronParams(5).dendritesID, NeuronParams(6).dendritesID};
 ConnectionParams(5).weights = {1, 15, 1, 15, 2, 30};
 ConnectionParams(5).tau = {2, 1, 2, 1, 2, 1};
+ConnectionParams(5).preRate = {0.01, 0.01, 0.01, 0.01, 0.01, 0.01};% 0.01;
+ConnectionParams(5).postRate = {0.01, 0.01, 0.01, 0.01, 0.01, 0.01};% 0.01;
+ConnectionParams(5).tPre = {2,2,2,2,2,2};
+ConnectionParams(5).tPost = {6,6,6,6,6,6};
+ConnectionParams(5).wmin = {0.01,0.01,0.01,0.01,0.01,0.01};
+ConnectionParams(5).wmax = {100,100,100,100,100,100};
 ConnectionParams(5).axonArborSpatialModel = 'gaussian';
 ConnectionParams(5).sliceSynapses = true;
 ConnectionParams(5).axonConductionSpeed = 0.3;
@@ -388,7 +400,6 @@ RecordingSettings.saveDir = '~/VERTEX_results_tutorial_5/';
 RecordingSettings.LFP = true;
 RecordingSettings.weights_preN_IDs = [1:100];
 RecordingSettings.weights_arr = [1 3000];
-RecordingSettings.weights_preN_IDs
 [meaX, meaY, meaZ] = meshgrid(0:500:2000, 200, 700:-100:0);
 RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
@@ -398,10 +409,10 @@ RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 
-SimulationSettings.simulationTime = 100;
+SimulationSettings.simulationTime = 1000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = true;
-
+SimulationSettings.stdp = true;
 %% Run simulation and load results
 % We run the simulation and load results as before. Note that this simulation
 % will take some time, as it contains more than 10,000 spiking neurons.
@@ -411,6 +422,7 @@ SimulationSettings.parallelSim = true;
               RecordingSettings, SimulationSettings);
 
 runSimulation(params, connections, electrodes);
+%%
 Results = loadResults(RecordingSettings.saveDir);
 
 %% Plot the results
@@ -424,66 +436,28 @@ rasterParams.ylabel = 'Neuron ID';
 rasterParams.figureID = 1;
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 
-%%
-% The layer 3 pyramidal neurons (black spikes at the top of the raster)
-% spike first, but are quickly silenced by the response of the layer 3
-% inhibitory neurons. A similar pattern then occurs on layer 5, then layer
-% 4. The layer 5 and layer 4 pyramidal cells recover more rapidly than the layer
-% 3 pyramidals, so recommence spiking sooner. Layer 3 eventually settles
-% into a somewhat unstable oscillatory pattern, while the spiking in layers
-% 4 and 5 appears to be more random.
-%
-% If we plot the LFP at the top left and top right electrodes (at positions
-% [0,200,700] and [2000,200,700 respectively] we observe the following
-% LFPs:
-
-figure(2)
-plot(Results.LFP(1,:), 'b', 'LineWidth', 2);
-hold on;
-plot(Results.LFP(33,:), 'r', 'LineWidth', 2);
-set(gcf,'color','w');
-set(gca, 'FontSize', 16);
-title('Tutorial 5: LFP at top-left & top-right electrodes', 'FontSize', 16)
-xlabel('Time (ms)', 'FontSize', 16)
-ylabel('LFP (mV)', 'FontSize', 16)
-
-%%
-% And plotting the LFP at the top and bottom (z-axis), central (x-axis)
-% electrodes, we can see the phase inversion between these two points, as
-% well as the larger signal at the centre of the model compared with at the
-% edges:
-
-plot(Results.LFP(17,:), 'c', 'LineWidth', 2);
-plot(Results.LFP(24,:), 'm', 'LineWidth', 2);
-axis([100 500 -0.1 0.1]) % only plot from 100 ms to remove large initial spike
-set(gcf,'color','w');
-set(gca, 'FontSize', 16);
-title('Tutorial 5: LFP at 4 electrode positions', 'FontSize', 16)
-xlabel('Time (ms)', 'FontSize', 16)
-ylabel('LFP (mV)', 'FontSize', 16)
-%%
+%% Plot the weight changes
 
 time1weights = getSparseConnectivityWeights(Results.weights_arr{1},Results.syn_arr,Results.params.TissueParams.N);%
 time2weights = getSparseConnectivityWeights(Results.weights_arr{2},Results.syn_arr,Results.params.TissueParams.N);%
 
-%%
-% Note that much of the high frequency content in these plots comes from
-% the spiking mechanism of the neurons, which is not physiologically
-% realistic. Therefore we would recommend rerunning the simulation with the
-% spike loading functionality introduced in tutorial 3 and purely passive
-% neurons to remove this unrealistic contribution to the LFP before
-% performing more in-depth LFP analyses.
-%
-% Finally let's check the mean firing rate of each neuron group using the
-% |groupRates()| function. We will ask for the rates to be calculated from
-% 100 ms to 500 ms, so that spikes in the initial model population spike are not
-% counted.
+wchange = time2weights-time1weights;
+%% Plot weight change by group
+total = getGroupWeights(Results.params, wchange);
+gnames = {'L23EX', 'L23IN', 'L4EX', 'L4IN', 'L5EX', 'L5IN'};
+imagesc(total);
+xticks(1:1:6);
+yticks(1:1:6);
+xticklabels(gnames)
+yticklabels(gnames)
+xtickangle(90)
+set(gca, 'Ydir', 'reverse');
 
-firingRates = groupRates(Results, 100, 500);
-%%
-% If you have experienced any problems when trying to run this tutorial,
-% or if you have any suggestions for improvements, please email Richard
-% Tomsett: r _at_ autap _dot_ se
+%% Plot weight change spatially
+
+pars.toPlot = 1:1:Results.params.TissueParams.N;
+
+plotSomaPositionsMembranePotential(Results.params.TissueParams,pars, sum(wchange));
 
 %% References
 % Binzegger T, Douglas RJ, Martin KAC (2004) A quantitative map of the circuit

@@ -9,7 +9,7 @@
 TissueParams.X = 2500;
 TissueParams.Y = 400;
 TissueParams.Z = 200;
-TissueParams.neuronDensity = 25000;
+TissueParams.neuronDensity = 2500;
 TissueParams.numLayers = 1;
 TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 10;
@@ -18,7 +18,7 @@ TissueParams.maxZOverlap = [-1 , -1];
 
 %% Adding the electric field
 % invitroSliceStim loads the PDE model and calculates the field.
-[TissueParams.StimulationField, TissueParams.model] = invitroSliceStim('farapartlectrodesbig.stl',100); % slicecutoutsmallnew
+[TissueParams.StimulationField, TissueParams.model] = invitroSliceStim('farapartlectrodesbig.stl',10000000); % slicecutoutsmallnew
 TissueParams.StimulationOn = [300:25:400]; %specify the times when stimulation is turned on
 TissueParams.StimulationOff = [305:25:405]; %specify the times when stimulation is turned off
 
@@ -271,21 +271,21 @@ RecordingSettings.meaXpositions = meaX;
 RecordingSettings.meaYpositions = meaY;
 RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = [1:1000, 4300:4500];
+%RecordingSettings.v_m = [1:1000, 4300:4500];
 RecordingSettings.maxRecTime = 500;
 RecordingSettings.sampleRate = 1000;
 % Specifying which neurons to record the weights for 
 % weights_preN_IDs specifies the presynaptic neuron IDs of the connections
 % we are interested in. This will record the weights over time for all
 % connections for which there are the pre synaptic ID.
-RecordingSettings.weights_preN_IDs = [1:5:1000, 4300:4500];
+%RecordingSettings.weights_preN_IDs = [1:5:1000, 4300:4500];
 % Recording the variables related to the STDP model. This
 % will record Apre and Apost for all connections where the specified IDs
 % are the presynaptic neuron.
-RecordingSettings.stdpvars = [1:5:1000];
+RecordingSettings.stdpvars = [1:2:500];
 % Recording a snapshot of the weights of the entire network at the
 % specified timestep. 
-RecordingSettings.weights_arr = [1000:1000:6000];
+%RecordingSettings.weights_arr = [1000:1000:6000];
 SimulationSettings.simulationTime = 500;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim =true;
@@ -351,7 +351,7 @@ ylabel('LFP (mV)', 'FontSize', 16)
 % plotstdpchangesandspikes function will tell us which post synaptic IDs
 % this presynaptic cell does connect to.
 figure(3)
-plotstdpchangesandspikes(1,6,Results)
+plotstdpchangesandspikes(2,6,Results)
 %%
 % We can also plot the snapshots of the entire network of connections,
 % recorded at the time points specified in weights_arr.

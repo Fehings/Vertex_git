@@ -30,6 +30,7 @@
                 end
             end
             
+            
             dist = dist.random(number,1);
             resetRandomSeed()
 

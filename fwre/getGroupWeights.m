@@ -37,7 +37,7 @@ for ii=1:numGroups
     start_j = params.TissueParams.groupBoundaryIDArr(jj)+1;
     stop_j = params.TissueParams.groupBoundaryIDArr(jj+1);
 
-    total(ii, jj) = mean(mean(CM(start_i:stop_i,start_j:stop_j)));
+    total(ii, jj) = sum(sum(CM(start_i:stop_i,start_j:stop_j)));
   end
   disp(['Done ' num2str(ii) ' of ' num2str(numGroups) ' groups ...']);
 end

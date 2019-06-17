@@ -43,7 +43,7 @@ simulationSteps = round(pars.simulationTime / pars.timeStep);
 v_m = zeros(number, NParams.numCompartments, round(simulationSteps));
 I = zeros(number, NParams.numCompartments, round(simulationSteps));
 index = 1;
-stimOn = 0.5;
+stimOn = 0.001;
 stimOff = 130;
 
 for simStep = 1:simulationSteps
@@ -63,9 +63,9 @@ for simStep = 1:simulationSteps
       v_m(:,:, simStep) = NeuronModel{1}.v;
       I(:,:, simStep) = InputModel{1}.I_input;
 % spikes_rec(:,simStep) = NeuronModel{1}.spikes;
-  if mod(simStep * pars.timeStep, 0.1) == 0
-   disp(num2str(simStep * pars.timeStep));
-  end
+%   if mod(simStep * pars.timeStep, 0.1) == 0
+%    disp(num2str(simStep * pars.timeStep));
+%   end
 end
 end
 

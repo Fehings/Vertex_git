@@ -5,7 +5,7 @@
 % on a machine with 32GB RAM.
 % 
 %% You May have to add the path 
-% addpath(genpath('~/Vertex_git'))
+addpath(genpath('~/Vertex_2'))
 
 % Setting the model Tissue, Neuron, and Connection parameters.
 % These are based on the Neocortical Collaborative Portal and are stored in

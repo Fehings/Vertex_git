@@ -9,22 +9,33 @@ total = zeros(1,length(LFP{1}));
 for iGroup = 1:length(LFP)
     total = total + LFP{iGroup};
 end
-plot(t,total-median(total),'Color', 'k', 'LineStyle', '--','LineWidth',2);
+
+    
+%plot(t,total-median(total),'Color', 'k', 'LineStyle', '--','LineWidth',2);
 hold on;
 gnames = {'L23PC', 'L23NBC', 'L23LBC', 'L23SBC', 'L23MC', 'L4SS', 'L4SPC', 'L4PC', 'L4NBC', 'L4LBC', 'L4SBC', 'L4MC', 'L5TTPC2', 'L5TTPC1', 'L5UTPC', 'L5STPC', 'L5NBC', 'L5LBC', 'L5SBC', 'L5MC', 'L6TPCL1', 'L6TPCL4', 'L6UPTC', 'L6IPC', 'L6BPC', 'L6NBC', 'L6LBC', 'L6SBC', 'L6MC'};
 [B, I] = sort(contributions,'descend');
 B = B .*100;
 parttotal = zeros(1,length(LFP));
 groups = cell(5,1);
-legend_groups = cell(6,1);
+legend_groups = cell(5,1);
 legend_groups{1} = 'Total signal';
 lcount = 1;
+LFPs = zeros(length(LFP{1}),5);
+STDs = zeros(length(LFP{1}),1,5);
 for iGroup = I(1:5)
-    plot(t,LFP{iGroup}-median(LFP{iGroup}),'LineWidth',2);
+    LFPs(:,lcount) = LFP{iGroup}-median(LFP{iGroup});
+    STDs(:,1, lcount) = lfpstd{iGroup};
+    if exist('boundedline', 'file')
+        %boundedline(t,LFP{iGroup}-median(LFP{iGroup}), lfpstd{iGroup});
+    else
+        plot(t,LFP{iGroup}-median(LFP{iGroup}),'LineWidth',2);
+    end
     groups{lcount} = gnames{iGroup};
-    legend_groups{lcount+1} = gnames{iGroup};
+    legend_groups{lcount} = gnames{iGroup};
     lcount = lcount+ 1;
 end
+boundedline(t,LFPs, STDs);
 legend(legend_groups)
 hold off;
 ylabel('LFP (mV)')

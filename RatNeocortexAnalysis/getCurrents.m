@@ -10,7 +10,7 @@ function [recurrentInhibition] = getCurrents(Results,preGroups,postRelativeID)
 %   is returned.
 
 stimOn = round(Results.params.TissueParams.StimulationOn*Results.params.RecordingSettings.sampleRate./1000);
-recurrentInhibition = zeros(length(stimOn));
+recurrentInhibition = zeros(length(stimOn),1);
 for iStim = 1:length(stimOn)
     for iGroup = preGroups
         groupInhibition(iGroup) = mean(Results.I_syn{iGroup}(postRelativeID,stimOn(iStim)));

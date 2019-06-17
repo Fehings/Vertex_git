@@ -5,6 +5,7 @@ classdef NeuronModel < handle
     treeChildren
     midpoints
     incorporate_vext
+    maxExtracellularPotential
     %doUpdate
   end
  properties (SetAccess = private)
@@ -24,6 +25,7 @@ classdef NeuronModel < handle
         setVext(NM,Neuron.v_ext);
       end
       NM.incorporate_vext = false;
+      NM.maxExtracellularPotential = 500;
       %NM.doUpdate = true(size(NM.v, 1));
     end
     
@@ -105,9 +107,14 @@ classdef NeuronModel < handle
       
   function setVext(NM,V_ext)
     NM.v_ext = V_ext;
-    NM.v_ext(NM.v_ext>100) = 100;
-    NM.v_ext(NM.v_ext<-100) = -100;
-
+    NM.v_ext(NM.v_ext>NM.maxExtracellularPotential) =  NM.maxExtracellularPotential;
+    NM.v_ext(NM.v_ext<-NM.maxExtracellularPotential) = - NM.maxExtracellularPotential;
+%     maxvoltage = 10000;
+%     maxvs = max(abs(NM.v_ext)');
+%     i_gt = max(abs(NM.v_ext)')>maxvoltage;
+%     ratio = maxvoltage./maxvs(i_gt);
+%     NM.v_ext(i_gt,:) = NM.v_ext(i_gt,:).*(maxvoltage./maxvs(i_gt))';
+    
     if min(size(NM.v_ext) ~= size(NM.I_ax))
         throw(MException('NeuronModel:setVextError', ...
             ['V_ext should be of the same size as I_ax: size(I_ax) = '...
