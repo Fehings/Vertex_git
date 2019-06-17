@@ -151,7 +151,6 @@ spmd
     
     stimcount = 1;
     timeStimStep = 1;
-    disp('Entering simulation loop')
     numspikes=0;
     weightdiff = 0;
     tic;
@@ -227,9 +226,7 @@ spmd
                 % disp('recording weights')
                 % disp(['simstep: ' num2str(simStep)]);
                 %disp(['rectime: ' num2str(RS.weights_arr(weightsArrcount))]);
-                if sum(synArr{3}==4669) >0
-                    disp(['synapse strength between 3 and 4669  is: ' num2str(wArr{3}(synArr{3}==4669))]);
-                end
+
                 
                 RecVar.WeightArrRec{weightsArrcount} = wArr;
                 weightsArrcount = weightsArrcount+1;
@@ -339,14 +336,14 @@ spmd
             if labindex() == 1
                 numspikes = numspikes +length(allSpike);
             end
-            if labindex() == 1 && mod(simStep * SS.timeStep, 5) == 0
-                disp(['Spikes processed ' num2str(numspikes)]);
-                disp(['Weight change' num2str(weightdiff)]);
-                weightdiff = 0;
-                numspikes=0;
-                toc;
-                tic;
-            end
+%             if labindex() == 1 && mod(simStep * SS.timeStep, 5) == 0
+%                 disp(['Spikes processed ' num2str(numspikes)]);
+%                 disp(['Weight change' num2str(weightdiff)]);
+%                 weightdiff = 0;
+%                 numspikes=0;
+%                 toc;
+%                 tic;
+%             end
             % Go through spikes and insert events into relevant buffers
             % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
             for iSpk = 1:length(allSpike)

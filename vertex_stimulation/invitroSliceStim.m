@@ -97,7 +97,7 @@ end
 disp(model.IsTimeDependent)
 
 %conductivity of brain tissue is around 0.3 S m^-1 
-specifyCoefficients(model,'m',0, 'd',0, 'c',0.3, 'a',0, 'f',0);
+specifyCoefficients(model,'m',0, 'd',0, 'c',0.3e-6, 'a',0, 'f',0);
 
 
 %generate the model

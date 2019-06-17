@@ -33,9 +33,9 @@ end
 
 samplesPerRecording = (RS.maxRecTime / msPerSecond) / (1/RS.sampleRate);
 floorSPR = floor(samplesPerRecording);
-disp(samplesPerRecording)
-disp(floorSPR)
-disp(floorSPR/RS.sampleRate * msPerSecond)
+%disp(samplesPerRecording)
+%disp(floorSPR)
+%disp(floorSPR/RS.sampleRate * msPerSecond)
 if floorSPR ~= samplesPerRecording
   RS.maxRecTime = floorSPR/RS.sampleRate * msPerSecond;
   warnings{warn} = ['Sample rate incompatible with maxRecTime. ' ...

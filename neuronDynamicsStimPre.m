@@ -1,6 +1,8 @@
-function [NParams] = neuronDynamicsStimPre(NeuronParams,TP)
+function [NParams] = neuronDynamicsStimPre(NeuronParams,TP,rotate)
 NParams = NeuronParams;
-
+if nargin == 2
+    rotate = 0;
+end
 if isfield(NParams, 'minCompartmentSize')
     adjustedcompartments = true;
     % Adjusts the number and size of compartments to ensure that the
@@ -14,9 +16,19 @@ end
 NParams = calculatePassiveProperties(NParams, TP);
 
 SS.parallelSim = false;
-compartments{1,1} = NParams.compartmentXPositionMat;
-compartments{1,2} = NParams.compartmentYPositionMat;
-compartments{1,3} = NParams.compartmentZPositionMat;
+if rotate
+    TP.somaPositionMat = [0 0 0];
+    TP.rotationAngleMat = [0 rotate 0 ];
+    TP.groupBoundaryIDArr = [0 1];
+    compartments = getCompartmentLocations(NParams, SS, TP, 1);
+    NParams.compartmentXPositionMat = compartments{1,1};
+    NParams.compartmentYPositionMat= compartments{1,2};
+    NParams.compartmentZPositionMat = compartments{1,3};
+else
+    compartments{1,1} = NParams.compartmentXPositionMat;
+    compartments{1,2} = NParams.compartmentYPositionMat;
+    compartments{1,3} = NParams.compartmentZPositionMat;
+end
 iGroup = 1;
 [compartmentlocations{iGroup,1}, compartmentlocations{iGroup,2}] = ...
     convertcompartmentlocations({compartments{1,1}},...

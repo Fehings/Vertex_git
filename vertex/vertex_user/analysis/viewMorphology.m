@@ -15,11 +15,20 @@ function [figureHandle] = viewMorphology(NP, selection)
 %figureHandle = figure();
 colours = zeros(3,NP.numCompartments);
 if nargin == 2
-    colours(:,selection) = [0.7 0 0.7];
+    for i_s = selection
+        colours(:,i_s) = [0.7 0 0.7];
+    end
+elseif isfield(NP, 'grouping')
+    uniqGroup = unique(NP.grouping);
+    cmap = hsv(length(uniqGroup));
+    for i_comp = 1:length(NP.grouping)
+        colours(:,i_comp) = cmap(uniqGroup==NP.grouping(i_comp),:);
+    end
 end
 if isfield(NP, 'axon_id')
     colours(:,NP.axon_id) = [0.1 0.9 0.5];
 end
+
 hold on;
 
 for iComp = 1:NP.numCompartments

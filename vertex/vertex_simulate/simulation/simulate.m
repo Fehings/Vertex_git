@@ -145,7 +145,6 @@ for simStep = 1:simulationSteps
     if recordWeightsArr
         if weightsArrcount <= length(RS.weights_arr) && simStep == RS.weights_arr(weightsArrcount)
             
-            disp('recording weights array')
             RecVar.WeightArrRec{weightsArrcount} = wArr;
             weightsArrcount = weightsArrcount+1;
             
