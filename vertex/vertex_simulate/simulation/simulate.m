@@ -1,5 +1,5 @@
 function [NeuronModel, SynModel, InModel, numSaves, RecVar] = simulate(TP, NP, SS, RS, IDMap, ...
-    NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves)
+    NeuronModel, SynModel, InModel,DVModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves)
 
 outputDirectory = RS.saveDir;
 
@@ -12,6 +12,9 @@ numInGroup = diff(TP.groupBoundaryIDArr);
 neuronInGroup = ...
     createGroupsFromBoundaries(TP.groupBoundaryIDArr);
 bufferLength = SS.maxDelaySteps;
+if ~isempty(DVModel)
+    bufferLengthDV = SS.maxDelayStepsDV;
+end
 comCount = SS.minDelaySteps;
 % vars to keep track of where we are in recording buffers:
 recTimeCounter = 1;
@@ -24,7 +27,7 @@ S.spikeStep = zeros(TP.N * SS.minDelaySteps, 1, tIntSize);
 S.spikeCount = zeros(1, 1, nIntSize);
 
 numSaves = 1;
-if nargin == 13
+if nargin == 14
     nsaves = 0;
 end
 simulationSteps = round(SS.simulationTime / SS.timeStep);
@@ -76,7 +79,6 @@ if stdp
     
     disp('Map calculated');
 end
-
 for simStep = 1:simulationSteps
     
     if isfield(TP, 'StimulationField')
@@ -193,14 +195,21 @@ for simStep = 1:simulationSteps
             if RS.I_synComp
                 RecVar = updateI_synCompRecording(RS,SynModel,synMap, RecVar,iGroup,recTimeCounter);
             end
-
-            
-            
             
             
         end
         
     end % for each group
+    if RS.DV
+        if simStep == RS.samplingSteps(sampleStepCounter)
+            RecVar = updateDVRecording(DVModel, RecVar,recTimeCounter);
+        end
+    end
+    
+    if ~isempty(DVModel)
+        DVModel =updateDiseaseVectorModel(DVModel, SS.timeStep);
+        DVModel = updateBuffer(DVModel);
+    end
     % increment the recording sample counter
     if simStep == RS.samplingSteps(sampleStepCounter)
         recTimeCounter = recTimeCounter + 1;
@@ -246,15 +255,30 @@ for simStep = 1:simulationSteps
 
             
         %[SynModel, wArr] = processSpikes(allSpike,allSpikeTimes,TP,wArr,groupComparts, IDMap,synArr,revSynArr, neuronInGroup, synMap, SynModel, bufferLength,numInGroup, stdp);
-       
+        updatePresynapticCellsAfterSpike(DVModel, allSpike);
         % Go through spikes and insert events into relevant buffers
         % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
         for iSpk = 1:length(allSpike)
             % Get which groups the targets are in
             postInGroup = neuronInGroup(synArr{allSpike(iSpk), 1});
+            if ~isempty(DVModel)
+
+                    tBufferLoc = synArr{allSpike(iSpk), 3} + ...
+                            DVModel.bufferCount - allSpikeTimes(iSpk);
+                    tBufferLoc(tBufferLoc > bufferLength) = ...
+                            tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
+                    pCBufferLoc = DVModel.pCTraceInd - synArr{allSpike(iSpk),4};
+                    pCBufferLoc(pCBufferLoc < 1) = ...
+                            pCBufferLoc(pCBufferLoc < 1) + bufferLengthDV;
+                bufferVectorFlow(DVModel, synArr{allSpike(iSpk), 1},tBufferLoc,...
+                    wArr{allSpike(iSpk)},DVModel.pC(pCBufferLoc,allSpike(iSpk)));
+                
+            end
             % Eac
             for iPostGroup = 1:TP.numGroups
+
                 iSpkSynGroup = synMap{iPostGroup}(neuronInGroup(allSpike(iSpk)));
+                
                 if ~isempty(SynModel{iPostGroup, iSpkSynGroup})
                     % Adjust time indeces according to circular buffer index
                     % and according the the delay speicifc to the synapse type,
@@ -443,10 +467,12 @@ for simStep = 1:simulationSteps
         end
     end
     
-end % end of simulation time loop
+end
+% end of simulation time loop
 if isfield(RS,'LFPoffline') && RS.LFPoffline 
     save(outputDirectory, 'LineSourceConsts.mat', lineSourceModCell);
 end
+
 end
 %numSaves = numSaves - 1; % - no longer need this as numSaves is not
 %updated beyond the final scheduled save point

@@ -46,7 +46,9 @@ if ~isfield(RS, 'I_synComp')
     RS.I_synComp = [];
 end
 
-
+if ~isfield(RS, 'DV')
+    RS.DV = [];
+end
 
 % weights recording
 if SS.parallelSim
@@ -316,6 +318,42 @@ if RS.I_synComp
                         NP(iGroup).numCompartments, round(RS.maxRecSamples));
                 end
             RecordingVars.I_synCompRecording = I_synCompRecording;
+    end
+end
+if RS.DV
+    if SS.parallelSim
+        dvecRecLab = SS.neuronInLab(RS.DV);
+        spmd
+            
+            if ismember(labindex(), unique(dvecRecLab))
+                recordDV = true;
+                p_DVRecModelIDArr = RS.DV(dvecRecLab == labindex());
+
+                p_numToRecordDV = size(p_DVRecModelIDArr, 2);
+                p_DVRecording = zeros(p_numToRecordDV,  round(RS.maxRecSamples));
+
+                RecordingVars.p_DVRecModelIDArr = p_DVRecModelIDArr;
+                RecordingVars.DVRecLabIDArr = 1:length(p_DVRecModelIDArr);
+                RecordingVars.DVRecording = p_DVRecording;
+            else
+            recordDV = false;
+            end
+        RecordingVars.recordDV = recordDV;
+        end
+    else
+        if ~isempty(RS.DV)
+            recordDV = true;
+            %RS.v_m=floor(RS.v_m);
+            DVRecCellIDArr = IDMap.modelIDToCellIDMap(RS.DV, :);
+            numToRecordDV = size(DVRecCellIDArr, 1);
+            DVRecording = zeros(numToRecordDV, round(RS.maxRecSamples));
+
+            RecordingVars.DVRecLabIDArr = RS.DV;
+            RecordingVars.DVRecording = DVRecording;
+        else
+            recordDV = false;
+        end
+        RecordingVars.recordDV = recordDV;
     end
 end
 if RS.CSD

@@ -25,7 +25,7 @@ for iLab = 1:cpexLoopTotal
 end
 labBarrier();
 
-p_synapsesArr = cell(TP.N, 3);
+p_synapsesArr = cell(TP.N, 4);
 for iLab = 1:numlabs()
   preFromiLab = ~cellfun(@isempty, p_postsynapticConnections{iLab}(:, 1));
   p_synapsesArr(preFromiLab,:) = p_postsynapticConnections{iLab}(preFromiLab,:);

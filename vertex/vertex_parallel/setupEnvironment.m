@@ -55,6 +55,7 @@ if SS.parallelSim
           parFunc(profileName);
         else
           parFunc(profileName, poolSize);
+          
         end
       end
   end

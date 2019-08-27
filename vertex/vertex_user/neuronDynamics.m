@@ -1,4 +1,4 @@
-function [v_m, I, NParams, spikes_rec,NeuronModel] = neuronDynamics(NeuronParams, pars)
+function [v_m, I, spikes_rec,v_m2, I2, spikes_rec2,NeuronModel] = neuronDynamics(NeuronParams, pars)
 %NEURONDYNAMICS runs a simulation of a single neuron group.
 %   V_M = neuronDynamics(NEURONPARAMS, PARS) creates a neuron group
 %   according to the parameters in the structure NEURONPARAMS.
@@ -33,50 +33,8 @@ function [v_m, I, NParams, spikes_rec,NeuronModel] = neuronDynamics(NeuronParams
 %   properties of the neurons (axial conductances between compartments,
 %   membrane conductances for each compartment etc.).
 
-tp.numGroups = 1;
-NParams = calculatePassiveProperties(NeuronParams, tp);
-
-model = lower(NParams.neuronModel);
-inputModel = lower(NParams.Input.inputType);
-
-if NParams.numCompartments == 1
-  nFunString = ['PointNeuronModel_' model];
-else
-  nFunString = ['NeuronModel_' model];
-end
-iFunString = ['InputModel_' inputModel];
-
-if isfield(NParams.Input, 'compartmentsInput')
-  comparts = NParams.Input.compartmentsInput;
-else
-  comparts = 1:NParams.numCompartments;
-end
-
-if strcmp(nFunString(end), '_')
-  nFunString = nFunString(1:end-1);
-end
-nConstructor = str2func(nFunString);
-iConstructor = str2func(iFunString);
-
-if isfield(NParams.Input, 'meanInput')
-  number = size(NParams.Input.meanInput(:), 1);
-elseif isfield(NParams.Input, 'amplitude')
-  number = size(NParams.Input.amplitude(:), 1);
-else
-  if strcmpi(NParams.Input.inputType, 'i_step')
-    errMsg = ...
-      ['The Input structure in the neuron parameter structure is missing a ' ...
-     'field: amplitude'];
-  else
-    errMsg = ...
-      ['The Input structure in the neuron parameter structure is missing a ' ...
-     'field: meanInput'];
-  end
-  error('vertex:neuronDynamics:InputMissingField', errMsg);
-end
-
-NeuronModel = {nConstructor(NParams, number)};
-InputModel = {iConstructor(NParams, 1, number, pars.timeStep, comparts)};
+[NeuronModel{1}, InputModel{1}] = constructNeuronAndInputModel(NeuronParams(1),pars);
+[NeuronModel{2}, InputModel{2}] = constructNeuronAndInputModel(NeuronParams(2),pars);
 
 stepsPerms = 1 / pars.timeStep;
 if ~( stepsPerms == round(stepsPerms) )
@@ -90,22 +48,31 @@ I = zeros(number, NParams.numCompartments, simulationSteps);
 spikes_rec = zeros(number, simulationSteps);
 
 
-
+%% Simulation loop
 for simStep = 1:simulationSteps
-    
+   
+  % Update the first cell
   if NParams.numCompartments > 1
     updateI_ax(NeuronModel{1}, NParams);
   end
-  
   updateInput(InputModel{1}, NeuronModel{1});
   updateNeurons(NeuronModel{1}, InputModel, NParams, [], pars.timeStep);
   
-     v_m(:, :, simStep) = NeuronModel{1}.v;
-     %I(:, :, simStep) = InputModel{1}.I_input;
- 
-
+  %Recording from the first cell
+  v_m(:, :, simStep) = NeuronModel{1}.v;
+  I(:, :, simStep) = InputModel{1}.I_input;
   spikes_rec(:,simStep) = NeuronModel{1}.spikes;
-%   if mod(simStep * pars.timeStep, 0.001) == 0
-%    disp(num2str(simStep * pars.timeStep));
-%   end
+  
+    % Update the second cell
+  if NParams.numCompartments > 1
+    updateI_ax(NeuronModel{2}, NParams);
+  end
+  updateInput(InputModel{2}, NeuronModel{2});
+  updateNeurons(NeuronModel{2}, InputModel, NParams, [], pars.timeStep);
+  
+  %Recording from the second cell
+  v_m2(:, :, simStep) = NeuronModel{2}.v;
+  I2(:, :, simStep) = InputModel{2}.I_input;
+  spikes_rec2(:,simStep) = NeuronModel{2}.spikes;
+
 end
