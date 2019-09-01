@@ -25,8 +25,8 @@ RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/CSD/singlep
 %RecordingSettings.saveDir = '/media/b3046588/Elements/VERTEX_RESULTS/pairedpulse1001';
 RecordingSettings.saveDir = '~/zero_magnesium//';
 RecordingSettings.saveDir = '~/with_axons//';
-RecordingSettings.saveDir = '/media/b3046588/Elements/LRDs/OldParamsAndOldConn_1002';
-Results = loadResults(RecordingSettings.saveDir,1);
+RecordingSettings.saveDir = '/media/b3046588/Elements/ampRangeScaled/amprange/amp_6_1001';
+Results = loadResults(RecordingSettings.saveDir,0);
 
 %make sure no figures are open to keep things tidy
 %close all;
@@ -45,7 +45,7 @@ rasterParams.title = 'Spike Raster';
 
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
-N = Results.params.TissueParams.N;
+N = Results.params.TissueParams.N; 
 
 rasterParams.neuronsToPlot = 1:10:N;
 rasterFigureImproved = plotSpikeRaster(Results, rasterParams);

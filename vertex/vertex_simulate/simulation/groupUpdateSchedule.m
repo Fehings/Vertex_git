@@ -44,6 +44,7 @@ if ~isempty(InModel)
 end
 
 
+
 % update neuron model variables
 if ~isempty(InModel)
     

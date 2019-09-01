@@ -112,6 +112,9 @@ for iN = 1:size(synapseArrMod, 1)
     synapseArrMod{iN, 1}(toDelete) = [];
     synapseArrMod{iN, 2}(toDelete) = [];
     synapseArrMod{iN, 3}(toDelete) = [];
+    if size(synapseArrMod,2) == 4 && ~isempty(synapseArrMod{iN, 4})
+     synapseArrMod{iN, 4}(toDelete) = [];
+    end
     weightArr{iN, 1}(toDelete) = [];
   end
   if SS.parallelSim

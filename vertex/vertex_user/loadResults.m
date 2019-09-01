@@ -132,6 +132,10 @@ end
 if ~isfield(RS, 'I_synComp')
     RS.I_synComp = 0;
 end
+
+if ~isfield(RS, 'DV')
+    RS.DV = 0;
+end
 % Are we to calculate the LFP offline?
 if isfield(RS, 'LFPoffline') && RS.LFPoffline
     LFPoffline = true;
@@ -176,7 +180,15 @@ else
     v_m_recording = [];
 end
 
-
+if RS.DV
+    DV_recording = zeros(length(RS.DV), simulationSamples);
+    if SS.parallelSim
+        DVCount = 0;
+        DVIDmap = zeros(length(RS.DV), 1);
+    end
+else
+    DV_recording = [];
+end
 
 spikeCell = cell(numSaves*ceil(maxRecSteps / minDelaySteps), 1);
 
@@ -451,6 +463,22 @@ for iSaves = 1:numSaves
             end
             
         end
+        if RS.DV
+            if SS.parallelSim
+                if isfield(RecordingVars, 'DVRecording')
+                    dv = RecordingVars.DVRecording;
+                    DV_recording(DVCount+1:DVCount+size(dv,1), ...
+                        sampleCount+1:sampleCount+size(dv, 2)) = dv;
+                    
+                    DVID = find(SS.neuronInLab(RS.DV) == iLab);
+                    DVIDmap(DVCount+1:DVCount+size(DVID)) = DVID;
+                    DVCount = DVCount+size(dv,1);
+                end
+            else
+                dv = RecordingVars.DVRecording;
+                DV_recording(:, sampleCount+1:sampleCount+size(dv, 2)) =dv;
+            end
+        end
         if RS.CSD 
             csd = RecordingVars.CSDRecording;
             for iGroup = 1:TP.numGroups
@@ -514,11 +542,15 @@ for iSaves = 1:numSaves
     %numSpikeTransmissions = 0;
     sampleCount = sampleCount + maxRecSamples;
     intraCount = 0;
+    DVCount = 0;
 end % numSaves
 
 spikes = cell2mat(spikeCell);
 if SS.parallelSim && ~isempty(v_m_recording)
     v_m_recording(intraIDmap, :) = v_m_recording;
+end
+if SS.parallelSim && ~isempty(DV_recording)
+    DV_recording(DVIDmap, :) = DV_recording;
 end
 if SS.parallelSim && ~isempty(I_syn_recording)
     for iGroup = 1:TP.numGroups
@@ -562,6 +594,7 @@ end
 Results.spikes = spikes;
 Results.LFP = LFP;
 Results.v_m = v_m_recording;
+Results.DV = DV_recording;
 Results.I_syn = I_syn_recording;
 Results.stp_syn = stp_syn_recording;
 Results.stdpvars = stdpvars_recording;

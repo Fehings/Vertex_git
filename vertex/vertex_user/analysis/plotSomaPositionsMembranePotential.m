@@ -1,4 +1,4 @@
-function figureHandle = plotSomaPositionsMembranePotential(TP, pars, v_m)
+function figureHandle = plotSomaPositionsMembranePotential(TP, v_m, pars)
 %PLOTSOMAPOSITIONS Plots the positions of the neurons' soma compartments.
 %   PLOTSOMAPOSITIONS(TP) creates a 3D plot of the soma positions of all
 %   neurons in the simulation. TP is the TissueParams structure in the
@@ -24,7 +24,7 @@ function figureHandle = plotSomaPositionsMembranePotential(TP, pars, v_m)
 %   FIGUREHANDLE = PLOTSOMAPOSITIONS(TP, PARS) also returns the handle ID of the
 %   created figure.
 
-if nargin == 1
+if nargin == 2
   pars = struct();
 end
 
@@ -73,7 +73,7 @@ view(3)
 
 
 
-scatter3(TP.somaPositionMat(pars.toPlot, 1), ...
+figureHandle =scatter3(TP.somaPositionMat(pars.toPlot, 1), ...
     TP.somaPositionMat(pars.toPlot, 2), ...
     TP.somaPositionMat(pars.toPlot, 3),...
     20,...
@@ -103,7 +103,9 @@ end
 if isfield(pars, 'zlabel')
   zlabel(pars.zlabel, 'FontSize', fsize);
 end
-
+if isfield(pars, 'caxis')
+  caxis([pars.caxis(1) pars.caxis(2)]);
+end
 set(gca, 'FontSize', fsize);
 
 view([0, 0]);

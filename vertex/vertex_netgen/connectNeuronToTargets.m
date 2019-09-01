@@ -1,4 +1,4 @@
-function [targetIDs, targetComparts, targetDelays] = ...
+function [targetIDs, targetComparts, targetDelays,targetDelaysDV] = ...
   connectNeuronToTargets(TP,NP,CP,SS,iPreInLab,iPre,iPreGroup,numSynapses)
 
 % Calculate remaining number of synapses after slicing, and allocate
@@ -12,6 +12,9 @@ end
 targetIDs = zeros(1, sum(iPreNumSyn(:)), SS.nIDintSize);
 targetComparts = zeros(1, sum(iPreNumSyn(:)), 'uint8');
 targetDelays = zeros(1, sum(iPreNumSyn(:)));
+if isfield(TP, 'DVMParams')
+    targetDelaysDV = zeros(1, sum(iPreNumSyn(:)));
+end
 
 % var to keep track of how many synapses have been made, so that we can
 % preallocate memory rather than expanding arrays every time:
@@ -53,6 +56,10 @@ for iPostGroup = 1:TP.numGroups
           iPostGroup, iLayer, numChosen);
         axonDelays =...
           calculateAxonDelays(CP, iPreGroup, chosenTargets, distancesSquared);
+      if isfield(TP, 'DVMParams')
+        dvDelays = calculateAxonDelaysDV(TP.DVMParams, chosenTargets, distancesSquared);
+      end
+        
         
         % Store the postsynaptic targets and delays
         targetIDs(numSynapsesCounter+1:numSynapsesCounter+numChosen) = ...
@@ -61,6 +68,10 @@ for iPostGroup = 1:TP.numGroups
           chosenCompartments;
         targetDelays(numSynapsesCounter+1:numSynapsesCounter+numChosen) = ...
           axonDelays;
+      if isfield(TP, 'DVMParams')
+        targetDelaysDV(numSynapsesCounter+1:numSynapsesCounter+numChosen) = ...
+          dvDelays;
+      end
         
         % move on the counter
         numSynapsesCounter = numSynapsesCounter + numChosen;
@@ -74,9 +85,18 @@ if numSynapsesCounter ~= length(targetIDs)
   targetIDs = targetIDs(1:numSynapsesCounter);
   targetComparts = targetComparts(1:numSynapsesCounter);
   targetDelays = targetDelays(1:numSynapsesCounter);
+  if isfield(TP, 'DVMParams')
+    targetDelaysDV = targetDelaysDV(1:numSynapsesCounter);
+  end
 end
 
 % sort by target ID
 [targetIDs, idx] = sort(targetIDs);
 targetComparts = targetComparts(idx);
 targetDelays = targetDelays(idx);
+if isfield(TP, 'DVMParams')
+    targetDelaysDV = targetDelaysDV(idx);
+else 
+    targetDelaysDV = [];
+end
+    

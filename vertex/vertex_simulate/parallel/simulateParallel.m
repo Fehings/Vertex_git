@@ -1,6 +1,6 @@
 function [NeuronModel, SynModel, InModel, numSaves] = ...
     simulateParallel(TP, NP, SS, RS, ...
-    IDMap, NeuronModel, SynModel, InModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves,paraStimParam)
+    IDMap, NeuronModel, SynModel, InModel,DVModel, RecVar, lineSourceModCell, synArr, wArr, synMap, nsaves,paraStimParam)
 %Parallel version of simulate.
 
 outputDirectory = RS.saveDir;
@@ -15,6 +15,9 @@ N = TP.N;
 numInGroup = TP.numInGroupInLab;
 neuronInGroup = createGroupsFromBoundaries(TP.groupBoundaryIDArr);
 bufferLength = SS.maxDelaySteps;
+if ~isempty(DVModel)
+    bufferLengthDV = SS.maxDelayStepsDV;
+end
 simulationSteps = round(SS.simulationTime / SS.timeStep);
 
 
@@ -34,7 +37,7 @@ end
 
 [cpexLoopTotal, partnerLab] = cpexGetExchangePartners();
 
-if nargin == 13
+if nargin == 14
     ns = 0;
     paraStimParam = [];
 else
@@ -73,7 +76,6 @@ if stdp
 end
 
 spmd
-    
     %Get the neuron ids processed in this lab
     subsetInLab = find(SS.neuronInLab==labindex());
     
@@ -134,6 +136,7 @@ spmd
     S.spikes = zeros(N * SS.minDelaySteps, 1, nIntSize);
     S.spikeStep = zeros(N * SS.minDelaySteps, 1, tIntSize);
     receivedSpikes = cell(numlabs, 2);
+    receivedVectors = cell(numlabs,1);
     S.spikeCount = zeros(1, 1, nIntSize);
     %numSaves = 0;
     numSaves = 1;
@@ -275,8 +278,19 @@ spmd
                 end
                 
             end
+            
         end % for each group
         
+        if RS.DV
+            if simStep == RS.samplingSteps(sampleStepCounter)
+                RecVar = updateDVRecording(DVModel, RecVar,recTimeCounter);
+            end
+        end
+        
+        if ~isempty(DVModel)
+            updateDiseaseVectorModel(DVModel, SS.timeStep);
+            updateBuffer(DVModel);
+        end
         % increment the recording sample pointer
         if simStep == RS.samplingSteps(sampleStepCounter)
             recTimeCounter = recTimeCounter + 1;
@@ -326,7 +340,7 @@ spmd
                 end
                 labBarrier();
             end % for each pairwise exchange
-            
+            %disp(receivedSpikes)
             % Record the spikes
             RecVar.spikeRecording{spikeRecCounter} = ...
                 receivedSpikes(labindex(), :);
@@ -336,17 +350,66 @@ spmd
             if labindex() == 1
                 numspikes = numspikes +length(allSpike);
             end
-%             if labindex() == 1 && mod(simStep * SS.timeStep, 5) == 0
-%                 disp(['Spikes processed ' num2str(numspikes)]);
-%                 disp(['Weight change' num2str(weightdiff)]);
-%                 weightdiff = 0;
-%                 numspikes=0;
-%                 toc;
-%                 tic;
-%             end
+            
+            % Transmit the disease vector between labs
+            if ~isempty(DVModel)
+                receivedVectors{labindex()} = [];
+                if ~isempty(receivedSpikes{labindex(), 1})
+                    [~,ind] = ismember(allSpike,subsetInLab);
+                    inD = nonzeros(ind);
+                    if ~isempty(ind)
+                        receivedVectors{labindex()} = DVModel.pC(:,inD)';
+                    end
+                end
+                
+                for iLab = 1:cpexLoopTotal
+                    if partnerLab(iLab) == -1
+                        %no partner
+                    else
+                        % exchange spikes with partner iLab
+                        receivedVectors(partnerLab(iLab),:) = ...
+                            labSendReceive(partnerLab(iLab), partnerLab(iLab), ...
+                            receivedVectors(labindex(),:));
+                    end
+                    labBarrier();
+                end
+                % store the DV concentration traces for each neuron that has
+                % fired. 
+                allDVs = cell2mat(receivedVectors);
+
+            end
+            
+            if ~isempty(DVModel)
+                [~,spikesinlab] = ismember(subsetInLab,S.spikes(:,1));
+                updatePresynapticCellsAfterSpike(DVModel, find(spikesinlab));
+            end
             % Go through spikes and insert events into relevant buffers
             % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
             for iSpk = 1:length(allSpike)
+                
+                % if we have are using a DV model then transmit the vector
+                % across synapses which have fired.
+                if ~isempty(DVModel)
+                    % buffer location for synaptic transmission delay.
+                    tBufferLoc = synArr{allSpike(iSpk), 3} + ...
+                            DVModel.bufferCount - allSpikeTimes(iSpk);
+                    tBufferLoc(tBufferLoc > bufferLength) = ...
+                            tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
+                    
+                    %buffer location of vector transport delay
+                    pCBufferLoc = DVModel.pCTraceInd - synArr{allSpike(iSpk),4};
+                    pCBufferLoc(pCBufferLoc < 1) = ...
+                            pCBufferLoc(pCBufferLoc < 1) + bufferLengthDV;
+
+                    [~,postNeuronInThisLab] = ismember(synArr{allSpike(iSpk), 1},subsetInLab);
+                    
+                    postInLab = SS.neuronInLab(synArr{allSpike(iSpk), 1})==labindex(); 
+
+                    bufferVectorFlow(DVModel,postNeuronInThisLab,tBufferLoc(postInLab),...
+                        wArr{allSpike(iSpk)}(postInLab),allDVs(iSpk,pCBufferLoc));
+
+                    
+                end
                 % Get which groups the targets are in
                 postInGroup = neuronInGroup(synArr{allSpike(iSpk), 1});
                 for iPostGroup = 1:TP.numGroups
@@ -479,7 +542,6 @@ spmd
                                 if sum(inGroup ~= 0)
                                     
                                     
-                                    
                                     presyningroup = presynaptic(inGroup);
                                     
                                     
@@ -551,6 +613,7 @@ spmd
         
         if labindex() == 1 && mod(simStep * SS.timeStep, 5) == 0
             disp([num2str(simStep * SS.timeStep) 'ms']);
+            %disp(['dv levels: ' num2str(median(DVModel.pC(DVModel.pCTraceInd,:)))]);
         end
         
         % write recorded variables to disk
