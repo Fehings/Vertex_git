@@ -363,7 +363,7 @@ for iPre = 1:numGroups
   CP(iPre).axonConductionSpeed = 0.3;
   CP(iPre).synapseReleaseDelay = 1.0;
   for iPost = 1:numGroups
-    CP(iPre).synapseType{iPost} = 'g_exp';
+    CP(iPre).synapseType{iPost} = 'g_exp'; %g_exp
     if ismember(iPre,ex) && ismember(iPost,ex)
       CP(iPre).tau{iPost} = 60;
       CP(iPre).E_reversal{iPost} = 0;

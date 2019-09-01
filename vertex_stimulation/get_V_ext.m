@@ -34,6 +34,13 @@ for iComp = 1:length(locations(1,:,1))
 v_ext(isnan(v_ext(:,iComp)),iComp) = 0;
 end
 
+if any(v_ext(:)>100) 
+    disp('overly large values detected in the field, the values will be capped at 100 and this may produce negligable currents')
+elseif any(v_ext(:)<-100)
+    disp('overly negative values detected in the field, the values will be capped at -100 and this may produce negligable currents')
+elseif nnz(v_ext(:))==0
+    disp('The field is zero valued, just so you know. If this was unintended then you may need to troubleshoot.') 
+end
 
 
 end

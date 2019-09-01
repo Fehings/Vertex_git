@@ -45,10 +45,10 @@ SimulationSettings.parallelSim = false;
 
 % uncomment for field stimulation
 % 
-%  value_to_change = 6; % field strength
-%  [stlresult,model] = invitroSliceStim('tutorial2_3.stl',value_to_change);
-stlresult = load('ACpderesult40hz10mv')
-  TissueParams.StimulationField = stlresult.result;
+  value_to_change = 6; % field strength
+  [stlresult,model] = invitroSliceStim('tutorial2_3.stl',value_to_change);
+%stlresult = load('ACpderesult40hz10mv')
+%  TissueParams.StimulationField = stlresult.result;
   TissueParams.StimulationOn = 0;
   TissueParams.StimulationOff = SimulationSettings.simulationTime;
 %  TissueParams.tRNS = wgn(1,1,0); % initialising the tRNS

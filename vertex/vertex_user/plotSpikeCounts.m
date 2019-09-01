@@ -1,5 +1,6 @@
 function [figurehandle] = plotSpikeCounts(Results,t,ids,pars)
 
+
 % a function to plot the occurences of spikes over time.
 % will try to add more options in the future so that like plotSpikeRaster
 % you can plot for a subsection of the neurons.

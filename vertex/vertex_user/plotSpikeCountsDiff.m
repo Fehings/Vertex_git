@@ -1,4 +1,4 @@
-function [figurehandle] = plotSpikeCountsDiff(Results1,Results2,t)
+function [figurehandle,a,b] = plotSpikeCountsDiff(Results1,Results2,t)
 
 % a function to plot the occurences of spikes over time.
 % will try to add more options in the future so that like plotSpikeRaster

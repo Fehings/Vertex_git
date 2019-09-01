@@ -133,7 +133,7 @@ if isfield(TP, 'StimulationField')
                     setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1, TP.scale));
                 end
                 if isfield(TP,'tRNS')
-                    setVext(NeuronModelArr{iGroup},NeuronModelArr{iGroup}.v_ext*TP.tRNS);
+                    set_V_ext(NeuronModelArr{iGroup},NeuronModelArr{iGroup}.v_ext*TP.tRNS);
                 end
             end
         end
