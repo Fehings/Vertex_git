@@ -25,7 +25,7 @@ TissueParams.DVMParams.Rcn = 4e-4;
 TissueParams.DVMParams.Cpn = 0.01;
 TissueParams.DVMParams.Cnn = 0.05;
 TissueParams.DVMParams.Rsyn = 0.01;
-TissueParams.DVMParams.FATS = 1.6204e-04;
+TissueParams.DVMParams.FATS = 0.00018364;
 
 %%
 % However, we need to set the number of layers to 3 and make sure we set

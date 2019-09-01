@@ -37,7 +37,7 @@ TissueParams.DVMParams.Rsyn = 0.01; % rate of synaptic transmission
 TissueParams.DVMParams.Cpn = 0.01;% baseline of pathogenic protein (mg)
 TissueParams.DVMParams.Cnn = 0.05;% baseline of normal protein (mg)
 % Speed of fast axonal transport (microns/ms)
-TissueParams.DVMParams.FATS = 1.6204e-04; %1.6204e-04;
+TissueParams.DVMParams.FATS = 0.00018364;
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
