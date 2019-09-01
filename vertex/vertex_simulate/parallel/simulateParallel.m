@@ -373,26 +373,34 @@ spmd
                     end
                     labBarrier();
                 end
-
+                % store the DV concentration traces for each neuron that has
+                % fired. 
                 allDVs = cell2mat(receivedVectors);
 
             end
-            % Go through spikes and insert events into relevant buffers
-            % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
+            
             if ~isempty(DVModel)
                 [~,spikesinlab] = ismember(subsetInLab,S.spikes(:,1));
                 updatePresynapticCellsAfterSpike(DVModel, find(spikesinlab));
             end
+            % Go through spikes and insert events into relevant buffers
+            % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
             for iSpk = 1:length(allSpike)
+                
+                % if we have are using a DV model then transmit the vector
+                % across synapses which have fired.
                 if ~isempty(DVModel)
+                    % buffer location for synaptic transmission delay.
                     tBufferLoc = synArr{allSpike(iSpk), 3} + ...
                             DVModel.bufferCount - allSpikeTimes(iSpk);
                     tBufferLoc(tBufferLoc > bufferLength) = ...
                             tBufferLoc(tBufferLoc > bufferLength) - bufferLength;
+                    
+                    %buffer location of vector transport delay
                     pCBufferLoc = DVModel.pCTraceInd - synArr{allSpike(iSpk),4};
                     pCBufferLoc(pCBufferLoc < 1) = ...
                             pCBufferLoc(pCBufferLoc < 1) + bufferLengthDV;
-                        
+
                     [~,postNeuronInThisLab] = ismember(synArr{allSpike(iSpk), 1},subsetInLab);
                     
                     postInLab = SS.neuronInLab(synArr{allSpike(iSpk), 1})==labindex(); 
@@ -605,6 +613,7 @@ spmd
         
         if labindex() == 1 && mod(simStep * SS.timeStep, 5) == 0
             disp([num2str(simStep * SS.timeStep) 'ms']);
+            %disp(['dv levels: ' num2str(median(DVModel.pC(DVModel.pCTraceInd,:)))]);
         end
         
         % write recorded variables to disk

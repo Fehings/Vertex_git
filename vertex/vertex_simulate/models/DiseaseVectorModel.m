@@ -6,7 +6,6 @@ classdef DiseaseVectorModel < handle
     properties
         pC % amount of pathogeneic protein (mg)
         nC % amount of normal protein (mg)
-        pCAxonTerminals
         buffer
         bufferCount
         bufferMax
@@ -30,7 +29,9 @@ classdef DiseaseVectorModel < handle
             
             
             DVM.pC = zeros(SS.maxDelayStepsDV,number);
-            DVM.pC(1,:) = DVMP.initpC;
+            
+                DVM.pC(1,:) = DVMP.initpC;
+            
 
             DVM.nC = DVMP.initnC .* ones(1,number);
             DVM.buffer = zeros(number, SS.maxDelaySteps);
@@ -59,12 +60,13 @@ classdef DiseaseVectorModel < handle
             %time step.
             %   Based on the equations in (Modat,2018) https://doi.org/10.1371/journal.pone.0192518
 
+            % check whether we have reached the end of our circular array.
              if DVM.pCTraceInd < DVM.bufferMaxDV
                  DVM.pCTraceInd = DVM.pCTraceInd+1;
                  DVM.pC(DVM.pCTraceInd,:) = DVM.pC(DVM.pCTraceInd-1,:);
-             else
+             else % if we have then go back to the start. 
                  DVM.pCTraceInd = 1;
-                 DVM.pC(DVM.pCTraceInd,:) = DVM.pC(DVM.bufferMaxDV-1,:);
+                 DVM.pC(DVM.pCTraceInd,:) = DVM.pC(DVM.bufferMaxDV,:);    
              end
             
              %proteins accumulate through production
@@ -80,22 +82,17 @@ classdef DiseaseVectorModel < handle
              % baseline concentrations Cpn, Cnn
              qp = DVM.Rcp .* log(1+ (exp(1) - 1).*(DVM.pC(DVM.pCTraceInd,:)./DVM.Cpn));
              qn = DVM.Rcn .* log(1+ (exp(1) - 1).*(DVM.nC./DVM.Cnn));
-             
-
-             
              DVM.pC(DVM.pCTraceInd,:) = DVM.pC(DVM.pCTraceInd,:) - qp.*dt;
-             DVM.nC = DVM.nC - qn.*dt;
-             
-
-%              
-             
-            
+             DVM.nC = DVM.nC - qn.*dt;            
         end
         
+        % applied in simulate/simulateParallel after each spike.
+        % removes the vector from the presynaptic neuron.
         function DVM = updatePresynapticCellsAfterSpike(DVM, presynIDs)
             DVM.pC(DVM.pCTraceInd,presynIDs) = DVM.pC(DVM.pCTraceInd,presynIDs) - DVM.pC(DVM.pCTraceInd,presynIDs).*DVM.Rsyn;
         end
         
+        % updates the buffer for axonal transmission delay
         function DVM = updateBuffer(DVM)
             DVM.pC(DVM.pCTraceInd,:) = DVM.pC(DVM.pCTraceInd,:) + DVM.buffer(:, DVM.bufferCount)';
             DVM.buffer(:, DVM.bufferCount) = 0;
@@ -104,14 +101,14 @@ classdef DiseaseVectorModel < handle
             if DVM.bufferCount > DVM.bufferMax
                 DVM.bufferCount = 1;
             end
-         end
+        end
         
+        % updates the post synaptic buffer with the synaptically
+        % transmitted concentration.
         function DVM = bufferVectorFlow(DVM, postNeuronIDs,delays, weights,presynPrC)
-
             for i = 1:length(postNeuronIDs)
                 DVM.buffer(postNeuronIDs(i),delays(i)) =  DVM.buffer(postNeuronIDs(i),delays(i)) + (presynPrC(i).*DVM.Rsyn)./length(postNeuronIDs);
             end
-            
         end
         
     end

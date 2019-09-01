@@ -14,7 +14,7 @@ TissueParams.neuronDensity = 20000;
 TissueParams.numStrips = 50;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
-TissueParams.DVMParams.initpIDs = [17023:17123];
+TissueParams.DVMParams.initpIDs = [17024:17123];
 TissueParams.DVMParams.initpC = 0.01;
 TissueParams.DVMParams.initnC = 0.1;
 TissueParams.DVMParams.Rpp = 0;
@@ -25,7 +25,7 @@ TissueParams.DVMParams.Rcn = 4e-4;
 TissueParams.DVMParams.Cpn = 0.01;
 TissueParams.DVMParams.Cnn = 0.05;
 TissueParams.DVMParams.Rsyn = 0.01;
-TissueParams.DVMParams.FATS = 0.0002;
+TissueParams.DVMParams.FATS = 1.6204e-04;
 
 %%
 % However, we need to set the number of layers to 3 and make sure we set
@@ -403,7 +403,7 @@ RecordingSettings.maxRecTime = 100;
 RecordingSettings.sampleRate = 1000;
 RecordingSettings.DV = 1:1:21824;
 
-SimulationSettings.simulationTime = 1000;
+SimulationSettings.simulationTime = 3000;
 SimulationSettings.timeStep = 0.03125;
 SimulationSettings.parallelSim = true;
 

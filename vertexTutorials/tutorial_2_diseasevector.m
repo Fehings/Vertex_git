@@ -18,18 +18,26 @@ TissueParams.layerBoundaryArr = [200, 0];
 TissueParams.numStrips = 40;
 TissueParams.tissueConductivity = 0.3;
 TissueParams.maxZOverlap = [-1 , -1];
+
+% Specify the initial conditions of the disease vector.
+% initIDs specifies which neurons will start with the initial
+% concentration of pathogenic protein (cell IDs not present here will start with a pC of 0).
 TissueParams.DVMParams.initpIDs = [1];
-TissueParams.DVMParams.initpC = 0.01;
-TissueParams.DVMParams.initnC = 0.1;
-TissueParams.DVMParams.Rpp = 0;
-TissueParams.DVMParams.Rpn = 4e-4;
-TissueParams.DVMParams.Rm = 0.06;
-TissueParams.DVMParams.Rcp = 0.5e-5;
-TissueParams.DVMParams.Rcn = 4e-4;
-TissueParams.DVMParams.Cpn = 0.01;
-TissueParams.DVMParams.Cnn = 0.05;
-TissueParams.DVMParams.Rsyn = 0.01;
-TissueParams.DVMParams.FATS = 1.6204e-04;
+TissueParams.DVMParams.initpC = 0.01;% initpC is the initial concentration of pathogenic protein
+TissueParams.DVMParams.initnC = 0.1;% initnC is the initial concentration of normal protein
+
+%Specify the rate parameters of the model 
+TissueParams.DVMParams.Rpp = 0; % rate of production of pathogenic protein (mg/s)
+TissueParams.DVMParams.Rpn = 4e-4;% rate of production of normal protein (mg/s)
+TissueParams.DVMParams.Rm = 0.06;% rate of misfolding 
+TissueParams.DVMParams.Rcp = 0.5e-5;% rate of clearance of pathogenic protein (mg/s)
+TissueParams.DVMParams.Rcn = 4e-4;% rate of clearance of normal protein (mg/s)
+TissueParams.DVMParams.Rsyn = 0.01; % rate of synaptic transmission
+% Specify the baselines of the model
+TissueParams.DVMParams.Cpn = 0.01;% baseline of pathogenic protein (mg)
+TissueParams.DVMParams.Cnn = 0.05;% baseline of normal protein (mg)
+% Speed of fast axonal transport (microns/ms)
+TissueParams.DVMParams.FATS = 1.6204e-03 %1.6204e-04;
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
