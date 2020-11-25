@@ -255,7 +255,7 @@ for simStep = 1:simulationSteps
 
             
         %[SynModel, wArr] = processSpikes(allSpike,allSpikeTimes,TP,wArr,groupComparts, IDMap,synArr,revSynArr, neuronInGroup, synMap, SynModel, bufferLength,numInGroup, stdp);
-        updatePresynapticCellsAfterSpike(DVModel, allSpike);
+        %updatePresynapticCellsAfterSpike(DVModel, allSpike);
         % Go through spikes and insert events into relevant buffers
         % mat3d(ii+((jj-1)*x)+((kk-1)*y)*x))
         for iSpk = 1:length(allSpike)

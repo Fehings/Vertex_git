@@ -181,7 +181,8 @@ vmax = max(abs(-70-(v_m')));
 figure
 viewMorphologyColour(NP, v_m(:,end)+70,0); %,3.0421
 
+time = 0:SimulationParams.timeStep:SimulationParams.simulationTime - SimulationParams.timeStep;
 figure
-plot(v_m(1,:)) % plot soma membrane potential over time
+plot(time,v_m(1,:)) % plot soma membrane potential over time
 
 

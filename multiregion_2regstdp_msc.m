@@ -39,10 +39,10 @@ NeuronParams(1).Input(2).amplitude = 1000;
 
 %%% optional - electric field stimulation 
 
-% [stlresult,model] = invitroSliceStim('tutorial2_3.stl',4);
-% TissueParams.StimulationField = stlresult;
-% TissueParams.StimulationOn = 0;
-% TissueParams.StimulationOff = SimulationSettings.simulationTime;
+[stlresult,model] = invitroSliceStim('tutorial2_3.stl',4);
+TissueParams.StimulationField = stlresult;
+TissueParams.StimulationOn = 0;
+TissueParams.StimulationOff = SimulationSettings.simulationTime;
 
 
 %% initialise the network

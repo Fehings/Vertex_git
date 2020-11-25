@@ -414,7 +414,7 @@ rasterParams.title = 'Tutorial 5 Spike Raster';
 rasterParams.xlabel = 'Time (ms)';
 rasterParams.ylabel = 'Neuron ID';
 rasterParams.figureID = 1;
-rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
+rasterFigureImproved = plotSpikeRaster(Results(1), rasterParams);
 
 %%
 % The layer 3 pyramidal neurons (black spikes at the top of the raster)
