@@ -16,11 +16,10 @@ TissueParams.maxZOverlap = [-1 , -1];
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
-% use the neuron models described in (Tomsett et al. 2014) for layer 2/3
-% pyramidal neurons and basket interneurons. We are going to set 85% of the
-% neurons to be pyramidal cells, in neuron group 1.
+% make population 1 the MSN inhibitory neurons commonly found in the
+% striatum
 
-NeuronParams(1).modelProportion = 0.85;   % !!! Check the proportion of each population in the model !!! 
+NeuronParams(1).modelProportion = 0.95;   % MSN neurons make up 95% of the neurons in the striatum 
 NeuronParams(1).somaLayer = 1;            % !!! This is the layer that this neuron type is found in !!!
 
 %%
@@ -40,11 +39,13 @@ NeuronParams(1).neuronModel = 'adex'; % leave this.
 % supplementary material for the Tomsett 2014 VERTEX paper.
 NeuronParams(1).V_t = -50;            
 NeuronParams(1).delta_t = 2;          
-NeuronParams(1).a = 2.6;   
-NeuronParams(1).tau_w = 65;            
-NeuronParams(1).b = 220;
-NeuronParams(1).v_reset = -60;
+NeuronParams(1).a = 0.04;   
+NeuronParams(1).tau_w = 10;            
+NeuronParams(1).b = 40;
+NeuronParams(1).v_reset = -65;
 NeuronParams(1).v_cutoff = -45;
+
+
 
 %%
 % |V_t| is the spike generation threshold (in mV), |delta_t| is the spike
@@ -179,6 +180,11 @@ NeuronParams(2).Input(1).inputType = 'i_ou';
 NeuronParams(2).Input(1).meanInput = 190;
 NeuronParams(2).Input(1).tau = 0.8;
 NeuronParams(2).Input(1).stdInput = 50;
+
+
+
+
+
 
 
 %% Connectivity parameters

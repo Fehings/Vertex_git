@@ -1,6 +1,5 @@
 
-% set up the two identical layers by calling setup_multilayer and cloning
-% the parameters for the second region.
+% set up the two regions by calling setup scripts for the parameters
 
 % setting up parameters, in this case with non-stdp synapses, oscillations, in simple IN + EX
 % model
@@ -75,7 +74,7 @@ ConnectionParams(3).weights{1} = 0.5;
 %%  Connectivity between regions
 
  % defining the between region connectivity here:
- regionConnect.map = [0,0;0,0];
+ regionConnect.map = [0,1;0,0];
  % for example [0,1;0,0] there are two regions and there is only an
  % external connection from region 1 to region 2, it is not returned, and
  % while they do connect to themselves internally for the sake of incoming external
@@ -83,7 +82,7 @@ ConnectionParams(3).weights{1} = 0.5;
  
  % Identify the neuron types (e.g. NP(1) in this instance are the
  % excitatory PY cells) which will export signals. Use [] if not exporting.
- regionConnect.exportingNeuronPops{1} = 1; 
+ regionConnect.exportingNeuronPops{1} = 2; 
  regionConnect.exportingNeuronPops{2} = [];
  
  % identify which neuron pops are designated as dummy neurons to just

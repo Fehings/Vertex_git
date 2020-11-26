@@ -1,18 +1,51 @@
- 
-% Set up script for the tutorial 2 style single layer network with coupled inhibitory and excitatory populations. 
+
+function [TissueParams,NeuronParams,ConnectionParams] = readTutorial2Params(isSTDP,noiseScaler,synapticScaler)
+% readTutorial2Params sets up parameters for a VERTEX model with a single
+% layer and two neuron populations, inhibitory basket interneurons and
+% excitatory pyramidal cells. These parameters are based on the VERTEX
+% website tutorial 2 (http://vertexsimulator.org/tutorial-2/)
+%
+% This function takes three optional input parameters, isSTDP is a boolean 
+% flag which should be either 1 if you want STDP dynamics, or 0 if you want
+% to run the model without STDP. By default the model runs without STDP.
+%
+% The second parameter is a noiseScaler, which is set to 1 by default and
+% will have no effect on the model. This is a multiplier of the mean noise
+% inputs to the different neuron populations. NB: as this just scales the
+% mean of the noise, a value of zero will not make this system
+% deterministic as there is a standard deviation applied too, which would
+% need to be set to zero as well manually in the input parameters.
+%
+% The third parameter is the synapticScaler, which will act as a scaling
+% factor for the initial synaptic weights. By default this is set to 1, so
+% there will be no influence on the model defaults.
+%
+% This function can be run as:
+% [TissueParams,NeuronParams,ConnectionParams] = readTutorial2Params(isSTDP,noiseScaler)
+% Alternatively the arguments can be left blank if you are happy with the
+% defaults:
+% [TissueParams,NeuronParams,ConnectionParams] = readTutorial2Params()
+%
+% Nov 2020, FT.
+
+if nargin<1
+    isSTDP = 0;
+    noiseScaler = 1;
+    synapticScaler = 1;
+end
 
 %% Tissue parameters
-% First we specify the same tissue parameters as in tutorial 1:
+% First we specify the same tissue parameters as in tutorial 2:
 
-TissueParams.X = 1500; % length of slice          
-TissueParams.Y = 400;  % height of the slice      
-TissueParams.Z = 200;  % depth of slice             
-TissueParams.neuronDensity = 25000;  %  !!! Check Neuron Density (cells per cm cubed) !!!
-TissueParams.numLayers = 1;          %  !!! Check number of layers !!! 
-TissueParams.layerBoundaryArr = [200, 0];  %  !!! This determines layer depths, check !!!
-TissueParams.numStrips = 10;
-TissueParams.tissueConductivity = 0.3; 
-TissueParams.maxZOverlap = [-1 , -1];
+TissueParams.X = 2500;                      % Width (micrometres)
+TissueParams.Y = 400;                       % Height (micrometres)
+TissueParams.Z = 200;                       % Depth (micrometres)
+TissueParams.neuronDensity = 2500;          % Neurons per cubic mm
+TissueParams.numLayers = 1;                 % Number of tissue layers
+TissueParams.layerBoundaryArr = [200, 0];   % Boundaries of the layers (depth)
+TissueParams.numStrips = 10;                % Neuron placement blocks
+TissueParams.tissueConductivity = 0.3;      % Extracellular conductivity
+TissueParams.maxZOverlap = [-1 , -1];       % Max distance outside the boundries that dendrites can extend (-1 means no maximum)
 
 %% Neuron parameters
 % Next we will specify the parameters for our two neuron groups. We will
@@ -20,8 +53,8 @@ TissueParams.maxZOverlap = [-1 , -1];
 % pyramidal neurons and basket interneurons. We are going to set 85% of the
 % neurons to be pyramidal cells, in neuron group 1.
 
-NeuronParams(1).modelProportion = 0.85;   % !!! Check the proportion of each population in the model !!! 
-NeuronParams(1).somaLayer = 1;            % !!! This is the layer that this neuron type is found in !!!
+NeuronParams(1).modelProportion = 0.85;
+NeuronParams(1).somaLayer = 1;
 
 %%
 % We are going to use the adaptive exponential (AdEx) model to generate
@@ -32,21 +65,15 @@ NeuronParams(1).somaLayer = 1;            % !!! This is the layer that this neur
 % passive. The AdEx model requires us to specify some extra parameters that
 % control the model dynamics:
 
-NeuronParams(1).neuronModel = 'adex'; % leave this.
-% Find these parameters if you can, otherwise use parameters from the BSF
-% (monkey) model that are for the neuron population most similar to the
-% type of neurons you want to model. (E.g. pyramidal neurons, basket
-% interneurons, spiney stellate, etc.) The parameter tables are also in the
-% supplementary material for the Tomsett 2014 VERTEX paper.
-NeuronParams(1).V_t = -50;            
-NeuronParams(1).delta_t = 2;          
-NeuronParams(1).a = 2.6;   
-NeuronParams(1).tau_w = 65;            
+NeuronParams(1).neuronModel = 'adex';
+NeuronParams(1).V_t = -50;
+NeuronParams(1).delta_t = 2;
+NeuronParams(1).a = 2.6;
+NeuronParams(1).tau_w = 25;
 NeuronParams(1).b = 220;
 NeuronParams(1).v_reset = -60;
 NeuronParams(1).v_cutoff = -45;
 
-%%
 % |V_t| is the spike generation threshold (in mV), |delta_t| is the spike
 % steepness parameter (in mV), |a| is the scale factor of the spike
 % after-hyperpolarisation (AHP) current (in nanoSiemens), |tau_w| is the
@@ -57,8 +84,9 @@ NeuronParams(1).v_cutoff = -45;
 % mV). We recommend that this parameter is set to |V_t + 5|; if it is set 
 % much higher, the exponential term in the AdEx equations can lead to the 
 % membrane potentialexploding to a not-a-number (NaN) value, which breaks 
-% things.
-%
+% things.%
+
+%%
 % The remaining parameters defining the structure and passive properties
 % are the same as in Tutorial 1:
 NeuronParams(1).numCompartments = 8;
@@ -96,13 +124,12 @@ NeuronParams(1).compartmentZPositionMat = ...
 NeuronParams(1).axisAligned = 'z';
 NeuronParams(1).C = 1.0*2.96;
 NeuronParams(1).R_M = 20000/2.96;
-NeuronParams(1).R_A = 150;
+NeuronParams(1).R_A = 350;
 NeuronParams(1).E_leak = -70;
 NeuronParams(1).somaID = 1;
 NeuronParams(1).basalID = [6, 7, 8];
 NeuronParams(1).apicalID = [2 3 4 5];
 NeuronParams(1).labelNames = {'somaID', 'basalID','apicalID'};
-NeuronParams(1).minCompartmentSize = 0.8;
 %%
 % In order to generate spikes, we need to provide the neurons with some
 % input. We set the inputs to our neuron group in another structure array,
@@ -117,9 +144,9 @@ NeuronParams(1).minCompartmentSize = 0.8;
 % which case we would also need to set an |E_reversal| parameter to set the
 % reversal potential).
 
-NeuronParams(1).Input(1).inputType = 'i_ou'; % External background input to the cell.
-NeuronParams(1).Input(1).meanInput = 330;    % play with this to get different oscillation behaviour.
-NeuronParams(1).Input(1).stdInput = 90;
+NeuronParams(1).Input(1).inputType = 'i_ou';
+NeuronParams(1).Input(1).meanInput =330*noiseScaler;
+NeuronParams(1).Input(1).stdInput = 60;
 NeuronParams(1).Input(1).tau = 2;
 
 %%
@@ -170,82 +197,92 @@ NeuronParams(2).compartmentZPositionMat = ...
   -66, -173];
 NeuronParams(2).C = 1.0*2.93;
 NeuronParams(2).R_M = 15000/2.93;
-NeuronParams(2).R_A = 150;
+NeuronParams(2).R_A = 350;
 NeuronParams(2).E_leak = -70;
 NeuronParams(2).dendritesID = [2 3 4 5 6 7];
 NeuronParams(2).labelNames = {'dendritesID'};
-NeuronParams(2).minCompartmentSize = 0.8;
 NeuronParams(2).Input(1).inputType = 'i_ou';
-NeuronParams(2).Input(1).meanInput = 190;
+NeuronParams(2).Input(1).meanInput = 160*noiseScaler;
 NeuronParams(2).Input(1).tau = 0.8;
-NeuronParams(2).Input(1).stdInput = 50;
+NeuronParams(2).Input(1).stdInput = 40;
 
 
 %% Connectivity parameters
-% We set the connectivity parameters in the same way as in tutorial 1, but
-% this time we need to specify the parameters for connections between the
-% two groups. First we set the parameters for connections from group 1 (the
-% pyramidal cells) to itself:
+% We set the connectivity parameters in the same way as in tutorial 2, but
+% this time we include the option to specify the parameters for plasticity on the
+% connection between group 1 and group 1. We will also use conductance
+% based synapses, so the weights will be in nS and we will also need to
+% specify a reversal potential.
+ 
+% We use the g_exp_stdp class for the synapse type. This will
+% give us conductance based synapses with spike timing dependent plasticity.
+% We need to specify a preRate and postRate and also
+% specify two time constants (tPre and tPost) that determine the rate at which the Apre and
+% Apost variables decay.
+% Apre is increased by preRate when a presynaptic spike occurs, and is added to the weight when a post synaptic spike occurs.
+% Apost is increased by postRate (usually negative) and added (usually a subtraction) to the weight when a pre synaptic spike occurs. 
 
-ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700; % The number of projections from each neuron of type 1 to other neurons in pop 1.
-ConnectionParams(1).synapseType{1} = 'i_exp';  % use i_exp or g_exp
-ConnectionParams(1).targetCompartments{1} = {'basalID', ...
-                                             'apicalID'};
-ConnectionParams(1).weights{1} = 1;
-ConnectionParams(1).tau{1} = 2;
+ConnectionParams(1).numConnectionsToAllFromOne{1} = 1700;
 
-%%
-% Then the parameters for connections from group 1 to group 2 (the basket
-% interneurons):
+if isSTDP
+    ConnectionParams(1).synapseType{1} = 'g_exp_stdp';
+    ConnectionParams(1).targetCompartments{1} = {'basalID', ...
+                                                 'apicalID'};
+    ConnectionParams(1).weights{1} = 0.05*synapticScaler;
+    ConnectionParams(1).tau{1} = 1;
+    ConnectionParams(1).preRate{1} = 0.004;
+    ConnectionParams(1).postRate{1} = -0.004;
+    ConnectionParams(1).tPre{1} = 15;
+    ConnectionParams(1).tPost{1} = 20;
+    ConnectionParams(1).wmin{1} = 0;
+    ConnectionParams(1).wmax{1} = 100;
+else
+    ConnectionParams(1).synapseType{1} = 'g_exp';
+    ConnectionParams(1).targetCompartments{1} = {'basalID', ...
+                                                 'apicalID'};
+    ConnectionParams(1).weights{1} = 0.05*synapticScaler;
+    ConnectionParams(1).tau{1} = 1;
+end
 
-ConnectionParams(1).numConnectionsToAllFromOne{2} = 300;
-ConnectionParams(1).synapseType{2} = 'i_exp';
+ConnectionParams(1).numConnectionsToAllFromOne{2} = 600;
+ConnectionParams(1).synapseType{2} = 'g_exp';
 ConnectionParams(1).targetCompartments{2} = {'dendritesID'};
-ConnectionParams(1).weights{2} = 28;
+ConnectionParams(1).weights{2} = 0.1*synapticScaler;
 ConnectionParams(1).tau{2} = 1;
-
-%%
-% And then the generic parameters for connections from group 1:
 
 ConnectionParams(1).axonArborSpatialModel = 'gaussian';
 ConnectionParams(1).sliceSynapses = true;
-ConnectionParams(1).axonArborRadius = 250;  % how far do your axons stretch in any direction
-ConnectionParams(1).axonArborLimit = 500;   % max length of the axon
+ConnectionParams(1).axonArborRadius = 25;
+ConnectionParams(1).axonArborLimit = 50; 
 ConnectionParams(1).axonConductionSpeed = 0.3;
 ConnectionParams(1).synapseReleaseDelay = 0.5;
+ConnectionParams(1).E_reversal{1} = -0;
+ConnectionParams(1).E_reversal{2} = -0;
 
-%%
-% We repeat this process for connections from group 2:
-
+% %GABA_B synapses
 ConnectionParams(2).numConnectionsToAllFromOne{1} = 1000;
-ConnectionParams(2).synapseType{1} = 'i_exp';
+ConnectionParams(2).synapseType{1} = 'g_exp';
 ConnectionParams(2).targetCompartments{1} = {'somaID'};
-ConnectionParams(2).weights{1} = -5;
-ConnectionParams(2).tau{1} = 6;
+ConnectionParams(2).weights{1} = 0.2*synapticScaler;
+ConnectionParams(2).tau{1} = 3;
 
-ConnectionParams(2).numConnectionsToAllFromOne{2} = 200;
-ConnectionParams(2).synapseType{2} = 'i_exp';
+
+ConnectionParams(2).numConnectionsToAllFromOne{2} = 600;
+ConnectionParams(2).synapseType{2} = 'g_exp';
 ConnectionParams(2).targetCompartments{2} = {'dendritesID'};
-ConnectionParams(2).weights{2} = -4;
-ConnectionParams(2).tau{2} = 3;
+ConnectionParams(2).weights{2} = 0.2*synapticScaler;
+ConnectionParams(2).tau{2} = 6;
 
 ConnectionParams(2).axonArborSpatialModel = 'gaussian';
 ConnectionParams(2).sliceSynapses = true;
-ConnectionParams(2).axonArborRadius = 200;
-ConnectionParams(2).axonArborLimit = 500;
+ConnectionParams(2).axonArborRadius = 20;
+ConnectionParams(2).axonArborLimit = 50;
 ConnectionParams(2).axonConductionSpeed = 0.3;
 ConnectionParams(2).synapseReleaseDelay = 0.5;
+ConnectionParams(2).E_reversal{1} = -70;
+ConnectionParams(2).E_reversal{2} = -70;
 
-
-%% 
-% recording settings
-
-RecordingSettings.LFP = true;
-[meaX, meaY, meaZ] = meshgrid(0:1000:2000, 200, 600:-300:0);
-RecordingSettings.meaXpositions = meaX;
-RecordingSettings.meaYpositions = meaY;
-RecordingSettings.meaZpositions = meaZ;
-RecordingSettings.minDistToElectrodeTip = 20;
-RecordingSettings.v_m = 100:1000:4100;
-RecordingSettings.maxRecTime = 100;
-RecordingSettings.sampleRate = 1000;
+% Note that for the weights in |ConnectionParams(2)| we use positive
+% values, even though basket interneurons are inhibitory.
+% This is because the inhibitory nature of the synapses would be controlled by the
+% synapses' reversal potential.

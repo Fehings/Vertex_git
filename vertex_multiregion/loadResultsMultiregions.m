@@ -218,11 +218,11 @@ for r = 1:length(params.parameterCell{1})
         allpost = cell(length(RS.weights_arr),1);
         allpre = cell(length(RS.weights_arr),1);
         allweight = cell(length(RS.weights_arr),1);
-        weightsarr_rec= cell(length(RS.weights_arr),1);
+        weights_arr= cell(length(RS.weights_arr),1);
         
     else
         synArr = [];
-        weightsarr= [];
+        weights_arr= [];
         
     end
     
@@ -347,13 +347,16 @@ for r = 1:length(params.parameterCell{1})
                             
                             syncount(iN) = syncount(iN)+ length(RecordingVars.synArr{iN,1});
                         end
-                        
+                    else
+                        weights_arr = [];
                     end
                     
                 else
                     if isfield(RecordingVars, 'WeightArrRec')
                         weights_arr = RecordingVars.WeightArrRec;
                         synArr = RecordingVars.synArr;
+                    else
+                        weights_arr = [];
                     end
                 end
             end

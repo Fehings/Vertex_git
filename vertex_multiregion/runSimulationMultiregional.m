@@ -359,7 +359,7 @@ for simStep = 1:simulationSteps
                     end
                 elseif current_time > pS{rgn}.TissueParams.StimulationOff(stimcount)
                     for iGroup = 1:pS{rgn}.TissueParams.numGroups
-                        if  NeuronModelArr{rgn}{iGroup}.incorporate_vext
+                       if  NeuronModelArr{rgn}{iGroup}.incorporate_vext
                             stimulationOff(NeuronModelArr{rgn}{iGroup});
                         end
                         if stimcount < length(pS{rgn}.TissueParams.StimulationOn)
@@ -492,11 +492,9 @@ for simStep = 1:simulationSteps
                 for rr = find(regionConnect.map(rgn,:)) % for all regions recieving connections from the current region
                     exportingNeuronSpikes{rgn}{rr}(:,delayCounter{rgn,rr})=currentSpikes;
                     
-                    %if sum(sum(exportingNeuronSpikes{rgn}{rr}))>0 % don't bother assigning spikes unless there are some to assign!
-                        
-                        assignSpikes(NeuronModelArr{rr}{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes{rgn}{rr}(:,delayAccess{rgn,rr}));
-                
-                        
+                    if ~isempty(regionConnect.dummyNeuronPops{rr}) % don't bother assigning spikes unless there are some to assign!
+                            assignSpikes(NeuronModelArr{rr}{regionConnect.dummyNeuronPops{rr}},exportingNeuronSpikes{rgn}{rr}(:,delayAccess{rgn,rr}));
+                    end
                         % do I need an else assign spikes to zero?
                     %end
                     % NB: the assignSpikes method is unique to passive
