@@ -12,7 +12,7 @@
 
 loadRatTissueandNeuronParams;
 TissueParams.neuronDensity = 103730;
-loadRatConnectionParamsSTDP;
+loadRatConnectionParams;
 
 %% Load the stimulating electrode field and set on and off times
 % Default times are for single pulse at 1500 ms.
@@ -29,4 +29,6 @@ SimulationSettings.randomSeed = 1001;
 %% Set the location to save results.
 RecordingSettings.saveDir = ['~/F1000_Data/tbs_' num2str(SimulationSettings.randomSeed)];
 
+
+SimulationSettings.parallelSim = false;
 runRatSimulationTBS
