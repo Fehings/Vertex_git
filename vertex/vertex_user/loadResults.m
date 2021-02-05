@@ -153,7 +153,9 @@ if isfield(RS, 'LFPoffline') && RS.LFPoffline
 else
     LFPoffline = false;
 end
-
+%Create matrix to store loaded V_ext
+%if recCLv_ext
+    
 % Create matrix to store loaded LFP
 if RS.LFP
     numElectrodes = length(RS.meaXpositions(:));
@@ -489,6 +491,10 @@ for iSaves = 1:numSaves
             end
             
         end
+        if RS.recCLv_ext
+            v_extApplied = RecordingVars.CLv_ext;
+        end
+        
         if RS.LFP
             lr = RecordingVars.LFPRecording;
             if LFPoffline
@@ -593,6 +599,7 @@ end
 % Store loaded results in cell array to return
 Results.spikes = spikes;
 Results.LFP = LFP;
+Results.v_extApplied = v_extApplied;
 Results.v_m = v_m_recording;
 Results.DV = DV_recording;
 Results.I_syn = I_syn_recording;
@@ -609,5 +616,6 @@ Results.params.NeuronParams = NP;
 Results.params.ConnectionParams = CP;
 Results.params.RecordingSettings = RS;
 Results.params.SimulationSettings = SS;
+
 % Results.params.SynArr= Sarr;
 % Results.params.StimParams = StP;

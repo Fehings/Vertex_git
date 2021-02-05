@@ -13,7 +13,8 @@ clear vars
 %% Options:
 
 % Are we using STDP?
-isSTDP = 1; % 1 is true, we are using STDP. 0 is false, no STDP.
+isSTDP = 0; % 1 is true, we are using STDP. 0 is false, no STDP.
+%have had to turn this off or it causes an error.
 
 noiseScaler = 1; % Scaling parameter for the background noise in the model
 
@@ -43,6 +44,7 @@ RecordingSettings.meaZpositions = meaZ;
 RecordingSettings.minDistToElectrodeTip = 20;
 RecordingSettings.maxRecTime = 500;
 RecordingSettings.sampleRate = 1000;
+RecordingSettings.recCLv_ext = 1;
 
 if isSTDP
     % Specifying which neurons to record the weights for 
@@ -92,6 +94,15 @@ value_to_change = 4; % field strength
  % assignment of ClosedLoop means it is on, OR include an if check in the
  % runSimulation code. Apply as you wish!
 
+isClosedLoop = 0;
+
+if isClosedLoop
+    TissueParams.ClosedLoop = 0; %Creates Closed loop field, 0 means stimulation will not occur instantly
+    TissueParams.CL_start = 0; %Start time of Closed loop stimulation
+    TissueParams.CL_end = 50; %End time of Closed Loop stimulation
+    TissueParams.ClStimStrength = -1; %Strength of Closed loop stimulation
+    TissueParams.Threshold = 0.00002;
+end
 
 
 %% Generate the network
@@ -141,12 +152,24 @@ rasterFigureImproved = plotSpikeRaster(Results, rasterParams);
 % oscillation can be seen in the LFP:
 
 figure(2)
-plot(Results.LFP', 'LineWidth', 2)
+subplot(2,1,1)
+plot(Results.LFP(3,:), 'LineWidth', 2)
 set(gcf,'color','w');
 set(gca,'FontSize',16)
-title('LFP at all electrodes', 'FontSize', 16)
+title('LFP', 'FontSize', 16)
 xlabel('Time (ms)', 'FontSize', 16)
 ylabel('LFP (mV)', 'FontSize', 16)
+%xline(TissueParams.CL_end, '--')
+%yline(TissueParams.Threshold, '--r')
+subplot(2,1,2);
+plot(Results.v_extApplied{1});
+ylim([min(Results.v_extApplied{1})-250,max(Results.v_extApplied{1})+250]);
+xlim([0, length(Results.v_extApplied{1}) * 1.2 ]);
+xlabel('Time (ms)', 'FontSize', 16)
+ylabel('Stimulation applied (mV)', 'FontSize', 13)
+%xline(TissueParams.CL_end, '--')
+
+
 %%
 % For simulations involving spike timing depedent plasticity, we can plot 
 % the synaptic weight changes for a given connection over time. 

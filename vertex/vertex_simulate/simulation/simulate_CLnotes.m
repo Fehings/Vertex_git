@@ -110,7 +110,9 @@ for simStep = 1:simulationSteps
             if isfield(TP, 'tRNS')
                 TP.tRNS = wgn(1,1,0); % generate a new random number for tRNS.
             end
-            if isfield(TP,'ClosedLoop') % NB remember to have TissueParams.ClosedLoop in the main script
+            if isfield(TP,'ClosedLoop')
+                
+                % NB remember to have TissueParams.ClosedLoop in the main script
                 % need to have saved the initial v_ext to a different
                 % static variable that we can then call here, if CL is on.
                 % check the current LFP value for a given electrode (or an
