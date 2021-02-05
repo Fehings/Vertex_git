@@ -11,6 +11,7 @@ classdef NeuronModel_adex < NeuronModel
   properties (SetAccess = private)
     w
     spikes
+    
   end
   
   methods

@@ -97,12 +97,37 @@ for simStep = 1:simulationSteps
                     setVext(NeuronModel{iGroup},NP(iGroup).V_ext_mat(:,:,timeStimStep));
                 elseif isfield(TP, 'tRNS')
                     setVext(NeuronModel{iGroup},NeuronModel{iGroup}.v_ext*TP.tRNS);
+                elseif isfield(TP,'ClosedLoop') 
+                    setVext(NeuronModel{iGroup},NeuronModel{iGroup}.v_extCLON*TP.ClosedLoop ...
+                        * TP.ClStimStrength);
+                    % where ClosedLoop is 1 or 0 depending on whether the threshold is met
+                    %wasnt sure how to put in stim strength so this may
+                    %need to change
                 end
                 
             end
             if isfield(TP, 'tRNS')
                 TP.tRNS = wgn(1,1,0); % generate a new random number for tRNS.
             end
+            if isfield(TP, 'ClosedLoop')
+                if recTimeCounter > 1
+                    MeanCurrentLFP = mean(RecVar.LFPRecording{1}(3,recTimeCounter-1)); 
+                    %currently only useing 3rd LFP as mean was too small,
+                    %easy to alter ^^
+                    %calculates mean of current LFP, 
+                    %-1 because this occurs before LFP is recorded after,
+                    %therefore need to work out from previous step
+                else 
+                    MeanCurrentLFP = 0; % incase recTimeCounter = 1, stops error
+                end
+                
+                if current_time > TP.CL_start && current_time < TP.CL_end ...
+                        && TP.Threshold < MeanCurrentLFP %it is between designated timeframe and over threshold LFP CL stimulation is turned on
+                    TP.ClosedLoop = 1;
+                else
+                    TP.ClosedLoop = 0;
+                end
+            end 
             timeStimStep = timeStimStep+1;
             % reset timeStimStep if it gets passed the length of the
             % time dimension in the stimulation field, this will loop
@@ -162,6 +187,11 @@ for simStep = 1:simulationSteps
         S = addGroupSpikesToSpikeList(NeuronModel,IDMap,S,iGroup,comCount);
         % store group-collected recorded variables for membrane potential:
         if simStep == RS.samplingSteps(sampleStepCounter)
+            
+            % saves Cloosed loop stimulation:
+            if RS.recCLv_ext
+                RecVar = updateCLv_ext(NeuronModel,RecVar,iGroup,recTimeCounter);
+            end
             
             if recordIntra
                 RecVar = ...

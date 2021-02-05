@@ -1,4 +1,10 @@
 classdef NeuronModel < handle
+    
+  properties
+      v_extCLON
+      currentV_ext
+  end
+  
   properties (SetAccess = protected)
     v
     I_ax
@@ -6,6 +12,7 @@ classdef NeuronModel < handle
     midpoints
     incorporate_vext
     maxExtracellularPotential
+    %v_extCLON
     %doUpdate
   end
  properties (SetAccess = private)
@@ -19,6 +26,7 @@ classdef NeuronModel < handle
     function NM = NeuronModel(Neuron, number)
       NM.v = zeros(number, Neuron.numCompartments);
       NM.I_ax = zeros(number, Neuron.numCompartments);
+      NM.currentV_ext = zeros(number, Neuron.numCompartments);
       NM.treeChildren = length(Neuron.adjCompart);
       NM.v_ext = zeros(number, Neuron.numCompartments);
       if isfield(Neuron, 'v_ext')
@@ -27,6 +35,7 @@ classdef NeuronModel < handle
       NM.incorporate_vext = false;
       NM.maxExtracellularPotential = 500;
       %NM.doUpdate = true(size(NM.v, 1));
+
     end
     
     function [NM] = updateNeurons(NM, IM, N, SM, dt)
@@ -74,6 +83,11 @@ classdef NeuronModel < handle
                   NM.I_ax(:, N.adjCompart{iTree}(1, :)) = ...
                       NM.I_ax(:, N.adjCompart{iTree}(1, :)) + ...
                       bsxfun(@times, N.g_ax{iTree}, ...
+                      (NM.v_ext(:, N.adjCompart{iTree}(1, :)) - ...
+                      NM.v_ext(:, N.adjCompart{iTree}(2, :))));
+                  %determining the ammount of stimulation added to I_ax, so
+                  %it can later be used to record v_ext applied
+                  NM.currentV_ext = bsxfun(@times, N.g_ax{iTree}, ...
                       (NM.v_ext(:, N.adjCompart{iTree}(1, :)) - ...
                       NM.v_ext(:, N.adjCompart{iTree}(2, :))));
 

@@ -131,6 +131,9 @@ if isfield(TP, 'StimulationField')
             else
                 for iGroup = 1:length(NeuronModelArr)
                     setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1, TP.scale));
+                    if isfield(TP,'ClosedLoop') % if closed loop we need to store vext so we don't overwrite!
+                        NeuronModelArr{iGroup}.v_extCLON = NeuronModelArr{iGroup}.v_ext; % save the current value of v_ext
+                    end
                 end
                 if isfield(TP,'tRNS')
                     set_V_ext(NeuronModelArr{iGroup},NeuronModelArr{iGroup}.v_ext*TP.tRNS);
@@ -157,7 +160,10 @@ if isfield(TP, 'StimulationField')
                     setVext(NeuronModelArr{iGroup},get_V_ext(locs, TP.StimulationField,1,TP.scale));
                 
                 else
-                setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1,TP.scale));
+                    setVext(NeuronModelArr{iGroup},get_V_ext(NeuronModelArr{iGroup}.midpoints, TP.StimulationField,1,TP.scale));
+                    if isfield(TP,'ClosedLoop') % if closed loop we need to store vext so we don't overwrite!
+                        NeuronModelArr{iGroup}.v_extCLON = NeuronModelArr{iGroup}.v_ext; % save the current value of v_ext
+                    end
                 end
                 
             end
