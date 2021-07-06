@@ -12,6 +12,6 @@ stimy = location.y;
 stimz = location.z;
 r = sqrt((fiberx - stimx)^2 + (fibery - stimy)^2 + (fiberz - stimz)^2); %distance between electrode and fiber
 p= 0.3; %conductivity
-Ve = (p .* stim_I) ./ 4*pi*r  ;
+Ve = (p .* stim_I) ./ (4*pi*r)  ;
 end
 
